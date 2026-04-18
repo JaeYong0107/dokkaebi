@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { ClickableCardOverlay } from "@/components/shell/ClickableCardOverlay";
 import { formatCurrency } from "@/lib/format";
 
 const HERO_IMAGE =
@@ -186,12 +187,11 @@ export default function HomePage() {
               key={product.id}
               className="group relative rounded-[1.5rem] bg-surface-container-lowest p-4 transition-all hover:shadow-xl hover:shadow-stone-200/50"
             >
-              <Link
+              <ClickableCardOverlay
                 href={`/products/${product.id}`}
-                aria-label={`${product.name} 상세 보기`}
-                className="absolute inset-0 z-0 rounded-[1.5rem]"
+                label={`${product.name} 상세 보기`}
               />
-              <div className="relative mb-4 aspect-square overflow-hidden rounded-xl bg-surface-container-low">
+              <div className="relative z-0 mb-4 aspect-square overflow-hidden rounded-xl bg-surface-container-low">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.img}
@@ -206,13 +206,13 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-stone-500">
+              <p className="relative z-20 mb-1 text-[10px] font-bold uppercase tracking-widest text-stone-500">
                 {product.category}
               </p>
-              <h3 className="relative z-10 mb-2 line-clamp-1 text-sm font-bold text-on-surface transition-colors group-hover:text-primary">
+              <h3 className="relative z-20 mb-2 line-clamp-1 text-sm font-bold text-on-surface transition-colors group-hover:text-primary">
                 {product.name}
               </h3>
-              <div className="mb-3 flex items-center gap-2">
+              <div className="relative z-20 mb-3 flex items-center gap-2">
                 <span className="font-headline text-lg font-extrabold tracking-tight text-primary">
                   {formatCurrency(product.price)}
                 </span>
@@ -224,10 +224,12 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
-              <AddToCartButton
-                productId={product.id}
-                className="relative z-10 w-full rounded-full border border-stone-100 py-2.5 text-xs font-bold hover:bg-stone-50"
-              />
+              <div className="relative z-20">
+                <AddToCartButton
+                  productId={product.id}
+                  className="w-full rounded-full border border-stone-100 py-2.5 text-xs font-bold hover:bg-stone-50"
+                />
+              </div>
             </article>
           ))}
         </div>

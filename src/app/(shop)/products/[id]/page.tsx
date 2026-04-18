@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/common/Icon";
+import { ProductDetailActions } from "@/components/cart/ProductDetailActions";
 import { ProductImage } from "@/components/shell/ProductImage";
 import {
   getActiveProducts,
@@ -171,44 +172,7 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          <div className="mb-8">
-            <div className="mb-4 text-sm font-bold">수량 선택</div>
-            <div className="flex w-fit items-center overflow-hidden rounded-xl border border-outline-variant bg-white">
-              <button
-                type="button"
-                className="px-4 py-3 text-primary hover:bg-surface-container-low"
-              >
-                <Icon name="remove" />
-              </button>
-              <input
-                type="number"
-                defaultValue={1}
-                min={1}
-                className="w-12 border-none text-center text-lg font-bold focus:ring-0"
-              />
-              <button
-                type="button"
-                className="px-4 py-3 text-primary hover:bg-surface-container-low"
-              >
-                <Icon name="add" />
-              </button>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <Link
-              href="/cart"
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-primary py-4 font-bold text-primary transition-colors hover:bg-surface-container-low"
-            >
-              <Icon name="shopping_cart" /> 장바구니
-            </Link>
-            <Link
-              href="/checkout"
-              className="flex flex-[2] items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-white shadow-lg shadow-primary/10 transition-all hover:opacity-90"
-            >
-              바로 구매하기
-            </Link>
-          </div>
+          <ProductDetailActions productId={product.id} />
         </div>
       </div>
 
