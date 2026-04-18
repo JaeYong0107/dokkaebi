@@ -16,6 +16,7 @@ export type Product = {
   priceNormal: number;
   priceBusiness: number;
   origin: string;
+  imageUrl?: string;
   imageEmoji: string;
   imageBg: string;
   badges?: string[];

@@ -22,6 +22,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 18500,
     priceBusiness: 14430,
     origin: "경상북도 청도군",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuA9k_WMHkVAY3hU84kedEpsg-fyvJ-dZfspsobpZ6jphL8mWhIMMQvfDJ7F8ZwbWuWF0t91XxXSj6W8ZCcWEvEarGqmZs-x5wWMHV663NQvQHClODTyJD7kWcfjq3QWc95l14IhYLLACxPVd3lckhHBFzuPZg1tbBEoRx6Vgr1GOi0_yXgtUy2iqVCeytTSjTvuxYkIBtrNeEDNa81ANmidsdQBEAQmUckwEcH48JhRTqzsysBlfji0A5KNNEy8vADO0WLtYy6cnuQ",
     imageEmoji: "🥬",
     imageBg: "from-emerald-200 to-emerald-400",
     badges: ["산지직송", "무농약"],
@@ -36,6 +38,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 8900,
     priceBusiness: 7600,
     origin: "전라남도 무안",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBFxHQ4wxoL2zQAxKJgNVG-fNQzudULK7AdXgjumFTU_AteYJ5sncoBmkJRKwXIJAQEZsTqYnqHu4b6P_ndZS48zXgrDfbDC9Y-u6CPlwpSaykIYpbEqxjeMiH521tozthpgwPX4tckWnyhKfmQiD9nTLde9MJ0nlevNzpGxIzbgNmZ9CqWJ_tyTgqEBgRKxug86p6YQZHvECr-2KnbzuBE9EvXCxbEs1_XEWcIJm23PlACDDKC2h36Tlq6Xj53TQCXyaxepQqDhxo",
     imageEmoji: "🧅",
     imageBg: "from-amber-100 to-amber-300",
     badges: ["국산"],
@@ -50,6 +54,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 22000,
     priceBusiness: 18900,
     origin: "제주",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCDbJuCCnZEdTvpWr19mA_4AwIbV9KrMrhx4L_WtHl4yWzryLXmFBZR_H3Ckc87lKaXaEL1fjKSYwNBZQaIVPVmF6q3gZc7DXTF1kVWzbfzJDeMsN-g9Imt5dobfNdn12QQkT-GyPU7f-QYKV21hhczIuXzNeFwswax96RhCMDSpETgrBaWMr5r1FECymxrhK1yRWYbbu6xU1Au9q73RwtC0FxwMRKeypYYTf8wJPcHm-l6AwLUZ29rj26JRBomLhxGiKOOTvKKckM",
     imageEmoji: "🥕",
     imageBg: "from-orange-200 to-orange-400",
     badges: ["대용량"],
@@ -64,6 +70,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 27000,
     priceBusiness: 23800,
     origin: "경상남도 진주",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBcwS92TEeDYpNW7eH3OxetSfXLwggPiQV4s2qWGpkngICTP_dTgOQDRy56VZXWztj0eVenRVSuSEik9iPfwCCMmkOcFBUX1H34Yt8YIYYhjLYkvsNgoG8spRcipvCCzAsdj-o5HdHYlZYZnMOUmVkDRQo2MxQP8GUH5j8lPTvVLKjuM9zNqpuJCxr2LgmnyZm7kBwwRhTetK0lpIzRsfruY7jAdw_Leeg49a3tpGnN-GFJZFcFLfGdoQAW_f0qhFV4BZcblvfpLC8",
     imageEmoji: "🥦",
     imageBg: "from-green-200 to-green-400",
     badges: ["유기농"],
@@ -78,6 +86,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 18500,
     priceBusiness: 15800,
     origin: "강원도 화천",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDXCtmJHRdixc0ohYMwyuHpc99sWq8NSf9p6Um8i0jjMhAP3Yv4Sg3Vh5oQGrNKN0YjHnl2U-exzaJVyqzXMmv2f9V_an2iY5G3UL58DIlg1UZtQSb1M159OZWd-KBOMhWgzhyTN1hwWsjQzNuE0-h-4o147b4-Ll5u5L5OO15ZaSp7cgpEEVZwQTZBsD1kE9ntnR82BEmNgxAwRDcQvILN3PT3P31O-gROHvxmGzSIRE3j9ky1-egT93-tix9Q9dw05IJvqixL4eM",
     imageEmoji: "🍅",
     imageBg: "from-rose-200 to-rose-400",
     badges: ["당일 발송"],
@@ -162,6 +172,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 24000,
     priceBusiness: 16800,
     origin: "강원도",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB_0hN-7tFvVxY34y2KYfjjt8O3QRE_NtXXudWoJZfXTjmR8MrEi09ZpJjbQn6NdgN1jW0CZBiBKrElP3WaIXhlxSFOpsOy0ei86UxL55yZVfGxOa4PTDbNoBrwvS0BQv24MlyOVcq7QnW86htmPaoUmrVHdKQXXAYMQhdDZML-fY2QLyrlc0v1v0zB65tHu0Spm3DgPzmhQDT9RHgLpU-UA1m79ikJ3MXlmePu3KBceI8aIV_sTLmUlShcnMLtDxgO7oEJAM917eQ",
     imageEmoji: "🥔",
     imageBg: "from-amber-200 to-amber-400",
     badges: ["사업자 특가", "BEST"],
@@ -176,6 +188,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 45000,
     priceBusiness: 34200,
     origin: "전라북도 김제",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDkFryqLf-_qE_UfbUFMPVx9-VmgY2rU4eQL7JKRJ-G50NdkFtn-GC6wYa1WblO0-oVckcj2eBiesj5LHZK5TbA-IQFUH3pxT_Th2cZm502qH48y0fVV2blHAlcH_Wk-a4On26ic0E0Hd3S6BNI7mFbgGSuzvtMxb4qOdtwv_l6pnfMYDEcHaC5YIzENwbYD0QuLYpUD7-y6MpHECaj4sHcuFvpBH3fdjE9p0DzxhUjEl_abGfK1vZ5kl8DhxVaVrgGeFIx6TndJbo",
     imageEmoji: "🥒",
     imageBg: "from-green-200 to-emerald-400",
     badges: ["선별"],
@@ -190,6 +204,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 15000,
     priceBusiness: 11500,
     origin: "경상북도 의성",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB-08X7xQXHvZUiWQdYr8mKeD0Lkq1CPiZNT0URob6l4NACWDYsJwdO5yoBMaPs8pE6udyycOOTpUPNUrEGeHziF4Ld7mQUFjLHSluckFqtrxOpvXbYKhisrkjYHo8gy2ZC3aAnyrHPjWJM7GMkXJ0eKTdWHrWxKIVZjIknsT5wvlhKyJ6CIDYgTxBwJ_LaHVHyHaPuAhDLJBPYwzA-BfoywrS1do4ojPWwUkYj8rGu98tT5sSNoGWRewj4TXK01gwRhi0aohEvYsM",
     imageEmoji: "🧄",
     imageBg: "from-stone-100 to-stone-300",
     badges: ["신선보장"],
@@ -204,6 +220,8 @@ export const sampleProducts: Product[] = [
     priceNormal: 9500,
     priceBusiness: 7500,
     origin: "필리핀",
+    imageUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB7C3bAtvBksx7yEXBwOGZ4M2q4HNVqQCLM2iqGW8XDdsMsxWqBUxDiz-HrzGdrLE_QJCkZb52I41q9SdJ2XOn8uH8--FuaEukudTZYivSnwtK3lGiLSEu153341Fql6-lkNA2QJt7fiGN822uDmcl90-i9HPMdZF-Ok_TvuY2aCgTVpJbyouYRT78jrbLWdn83ViPjgkRRxYVO6__-kYLQ7DHsjUDFtMvwmNeoNBTxZLenAjGj5jOI2VN0PR0Yi0lhw1ByXQaFEJ8",
     imageEmoji: "🍍",
     imageBg: "from-yellow-300 to-amber-500",
     badges: [],

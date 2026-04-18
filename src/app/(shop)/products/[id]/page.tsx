@@ -98,6 +98,8 @@ export default async function ProductDetailPage({
                 }
               >
                 <ProductImage
+                  imageUrl={product.imageUrl}
+                  alt={product.name}
                   emoji={product.imageEmoji}
                   bg={product.imageBg}
                   size="md"
@@ -107,6 +109,8 @@ export default async function ProductDetailPage({
           </div>
           <div className="flex-1 overflow-hidden rounded-[2rem] bg-surface-container-low p-6">
             <ProductImage
+              imageUrl={product.imageUrl}
+              alt={product.name}
               emoji={product.imageEmoji}
               bg={product.imageBg}
               size="lg"
@@ -315,6 +319,8 @@ export default async function ProductDetailPage({
                   >
                     <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-surface-container">
                       <ProductImage
+                        imageUrl={recommendation.imageUrl}
+                        alt={recommendation.name}
                         emoji={recommendation.imageEmoji}
                         bg={recommendation.imageBg}
                         size="md"
@@ -348,6 +354,8 @@ export default async function ProductDetailPage({
                 className="h-10 w-10 overflow-hidden rounded-full bg-surface-container ring-2 ring-white"
               >
                 <ProductImage
+                  imageUrl={recentProduct.imageUrl}
+                  alt={recentProduct.name}
                   emoji={recentProduct.imageEmoji}
                   bg={recentProduct.imageBg}
                   size="sm"
