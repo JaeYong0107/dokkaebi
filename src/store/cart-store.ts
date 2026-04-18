@@ -20,7 +20,11 @@ type CartActions = {
 
 const INITIAL_STATE: CartState = {
   customerType: "BUSINESS",
-  items: []
+  items: [
+    { productId: "prod-onion-001", quantity: 2 },
+    { productId: "prod-carrot-001", quantity: 1 },
+    { productId: "prod-broccoli-001", quantity: 1 }
+  ]
 };
 
 export const useCartStore = create<CartState & CartActions>()(

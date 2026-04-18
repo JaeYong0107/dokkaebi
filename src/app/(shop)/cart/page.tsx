@@ -1,35 +1,23 @@
-import Link from "next/link";
-import { Icon } from "@/components/common/Icon";
+"use client";
 
-const CART_ITEMS = [
-  {
-    id: "scallion",
-    eyebrow: "국산 / 유기농",
-    name: "[도매] 산지직송 흙대파 10kg (1단)",
-    sku: "SKU: DKB-VG-042",
-    quantity: 2,
-    priceOriginal: "48,000원",
-    priceSale: "42,500원",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCn0qRKX1Nag5_VR3rFNjYv9AEkxv7YtUWiHg3NTA3nzhjS0WrxbUTzlyNU5MHf4aCFo97WK9xqn4-J2GVMd7QYS0K9GWNB47umI8Nb3EDLEkt6c9FCk-_uctiyaI0pm0dPDtvLLwK3puLqcZwJiL9_LTBM45BwKAevmt9aKxcfOSxj4GFKMn2kw-OyP9mQEmtd4EN8wZ5jTGY8B4_KJpQZysir6JT_Qudzj__xqXye_yOLTeYfEPdUpL9sb1ZE9mpaAG5hHgvWWb0",
-    alt: "Green onions"
-  },
-  {
-    id: "carrot",
-    eyebrow: "국산 / 세척",
-    name: "[도매] 제주 세척당근 5kg 박스",
-    sku: "SKU: DKB-VG-118",
-    quantity: 1,
-    priceSale: "12,800원",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDxLCU18J_9OIawgXb6PRJYfSE91fvSVp1KMdPRHXdskQrfBOdul9oUo60OK1dElpPKRHFZuTw6LQR946TtvVWulskcr-yYYh-boSbrx3CgZVAhMckGW35WYp01KEwmBjiHF7yV0TSR1zNBUBHS9j4mMlq8yZxUQ3Ku1kIaJLzt9cG61h7BFpMz3kZR698Qf6urZAweVaRG7wDd9e625x_cXx4td7Ayq2eIXTlqnFpVv0ghs05CUVwC_vSbnPhAlTP9nZAnkMTkTD0",
-    alt: "Carrots"
-  }
-];
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { Icon } from "@/components/common/Icon";
+import { ProductImage } from "@/components/shell/ProductImage";
+import { buildCartSummary } from "@/features/cart/cart-service";
+import { sampleProducts } from "@/features/product/mock-data";
+import { formatCurrency } from "@/lib/format";
+import {
+  useCartStore,
+  useCartItems,
+  useCartCustomerType
+} from "@/store/cart-store";
 
 const RECOMMENDATIONS = [
   {
     region: "경상남도 창녕",
     name: "깐마늘 1kg (업소용)",
-    price: "9,400원",
+    productId: "prod-garlic-001",
     badge: "베스트",
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB7WBX3sfkBRLz4iCLsP0AMMc-lfnEZzsRxRR1vCGuqaLEHF5iGfSomSjO_RNjmUycA26zULfRS_J6GULbI2YiIrKbGDDo2YYZRGY_fjmv-Fyr5-OAkwqTCqJIyMwiUllAcugXlH_TfEWWwRJltUD1GAYjj-PEL5YCa_PMTd11azQwhUHqu3Pcxbi5eQ8zpbSeRL9F2h5aohe5oCkGMioynkpUSgM3jny4tlB32QqhBsDOEuC-NOn1T7-AjMDCCHkh0Q_9ZZzVSi9k",
     alt: "Garlic"
@@ -37,27 +25,88 @@ const RECOMMENDATIONS = [
   {
     region: "전라남도 무안",
     name: "청양고추 2kg (박스)",
-    price: "15,900원",
+    productId: null,
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCdVnkQb5FHKX2ffnSSguNtaYxHbjY_scwqF0vFSUSzXpL7ayzUb9xoCzkkikc1H3dwn4gAsHfq23DvjNuLG6pZjXemK4Pe4jy4OTYWpET2vXbXDIMKHgvxeIjQ_aeLEjq2Hs7uW6KcHgVbaTCsP5c9NKIXGQpWCrslNAiuL2IQFz-U8RNCYor6dU6rW7LSZDj97B65wBWm6YPVVxD1kqMHjzN32RtQwc9XpqPt700RWF0I-Xuus1UM9Jz2Swvvc6OLNavfwinF8pA",
     alt: "Chili peppers"
   },
   {
     region: "전라남도 무안",
-    name: "무안 햇양파 15kg (대망)",
-    price: "21,000원",
+    name: "햇양파 (대용량)",
+    productId: "prod-onion-001",
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDuAaBVTjQk5GOTtQwedoN1jRZQppb4SL1HuyCOd2BM3lQ6a_MofuKKfitLjsXwbsYOhpeSBZD2P2ydJ6ZsL0gJ7E8sYRellm1gE-DVO6pAk4e2DwAzX7q9IGnvcA7jioZ8wCfgnsYaxSWL5swBnXge6GFKvyeQBv7B8v_CvWYuwV1i6tzdMMxqd3l2SBH67xUIlpLx_gAEOGruuRml17kLHZ35tIFpK5bQ0zaZngSGoSZBefZxjh37q_djnZ28h9E3b7l6Hba8nNY",
     alt: "Yellow onions"
   },
   {
     region: "강원도 고랭지",
     name: "양배추 3망 (업소용)",
-    price: "11,200원",
+    productId: null,
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDWrfRaIBaqdRqhzuuIs6zWly7s_j6LRkOFx0PHvBxLbTC6223iXS3jSPA1u8kEd7IhoGHuhgUlDUL9wGI_XIf6SMCFDqr1HCScUDuwbQicDVRW_YgEm1opv84fta0zS8BwvXEgMr_zJBecvqs9QBYNoxL_xKJuWc8-97z3zC69MBsCLZxMEys1YPP8xUNijr5xR1nSHqnEasQH_ryxA2Z-6tMpETJZ08-9gf-6ul4M6q6-09c6QqowB9tQ_-r6ChML5RMS50wQDg",
     alt: "Cabbage"
   }
 ];
 
+const SKU_MAP: Record<string, string> = {
+  "prod-lettuce-001": "DKB-VG-001",
+  "prod-onion-001": "DKB-VG-042",
+  "prod-carrot-001": "DKB-VG-118",
+  "prod-broccoli-001": "DKB-VG-205",
+  "prod-tomato-001": "DKB-VG-307",
+  "prod-watermelon-001": "DKB-FR-415",
+  "prod-lemon-001": "DKB-FR-218",
+  "prod-egg-001": "DKB-DA-090",
+  "prod-pork-001": "DKB-MT-061",
+  "prod-oil-001": "DKB-PD-024",
+  "prod-potato-001": "DKB-VG-512",
+  "prod-cucumber-001": "DKB-VG-622",
+  "prod-garlic-001": "DKB-VG-755",
+  "prod-pineapple-001": "DKB-FR-911"
+};
+
+const MIN_ORDER_BUSINESS = 50000;
+
 export default function CartPage() {
+  const items = useCartItems();
+  const customerType = useCartCustomerType();
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const addItem = useCartStore((state) => state.addItem);
+
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const summary = useMemo(
+    () => buildCartSummary({ customerType, items, products: sampleProducts }),
+    [customerType, items]
+  );
+
+  const productById = useMemo(
+    () => Object.fromEntries(sampleProducts.map((p) => [p.id, p])),
+    []
+  );
+
+  const minOrderProgress = Math.min(
+    100,
+    Math.round((summary.subtotal / MIN_ORDER_BUSINESS) * 100)
+  );
+  const remainingToMin = Math.max(0, MIN_ORDER_BUSINESS - summary.subtotal);
+
+  if (!hydrated) {
+    return (
+      <main className="mx-auto max-w-screen-2xl px-8 pb-24 pt-10">
+        <div className="mb-8 flex items-baseline">
+          <h1 className="mr-4 font-headline text-4xl font-black tracking-tight text-primary">
+            장바구니
+          </h1>
+        </div>
+        <div className="rounded-3xl bg-surface-container-low p-12 text-center text-on-surface-variant">
+          장바구니를 불러오는 중...
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto max-w-screen-2xl px-8 pb-24 pt-10">
       <div className="mb-8 flex items-baseline">
@@ -65,73 +114,127 @@ export default function CartPage() {
           장바구니
         </h1>
         <span className="font-medium text-on-surface-variant">
-          총 3개의 상품이 담겨있습니다.
+          총 {items.length}개의 상품이 담겨있습니다.
         </span>
       </div>
       <div className="grid grid-cols-12 items-start gap-8">
         {/* Cart Items */}
         <div className="col-span-12 space-y-4 lg:col-span-8">
-          {CART_ITEMS.map((item) => (
-            <article
-              key={item.id}
-              className="group flex items-center gap-6 rounded-xl bg-surface-container-lowest p-6 transition-all duration-300"
-            >
-              <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container-low">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.img}
-                  alt={item.alt}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex flex-grow flex-col justify-between gap-4 md:flex-row md:items-center">
-                <div>
-                  <span className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-primary">
-                    {item.eyebrow}
-                  </span>
-                  <h3 className="font-headline text-lg font-bold leading-tight">
-                    {item.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-on-surface-variant">
-                    {item.sku}
-                  </p>
-                </div>
-                <div className="flex items-center gap-8">
-                  <div className="flex items-center rounded-full bg-surface-container-high px-2 py-1">
-                    <button className="flex h-8 w-8 items-center justify-center font-bold text-primary">
-                      -
-                    </button>
-                    <span className="w-10 text-center text-sm font-bold">
-                      {item.quantity}
-                    </span>
-                    <button className="flex h-8 w-8 items-center justify-center font-bold text-primary">
-                      +
-                    </button>
-                  </div>
-                  <div className="min-w-[100px] text-right">
-                    {item.priceOriginal && (
-                      <p className="text-sm text-on-surface-variant line-through">
-                        {item.priceOriginal}
+          {summary.items.length === 0 ? (
+            <div className="rounded-xl bg-surface-container-lowest p-12 text-center">
+              <Icon
+                name="shopping_basket"
+                className="mb-4 text-5xl text-on-surface-variant"
+              />
+              <p className="mb-4 text-on-surface-variant">
+                장바구니가 비어 있습니다.
+              </p>
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white"
+              >
+                상품 둘러보기
+                <Icon name="arrow_forward" className="text-base" />
+              </Link>
+            </div>
+          ) : (
+            summary.items.map((line) => {
+              const product = productById[line.productId];
+              if (!product) return null;
+              const sku = SKU_MAP[product.id] ?? product.id;
+              const showOriginal = product.priceNormal > line.unitPrice;
+              return (
+                <article
+                  key={line.productId}
+                  className="group flex items-center gap-6 rounded-xl bg-surface-container-lowest p-6 transition-all duration-300"
+                >
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container-low"
+                  >
+                    <ProductImage
+                      emoji={product.imageEmoji}
+                      bg={product.imageBg}
+                      size="md"
+                    />
+                  </Link>
+                  <div className="flex flex-grow flex-col justify-between gap-4 md:flex-row md:items-center">
+                    <div>
+                      <span className="mb-1 block text-[10px] font-bold uppercase tracking-widest text-primary">
+                        {product.badges?.[0] ?? product.category}
+                      </span>
+                      <Link
+                        href={`/products/${product.id}`}
+                        className="font-headline text-lg font-bold leading-tight hover:text-primary"
+                      >
+                        {product.name}
+                      </Link>
+                      <p className="mt-1 text-sm text-on-surface-variant">
+                        SKU: {sku}
                       </p>
-                    )}
-                    <p className="font-headline text-xl font-extrabold text-primary">
-                      {item.priceSale}
-                    </p>
+                    </div>
+                    <div className="flex items-center gap-8">
+                      <div className="flex items-center rounded-full bg-surface-container-high px-2 py-1">
+                        <button
+                          type="button"
+                          aria-label="수량 감소"
+                          onClick={() =>
+                            updateQuantity(line.productId, line.quantity - 1)
+                          }
+                          className="flex h-8 w-8 items-center justify-center font-bold text-primary"
+                        >
+                          -
+                        </button>
+                        <span className="w-10 text-center text-sm font-bold">
+                          {line.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label="수량 증가"
+                          onClick={() =>
+                            updateQuantity(line.productId, line.quantity + 1)
+                          }
+                          className="flex h-8 w-8 items-center justify-center font-bold text-primary"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="min-w-[100px] text-right">
+                        {showOriginal && (
+                          <p className="text-sm text-on-surface-variant line-through">
+                            {formatCurrency(
+                              product.priceNormal * line.quantity
+                            )}
+                          </p>
+                        )}
+                        <p className="font-headline text-xl font-extrabold text-primary">
+                          {formatCurrency(line.lineTotal)}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="장바구니에서 삭제"
+                        onClick={() => removeItem(line.productId)}
+                        className="text-on-surface-variant/40 transition-colors hover:text-error"
+                      >
+                        <Icon name="close" />
+                      </button>
+                    </div>
                   </div>
-                  <button className="text-on-surface-variant/40 transition-colors hover:text-error">
-                    <Icon name="close" />
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-          <button className="group flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant/30 py-10 text-on-surface-variant/60 transition-all hover:border-primary/30 hover:bg-surface-container-low">
+                </article>
+              );
+            })
+          )}
+          <Link
+            href="/products"
+            className="group flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant/30 py-10 text-on-surface-variant/60 transition-all hover:border-primary/30 hover:bg-surface-container-low"
+          >
             <Icon
               name="add_circle"
               className="mb-2 text-3xl transition-transform group-hover:scale-110"
             />
             <span className="text-sm font-bold">식재료 더 담기</span>
-          </button>
+          </Link>
         </div>
 
         {/* Summary Sidebar */}
@@ -144,47 +247,74 @@ export default function CartPage() {
             <div className="mb-8 rounded-xl bg-surface-container-lowest p-5">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-xs font-bold text-on-surface-variant">
-                  최소 주문 금액 (50,000원)
+                  최소 주문 금액 ({formatCurrency(MIN_ORDER_BUSINESS)})
                 </span>
-                <span className="text-xs font-bold italic text-primary">
-                  달성 완료!
+                <span
+                  className={
+                    "text-xs font-bold italic " +
+                    (summary.minimumOrder.isSatisfied
+                      ? "text-primary"
+                      : "text-error")
+                  }
+                >
+                  {summary.minimumOrder.isSatisfied
+                    ? "달성 완료!"
+                    : `${formatCurrency(remainingToMin)} 부족`}
                 </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container-highest">
-                <div className="h-full w-full bg-gradient-to-r from-primary to-primary-container" />
+                <div
+                  className="h-full bg-gradient-to-r from-primary to-primary-container transition-all"
+                  style={{ width: `${minOrderProgress}%` }}
+                />
               </div>
               <p className="mt-3 text-[11px] leading-relaxed text-on-surface-variant">
-                <span className="font-bold text-primary">사업자 회원님,</span> 현재 무료 배송 조건 및 최소 주문 금액을 충족하셨습니다.
+                {summary.minimumOrder.isSatisfied ? (
+                  <>
+                    <span className="font-bold text-primary">사업자 회원님,</span>{" "}
+                    현재 무료 배송 조건 및 최소 주문 금액을 충족하셨습니다.
+                  </>
+                ) : (
+                  <>최소 주문 금액 충족 시 결제로 이동할 수 있습니다.</>
+                )}
               </p>
             </div>
             <div className="mb-8 space-y-4 border-b border-outline-variant/20 pb-6 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-on-surface-variant">총 상품 금액</span>
-                <span className="font-bold">55,300원</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-on-surface-variant">상품 할인</span>
-                <span className="font-bold text-error">-5,500원</span>
+                <span className="font-bold">{formatCurrency(summary.subtotal)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <span className="text-on-surface-variant">배송비</span>
-                  <span className="rounded bg-primary-fixed px-1.5 py-0.5 text-[10px] font-bold text-on-primary-fixed">
-                    사업자
-                  </span>
+                  {customerType === "BUSINESS" && (
+                    <span className="rounded bg-primary-fixed px-1.5 py-0.5 text-[10px] font-bold text-on-primary-fixed">
+                      사업자
+                    </span>
+                  )}
                 </div>
-                <span className="font-bold text-primary">0원</span>
+                <span className="font-bold text-primary">
+                  {summary.shippingFee === 0
+                    ? "0원"
+                    : formatCurrency(summary.shippingFee)}
+                </span>
               </div>
             </div>
             <div className="mb-8 flex items-end justify-between">
               <span className="text-lg font-bold">예상 결제 금액</span>
               <span className="font-headline text-4xl font-extrabold tracking-tighter text-primary">
-                49,800원
+                {formatCurrency(summary.totalAmount)}
               </span>
             </div>
             <Link
               href="/checkout"
-              className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl bg-secondary-container py-5 font-headline text-xl font-black text-on-secondary-container shadow-lg shadow-secondary/10 transition-all hover:opacity-90 active:scale-95"
+              aria-disabled={!summary.minimumOrder.isSatisfied || items.length === 0}
+              className={
+                "mb-4 flex w-full items-center justify-center gap-3 rounded-xl py-5 font-headline text-xl font-black transition-all " +
+                (summary.minimumOrder.isSatisfied && items.length > 0
+                  ? "bg-secondary-container text-on-secondary-container shadow-lg shadow-secondary/10 hover:opacity-90 active:scale-95"
+                  : "pointer-events-none bg-surface-container-highest text-on-surface-variant/40")
+              }
             >
               주문하기
               <Icon name="arrow_forward" />
@@ -218,38 +348,44 @@ export default function CartPage() {
               이 상품과 함께 많이 주문했어요
             </h2>
           </div>
-          <button className="flex items-center gap-1 text-sm font-bold text-primary">
+          <Link
+            href="/products"
+            className="flex items-center gap-1 text-sm font-bold text-primary"
+          >
             전체보기 <Icon name="open_in_new" className="text-sm" />
-          </button>
+          </Link>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-          {RECOMMENDATIONS.map((rec) => (
-            <article
-              key={rec.name}
-              className="group overflow-hidden rounded-2xl bg-surface-container-low"
-            >
-              <div className="relative h-48 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={rec.img}
-                  alt={rec.alt}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute bottom-2 right-2">
-                  <button className="rounded-full bg-primary p-2 text-white shadow-lg transition-transform hover:scale-110">
-                    <Icon name="add_shopping_cart" />
-                  </button>
+          {RECOMMENDATIONS.map((rec) => {
+            const productId = rec.productId;
+            const wrapperContent = (
+              <div className="overflow-hidden rounded-2xl bg-surface-container-low transition-shadow group-hover:shadow-lift">
+                <div className="relative h-48 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={rec.img}
+                    alt={rec.alt}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {productId && (
+                    <button
+                      type="button"
+                      aria-label="장바구니에 담기"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        addItem(productId, 1);
+                      }}
+                      className="absolute bottom-2 right-2 rounded-full bg-primary p-2 text-white shadow-lg transition-transform hover:scale-110"
+                    >
+                      <Icon name="add_shopping_cart" />
+                    </button>
+                  )}
                 </div>
-              </div>
-              <div className="p-5">
-                <p className="mb-1 text-[10px] font-bold text-on-surface-variant">
-                  {rec.region}
-                </p>
-                <h3 className="mb-3 text-sm font-bold">{rec.name}</h3>
-                <div className="flex items-center justify-between">
-                  <span className="font-headline text-lg font-extrabold">
-                    {rec.price}
-                  </span>
+                <div className="p-5">
+                  <p className="mb-1 text-[10px] font-bold text-on-surface-variant">
+                    {rec.region}
+                  </p>
+                  <h3 className="mb-3 text-sm font-bold">{rec.name}</h3>
                   {rec.badge && (
                     <span className="rounded bg-primary-fixed px-1.5 text-[10px] font-bold text-primary">
                       {rec.badge}
@@ -257,8 +393,21 @@ export default function CartPage() {
                   )}
                 </div>
               </div>
-            </article>
-          ))}
+            );
+            return productId ? (
+              <Link
+                key={rec.name}
+                href={`/products/${productId}`}
+                className="group block"
+              >
+                {wrapperContent}
+              </Link>
+            ) : (
+              <article key={rec.name} className="group">
+                {wrapperContent}
+              </article>
+            );
+          })}
         </div>
       </section>
     </main>
