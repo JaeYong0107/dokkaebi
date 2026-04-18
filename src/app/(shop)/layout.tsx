@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { TopAppBar } from "@/components/shell/TopAppBar";
-import { BottomNav } from "@/components/shell/BottomNav";
-import { SiteFooter } from "@/components/shell/SiteFooter";
+import { BottomNav } from "@/widgets/bottom-nav/BottomNav";
+import { SiteFooter } from "@/widgets/site-footer/SiteFooter";
+import { TopAppBar } from "@/widgets/top-app-bar/TopAppBar";
 
 export default function ShopLayout({
   children

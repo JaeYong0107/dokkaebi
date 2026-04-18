@@ -1,4 +1,4 @@
-import { Icon } from "@/components/common/Icon";
+import { Icon } from "@/shared/ui/Icon";
 
 const ORDERS = [
   {

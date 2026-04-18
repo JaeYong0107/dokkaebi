@@ -1,4 +1,4 @@
-import type { RecentOrderItem } from "./types";
+import type { RecentOrderItem } from "@/features/reorder/types";
 
 export const mockRecentOrderItems: RecentOrderItem[] = [
   { productId: "prod-onion-001", quantity: 1 },

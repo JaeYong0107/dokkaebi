@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { buildCartSummary } from "@/features/cart/cart-service";
-import { mockCartItems } from "@/features/cart/mock-data";
-import { sampleProducts } from "@/features/product/mock-data";
+import { mockCartItems } from "@/mocks/cart";
+import { sampleProducts } from "@/mocks/products";
 
 export async function GET() {
   const summary = buildCartSummary({

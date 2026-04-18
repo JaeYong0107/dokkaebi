@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { Icon } from "@/components/common/Icon";
+import { Icon } from "@/shared/ui/Icon";
 import { useCartStore } from "@/store/cart-store";
 
 type AddToCartButtonProps = {

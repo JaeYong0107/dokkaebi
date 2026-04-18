@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Icon } from "@/components/common/Icon";
+import { Icon } from "@/shared/ui/Icon";
 import { useCartStore } from "@/store/cart-store";
 
 type ProductCardActionsProps = {

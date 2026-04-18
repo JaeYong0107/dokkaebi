@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { buildReorderItems } from "@/features/reorder/reorder-service";
-import { mockRecentOrderItems } from "@/features/reorder/mock-data";
-import { sampleProducts } from "@/features/product/mock-data";
+import { mockRecentOrderItems } from "@/mocks/reorder";
+import { sampleProducts } from "@/mocks/products";
 
 export async function POST() {
   const reorderItems = buildReorderItems({

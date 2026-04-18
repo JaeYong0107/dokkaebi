@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
-import { Icon } from "@/components/common/Icon";
 import {
   getOrderById,
   sampleOrders
-} from "@/features/order/mock-data";
+} from "@/mocks/orders";
 import {
   ORDER_STATUS_LABEL,
   ORDER_STATUS_TIMELINE,
   type OrderStatus
 } from "@/features/order/types";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 
 type TrackingPageProps = {
   params: Promise<{

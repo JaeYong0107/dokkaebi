@@ -1,8 +1,8 @@
-import { sampleOrders } from "@/features/order/mock-data";
+import { sampleOrders } from "@/mocks/orders";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
 import type { OrderStatus } from "@/features/order/types";
-import { formatCurrency } from "@/lib/format";
-import { Icon } from "@/components/common/Icon";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 
 const STATUS_FILTERS: Array<{ key: OrderStatus | "ALL"; label: string }> = [
   { key: "ALL", label: "전체" },

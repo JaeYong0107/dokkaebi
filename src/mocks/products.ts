@@ -1,4 +1,4 @@
-import type { Category, Product } from "./types";
+import type { Category, Product } from "@/features/product/types";
 
 export const sampleCategories: Category[] = [
   { id: "veg", name: "야채/채소", icon: "eco" },

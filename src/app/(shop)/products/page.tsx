@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Icon } from "@/components/common/Icon";
 import { ProductCardActions } from "@/components/cart/ProductCardActions";
+import { Icon } from "@/shared/ui/Icon";
 
 const CATEGORIES = [
   { name: "전체보기", count: "1,240", active: true },

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { sampleOrders } from "@/features/order/mock-data";
+import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
 import type { OrderStatus } from "@/features/order/types";
-import { formatCurrency } from "@/lib/format";
-import { Icon } from "@/components/common/Icon";
-import { ProductImage } from "@/components/shell/ProductImage";
+import { sampleOrders } from "@/mocks/orders";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 
 const STATUS_TONE: Record<OrderStatus, string> = {
   PENDING: "bg-surface-container-high text-on-surface-variant",

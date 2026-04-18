@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon } from "@/components/common/Icon";
+import { Icon } from "@/shared/ui/Icon";
 
 export default function LoginPage() {
   return (

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Icon } from "@/components/common/Icon";
-import { ProductImage } from "@/components/shell/ProductImage";
+import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { buildCartSummary } from "@/features/cart/cart-service";
-import { sampleProducts } from "@/features/product/mock-data";
-import { formatCurrency } from "@/lib/format";
+import { sampleProducts } from "@/mocks/products";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 import {
   useCartStore,
   useCartItems,

@@ -11,6 +11,16 @@
 - 디자인 시스템: Material Design 3 토큰 (primary `#004c16`, secondary-container `#fe6b00`)
 - 현재 상태: UI scaffold 100% 완료 (mock 데이터 동작), DB/인증/결제 미연결
 
+## 공용 아키텍처 기준
+
+Codex와 Claude는 프론트엔드 구조 작업 시
+`docs/FRONTEND_ARCHITECTURE.md` 를 공통 기준으로 따른다.
+
+- 페이지 내부 폴더와 상위 `shared / entities / features / widgets / processes`
+  경계는 해당 문서를 우선 기준으로 판단
+- 새 공용 구조를 추가하거나 위치를 옮길 때는 이 문서와 충돌 없게 유지
+- 애매하면 page 내부보다 공용 승격 가능성을 먼저 검토
+
 ## 디렉터리 구조
 
 ```
@@ -33,8 +43,15 @@ service_project/
     components/
       common/{Icon,Logo,SectionTitle}
       shell/{TopAppBar,BottomNav,SiteFooter,ProductCard,ProductImage,PageHeading}
+    shared/                        # 전역 공용 UI/유틸/API/config
+    entities/                      # 도메인 모델 단위
     features/{cart,order,pricing,product,reorder}/  # 도메인 로직 + mock + types
+    widgets/                       # 페이지 조합형 UI 블록
+    processes/                     # 다단계 흐름 조합
+    providers/                     # 전역 provider
+    mocks/                         # mock/fixture
     lib/{config,format,prisma}     # 정책 키, 통화 포맷, prisma 싱글턴
+    store/                         # Zustand 상태 저장소
   tailwind.config.ts               # M3 색 토큰 + 커스텀 폰트 변수
 ```
 

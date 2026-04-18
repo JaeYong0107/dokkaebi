@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Icon } from "@/components/common/Icon";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 
 const HERO_IMAGE =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBMD8lMaQWMvoc_tkSG9OmmV9AK0ZbxlkhmSUOkiz_nWfPt3ed9x_PdDqL9ygAuUuSHrJFynVU6hpFecCUjdWIjcJxnjIyPtaryFDlH3iuftnSTJ0WU9fOgCYjNR_XAZ2-A3n08eT6I5dsYwNV55oc8rKpXS1gphRxLqXRsGhgSAKVxUak5FFQgfOgUTkR1iKmRcmoNnLsEthJ1MZYpj6YHWS8GWmBaW40ISZqdaNQM8vzO6oXA-Dt81VhB0xy7sYqFzLBgEpO6kzc";

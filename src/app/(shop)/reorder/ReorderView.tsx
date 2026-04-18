@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Icon } from "@/components/common/Icon";
-import { ProductImage } from "@/components/shell/ProductImage";
-import { sampleOrders } from "@/features/order/mock-data";
-import { sampleProducts } from "@/features/product/mock-data";
+import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { buildReorderItems } from "@/features/reorder/reorder-service";
-import { formatCurrency } from "@/lib/format";
+import { sampleOrders } from "@/mocks/orders";
+import { sampleProducts } from "@/mocks/products";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
 

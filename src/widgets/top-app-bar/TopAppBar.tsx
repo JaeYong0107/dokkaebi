@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Icon } from "@/components/common/Icon";
-import { Logo } from "@/components/common/Logo";
+import { Icon } from "@/shared/ui/Icon";
+import { Logo } from "@/shared/ui/Logo";
 
 export function TopAppBar() {
   return (

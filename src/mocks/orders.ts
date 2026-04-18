@@ -1,4 +1,4 @@
-import type { OrderRecord } from "./types";
+import type { OrderRecord } from "@/features/order/types";
 
 export const sampleOrders: OrderRecord[] = [
   {

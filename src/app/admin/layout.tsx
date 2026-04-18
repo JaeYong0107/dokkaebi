@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Logo } from "@/components/common/Logo";
-import { Icon } from "@/components/common/Icon";
+import { Logo } from "@/shared/ui/Logo";
+import { Icon } from "@/shared/ui/Icon";
 
 const NAV = [
   { href: "/admin", icon: "dashboard", label: "대시보드" },

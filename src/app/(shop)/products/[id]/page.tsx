@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Icon } from "@/components/common/Icon";
 import { ProductDetailActions } from "@/components/cart/ProductDetailActions";
-import { ProductImage } from "@/components/shell/ProductImage";
+import { ProductImage } from "@/entities/product/ui/ProductImage";
 import {
   getActiveProducts,
   getProductById,
   sampleProducts
-} from "@/features/product/mock-data";
-import { formatCurrency } from "@/lib/format";
+} from "@/mocks/products";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 
 type ProductDetailPageProps = {
   params: Promise<{

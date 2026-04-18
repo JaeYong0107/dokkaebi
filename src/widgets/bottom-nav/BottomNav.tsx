@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { Icon } from "@/components/common/Icon";
+import { Icon } from "@/shared/ui/Icon";
 
 const NAV_ITEMS = [
   { href: "/", label: "홈", icon: "home" },

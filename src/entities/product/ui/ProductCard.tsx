@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Product } from "@/features/product/types";
-import { formatCurrency } from "@/lib/format";
-import { Icon } from "@/components/common/Icon";
+import { formatCurrency } from "@/shared/lib/format";
+import { Icon } from "@/shared/ui/Icon";
 import { ProductImage } from "./ProductImage";
 
 type ProductCardProps = {

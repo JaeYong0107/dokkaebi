@@ -1,4 +1,4 @@
-import type { CartInputItem } from "./types";
+import type { CartInputItem } from "@/features/cart/types";
 
 export const mockCartItems: CartInputItem[] = [
   { productId: "prod-onion-001", quantity: 2 },

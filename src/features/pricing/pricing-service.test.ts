@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sampleProducts } from "@/features/product/mock-data";
+import { sampleProducts } from "@/mocks/products";
 import {
   calculateShippingFee,
   getUnitPrice,

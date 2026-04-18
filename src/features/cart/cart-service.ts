@@ -1,4 +1,4 @@
-import { getPolicyConfig } from "@/lib/config";
+import { getPolicyConfig } from "@/shared/lib/config";
 import type { Product } from "@/features/product/types";
 import {
   calculateShippingFee,
