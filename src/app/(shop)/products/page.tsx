@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
+import { ProductCardActions } from "@/components/cart/ProductCardActions";
 
 const CATEGORIES = [
   { name: "전체보기", count: "1,240", active: true },
@@ -196,8 +197,10 @@ export default function ProductsPage() {
             <article key={product.id} className="group relative">
               <Link
                 href={`/products/${product.id}`}
-                className="relative mb-6 block aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low"
-              >
+                aria-label={`${product.name} 상세 보기`}
+                className="absolute inset-0 z-0 rounded-[2.5rem]"
+              />
+              <div className="relative mb-6 aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.img}
@@ -219,25 +222,22 @@ export default function ProductsPage() {
                     BEST
                   </div>
                 )}
-              </Link>
+              </div>
               {product.fav && (
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute bottom-[8.5rem] right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur"
+                  className="pointer-events-none absolute bottom-[8.5rem] right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur"
                 >
                   <Icon name="favorite" />
                 </span>
               )}
-              <div className="space-y-1 px-2">
+              <div className="relative z-10 space-y-1 px-2">
                 <p className="text-xs font-bold text-stone-400">
                   {product.eyebrow}
                 </p>
-                <Link
-                  href={`/products/${product.id}`}
-                  className="block truncate font-headline text-lg font-bold text-on-surface transition-colors hover:text-primary"
-                >
+                <h3 className="truncate font-headline text-lg font-bold text-on-surface transition-colors group-hover:text-primary">
                   {product.name}
-                </Link>
+                </h3>
                 <div className="mb-3 flex items-center gap-2">
                   <span className="text-sm text-stone-400 line-through">
                     {product.priceOriginal}
@@ -246,20 +246,7 @@ export default function ProductsPage() {
                     {product.priceSale}
                   </span>
                 </div>
-                <div className="flex items-center justify-between gap-3 pt-2">
-                  <div className="flex items-center rounded-full bg-surface-container px-2 py-1">
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-white">
-                      <Icon name="remove" className="text-sm" />
-                    </button>
-                    <span className="w-8 text-center text-sm font-bold">1</span>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-white">
-                      <Icon name="add" className="text-sm" />
-                    </button>
-                  </div>
-                  <button className="flex-1 rounded-full bg-secondary px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-secondary-container active:scale-95">
-                    담기
-                  </button>
-                </div>
+                <ProductCardActions productId={product.id} />
               </div>
             </article>
           ))}

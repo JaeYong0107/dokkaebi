@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { formatCurrency } from "@/lib/format";
 
 const HERO_IMAGE =
@@ -183,12 +184,14 @@ export default function HomePage() {
           {POPULAR_PRODUCTS.map((product) => (
             <article
               key={product.id}
-              className="group rounded-[1.5rem] bg-surface-container-lowest p-4 transition-all hover:shadow-xl hover:shadow-stone-200/50"
+              className="group relative rounded-[1.5rem] bg-surface-container-lowest p-4 transition-all hover:shadow-xl hover:shadow-stone-200/50"
             >
               <Link
                 href={`/products/${product.id}`}
-                className="relative mb-4 block aspect-square overflow-hidden rounded-xl bg-surface-container-low"
-              >
+                aria-label={`${product.name} 상세 보기`}
+                className="absolute inset-0 z-0 rounded-[1.5rem]"
+              />
+              <div className="relative mb-4 aspect-square overflow-hidden rounded-xl bg-surface-container-low">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.img}
@@ -202,16 +205,13 @@ export default function HomePage() {
                     {product.badge.label}
                   </div>
                 )}
-              </Link>
+              </div>
               <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-stone-500">
                 {product.category}
               </p>
-              <Link
-                href={`/products/${product.id}`}
-                className="mb-2 block line-clamp-1 text-sm font-bold text-on-surface transition-colors hover:text-primary"
-              >
+              <h3 className="relative z-10 mb-2 line-clamp-1 text-sm font-bold text-on-surface transition-colors group-hover:text-primary">
                 {product.name}
-              </Link>
+              </h3>
               <div className="mb-3 flex items-center gap-2">
                 <span className="font-headline text-lg font-extrabold tracking-tight text-primary">
                   {formatCurrency(product.price)}
@@ -224,12 +224,10 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
-              <button
-                type="button"
-                className="w-full rounded-full border border-stone-100 py-2.5 text-xs font-bold transition-all hover:bg-stone-50 active:scale-95"
-              >
-                담기
-              </button>
+              <AddToCartButton
+                productId={product.id}
+                className="relative z-10 w-full rounded-full border border-stone-100 py-2.5 text-xs font-bold hover:bg-stone-50"
+              />
             </article>
           ))}
         </div>
