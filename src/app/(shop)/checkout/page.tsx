@@ -1,48 +1,200 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/common/Icon";
+import { ProductImage } from "@/components/shell/ProductImage";
+import { buildCartSummary } from "@/features/cart/cart-service";
+import { sampleProducts } from "@/features/product/mock-data";
+import { formatCurrency } from "@/lib/format";
+import { useCartStore } from "@/store/cart-store";
+import {
+  useCheckoutStore,
+  type PaymentMethod
+} from "@/store/checkout-store";
 
-const ORDER_ITEMS = [
-  {
-    name: "[B2B 특가] 유기농 완토 5kg",
-    sku: "SKU: TOM-882-ORG | 1박스",
-    priceSale: "₩24,900",
-    priceOriginal: "₩32,000",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDXCtmJHRdixc0ohYMwyuHpc99sWq8NSf9p6Um8i0jjMhAP3Yv4Sg3Vh5oQGrNKN0YjHnl2U-exzaJVyqzXMmv2f9V_an2iY5G3UL58DIlg1UZtQSb1M159OZWd-KBOMhWgzhyTN1hwWsjQzNuE0-h-4o147b4-Ll5u5L5OO15ZaSp7cgpEEVZwQTZBsD1kE9ntnR82BEmNgxAwRDcQvILN3PT3P31O-gROHvxmGzSIRE3j9ky1-egT93-tix9Q9dw05IJvqixL4eM",
-    alt: "Organic Tomatoes"
-  },
-  {
-    name: "제주 흙당근 10kg (중상급)",
-    sku: "SKU: CAR-012-JEJU | 1박스",
-    priceSale: "₩18,500",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKePu0-W-WVF-tUi0itq-G1xrzI4eXt4h-gvNHojMljPqH6MlQgR_ek3zabYOAsE4-yrvrLvi0N3_SSV6sZ2QV6jamzo4wvU2TssADWcGakX8l1GntJt9ALNeRlkiQn0sg6IPNFpIzn-EDyaulXdRMv2h64GftZHkKuVX1cbg1iVg98a4QU2eseMV2kjhjV9hs08jkp4W0NfLVyGas-fuelgV8e3EJtVwyLb0kLVsC62n5B7A2t0jIqlupeStDdqkVeTaew2ZgeZQ",
-    alt: "Carrots"
-  }
+const PAYMENT_METHODS: ReadonlyArray<{
+  key: PaymentMethod;
+  label: string;
+  icon: string;
+}> = [
+  { key: "easy", label: "간편결제", icon: "account_balance_wallet" },
+  { key: "card", label: "신용카드", icon: "credit_card" },
+  { key: "transfer", label: "계좌이체", icon: "currency_exchange" },
+  { key: "phone", label: "휴대폰결제", icon: "smartphone" }
 ];
 
-const PAYMENT_METHODS = [
-  { label: "간편결제", icon: "account_balance_wallet", active: true },
-  { label: "신용카드", icon: "credit_card" },
-  { label: "계좌이체", icon: "currency_exchange" },
-  { label: "휴대폰결제", icon: "smartphone" }
-];
+function sourceLabel(source: string) {
+  if (source === "buy-now") return "바로 구매";
+  if (source === "reorder") return "재주문";
+  return "장바구니";
+}
+
+function submitButtonLabel({
+  canSubmit,
+  minimumSatisfied,
+  total
+}: {
+  canSubmit: boolean;
+  minimumSatisfied: boolean;
+  total: number;
+}) {
+  if (canSubmit) return `${formatCurrency(total)} 결제하기`;
+  if (!minimumSatisfied) return "최소 주문 금액 미달";
+  return "필수 동의 후 결제 가능";
+}
+
+const SKU_MAP: Record<string, string> = {
+  "prod-lettuce-001": "DKB-VG-001",
+  "prod-onion-001": "DKB-VG-042",
+  "prod-carrot-001": "DKB-VG-118",
+  "prod-broccoli-001": "DKB-VG-205",
+  "prod-tomato-001": "DKB-VG-307",
+  "prod-watermelon-001": "DKB-FR-415",
+  "prod-lemon-001": "DKB-FR-218",
+  "prod-egg-001": "DKB-DA-090",
+  "prod-pork-001": "DKB-MT-061",
+  "prod-oil-001": "DKB-PD-024",
+  "prod-potato-001": "DKB-VG-512",
+  "prod-cucumber-001": "DKB-VG-622",
+  "prod-garlic-001": "DKB-VG-755",
+  "prod-pineapple-001": "DKB-FR-911"
+};
 
 export default function CheckoutPage() {
-  const [agreedToOrder, setAgreedToOrder] = useState(false);
-  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const canSubmit = agreedToOrder && agreedToPrivacy;
-  const itemCount = ORDER_ITEMS.length;
-  const pricing = useMemo(
-    () => ({
-      subtotal: 43400,
-      shippingFee: 3000,
-      discount: 4000,
-      total: 42400
-    }),
+  const router = useRouter();
+
+  const cartItems = useCartStore((state) => state.items);
+  const cartCustomerType = useCartStore((state) => state.customerType);
+  const clearCart = useCartStore((state) => state.clear);
+
+  const draftItems = useCheckoutStore((state) => state.draftItems);
+  const draftCustomerType = useCheckoutStore((state) => state.customerType);
+  const source = useCheckoutStore((state) => state.source);
+  const paymentMethod = useCheckoutStore((state) => state.paymentMethod);
+  const taxInvoiceRequested = useCheckoutStore(
+    (state) => state.taxInvoiceRequested
+  );
+  const agreedToOrder = useCheckoutStore((state) => state.agreedToOrder);
+  const agreedToPrivacy = useCheckoutStore((state) => state.agreedToPrivacy);
+  const setDraftFromCart = useCheckoutStore((state) => state.setDraftFromCart);
+  const setPaymentMethod = useCheckoutStore((state) => state.setPaymentMethod);
+  const setTaxInvoiceRequested = useCheckoutStore(
+    (state) => state.setTaxInvoiceRequested
+  );
+  const setAgreedToOrder = useCheckoutStore((state) => state.setAgreedToOrder);
+  const setAgreedToPrivacy = useCheckoutStore(
+    (state) => state.setAgreedToPrivacy
+  );
+  const clearCheckout = useCheckoutStore((state) => state.clear);
+
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  // draft 가 비어 있으면 cart 항목을 자동 시드 → /cart "주문하기" → /checkout 동선이 끊기지 않도록
+  useEffect(() => {
+    if (!hydrated) return;
+    if (draftItems.length === 0 && cartItems.length > 0) {
+      setDraftFromCart(cartItems, cartCustomerType);
+    }
+  }, [
+    hydrated,
+    draftItems.length,
+    cartItems,
+    cartCustomerType,
+    setDraftFromCart
+  ]);
+
+  const items = draftItems.length > 0 ? draftItems : cartItems;
+  const customerType =
+    draftItems.length > 0 ? draftCustomerType : cartCustomerType;
+  const effectiveSource = draftItems.length > 0 ? source : "cart";
+
+  const summary = useMemo(
+    () =>
+      buildCartSummary({
+        customerType,
+        items,
+        products: sampleProducts
+      }),
+    [customerType, items]
+  );
+
+  const productById = useMemo(
+    () => Object.fromEntries(sampleProducts.map((p) => [p.id, p])),
     []
   );
+
+  const discount = useMemo(
+    () =>
+      items.reduce((sum, line) => {
+        const product = productById[line.productId];
+        if (!product) return sum;
+        return sum + (product.priceNormal - product.priceBusiness) * line.quantity;
+      }, 0),
+    [items, productById]
+  );
+
+  const canSubmit =
+    agreedToOrder &&
+    agreedToPrivacy &&
+    items.length > 0 &&
+    summary.minimumOrder.isSatisfied;
+
+  const handleSubmit = () => {
+    if (!canSubmit) return;
+    if (effectiveSource === "cart") {
+      clearCart();
+    }
+    clearCheckout();
+    router.push("/orders/complete");
+  };
+
+  if (!hydrated) {
+    return (
+      <main className="mx-auto max-w-screen-2xl px-8 py-12">
+        <header className="mb-12">
+          <h1 className="text-4xl font-extrabold tracking-tighter text-primary">
+            주문/결제
+          </h1>
+        </header>
+        <div className="rounded-xl bg-surface-container-low p-12 text-center text-on-surface-variant">
+          결제 정보를 불러오는 중...
+        </div>
+      </main>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <main className="mx-auto max-w-screen-2xl px-8 py-12">
+        <header className="mb-8">
+          <h1 className="text-4xl font-extrabold tracking-tighter text-primary">
+            주문/결제
+          </h1>
+        </header>
+        <div className="rounded-xl bg-surface-container-low p-16 text-center">
+          <Icon
+            name="shopping_basket"
+            className="mb-4 text-5xl text-on-surface-variant"
+          />
+          <p className="mb-6 text-on-surface-variant">
+            결제할 상품이 없습니다. 장바구니부터 채워주세요.
+          </p>
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white"
+          >
+            상품 둘러보기
+            <Icon name="arrow_forward" className="text-base" />
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto max-w-screen-2xl px-8 py-12">
@@ -96,43 +248,57 @@ export default function CheckoutPage() {
 
           {/* Order Items */}
           <section className="rounded-xl bg-surface-container-low p-8">
-            <h2 className="mb-6 text-2xl font-bold tracking-tight text-on-surface">
-              주문 상품 확인 ({itemCount})
-            </h2>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold tracking-tight text-on-surface">
+                주문 상품 확인 ({summary.items.length})
+              </h2>
+              {effectiveSource && (
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                  {sourceLabel(effectiveSource)}
+                </span>
+              )}
+            </div>
             <div className="space-y-4">
-              {ORDER_ITEMS.map((item) => (
-                <div
-                  key={item.name}
-                  className="group relative flex items-center gap-6 overflow-hidden rounded-xl bg-surface-container-lowest p-4"
-                >
-                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.img}
-                      alt={item.alt}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex flex-1 items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-bold">{item.name}</h3>
-                      <p className="mt-1 text-xs text-on-surface-variant">
-                        {item.sku}
-                      </p>
+              {summary.items.map((line) => {
+                const product = productById[line.productId];
+                if (!product) return null;
+                const sku = SKU_MAP[product.id] ?? product.id;
+                const showOriginal = product.priceNormal > line.unitPrice;
+                return (
+                  <div
+                    key={line.productId}
+                    className="group relative flex items-center gap-6 overflow-hidden rounded-xl bg-surface-container-lowest p-4"
+                  >
+                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-container-low">
+                      <ProductImage
+                        emoji={product.imageEmoji}
+                        bg={product.imageBg}
+                        size="md"
+                      />
                     </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-primary">
-                        {item.priceSale}
+                    <div className="flex flex-1 items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-bold">{product.name}</h3>
+                        <p className="mt-1 text-xs text-on-surface-variant">
+                          SKU: {sku} | {line.quantity}{product.unit.includes("/") ? "" : "개"}
+                        </p>
                       </div>
-                      {item.priceOriginal && (
-                        <div className="text-sm text-on-surface-variant line-through">
-                          {item.priceOriginal}
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-primary">
+                          {formatCurrency(line.lineTotal)}
                         </div>
-                      )}
+                        {showOriginal && (
+                          <div className="text-sm text-on-surface-variant line-through">
+                            {formatCurrency(
+                              product.priceNormal * line.quantity
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 
@@ -142,24 +308,34 @@ export default function CheckoutPage() {
               결제 수단
             </h2>
             <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-              {PAYMENT_METHODS.map((method) => (
-                <button
-                  key={method.label}
-                  className={
-                    method.active
-                      ? "flex flex-col items-center justify-center gap-2 rounded-xl bg-primary p-4 text-on-primary ring-2 ring-primary"
-                      : "flex flex-col items-center justify-center gap-2 rounded-xl bg-surface-container-lowest p-4 text-on-surface-variant transition-colors hover:bg-surface-container-high"
-                  }
-                >
-                  <Icon name={method.icon} />
-                  <span className="text-sm font-bold">{method.label}</span>
-                </button>
-              ))}
+              {PAYMENT_METHODS.map((method) => {
+                const isActive = paymentMethod === method.key;
+                return (
+                  <button
+                    key={method.key}
+                    type="button"
+                    onClick={() => setPaymentMethod(method.key)}
+                    aria-pressed={isActive}
+                    className={
+                      isActive
+                        ? "flex flex-col items-center justify-center gap-2 rounded-xl bg-primary p-4 text-on-primary ring-2 ring-primary"
+                        : "flex flex-col items-center justify-center gap-2 rounded-xl bg-surface-container-lowest p-4 text-on-surface-variant transition-colors hover:bg-surface-container-high"
+                    }
+                  >
+                    <Icon name={method.icon} />
+                    <span className="text-sm font-bold">{method.label}</span>
+                  </button>
+                );
+              })}
             </div>
             <div className="rounded-xl border border-outline-variant/20 bg-surface-container-highest/30 p-6">
               <label className="group flex cursor-pointer items-center gap-3">
                 <input
                   type="checkbox"
+                  checked={taxInvoiceRequested}
+                  onChange={(event) =>
+                    setTaxInvoiceRequested(event.target.checked)
+                  }
                   className="h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary"
                 />
                 <span className="font-bold text-on-surface transition-colors group-hover:text-primary">
@@ -182,20 +358,35 @@ export default function CheckoutPage() {
             <div className="mb-8 space-y-4">
               <div className="flex justify-between text-on-surface-variant">
                 <span>총 상품금액</span>
-                <span className="font-medium">{`₩${pricing.subtotal.toLocaleString("ko-KR")}`}</span>
+                <span className="font-medium">
+                  {formatCurrency(
+                    items.reduce((sum, line) => {
+                      const p = productById[line.productId];
+                      return p ? sum + p.priceNormal * line.quantity : sum;
+                    }, 0)
+                  )}
+                </span>
               </div>
               <div className="flex justify-between text-on-surface-variant">
                 <span>배송비</span>
-                <span className="font-medium">{`₩${pricing.shippingFee.toLocaleString("ko-KR")}`}</span>
+                <span className="font-medium">
+                  {summary.shippingFee === 0
+                    ? "무료"
+                    : formatCurrency(summary.shippingFee)}
+                </span>
               </div>
-              <div className="flex justify-between text-red-600">
-                <span>B2B 회원 할인</span>
-                <span className="font-medium">{`-₩${pricing.discount.toLocaleString("ko-KR")}`}</span>
-              </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-red-600">
+                  <span>사업자 할인</span>
+                  <span className="font-medium">
+                    -{formatCurrency(discount)}
+                  </span>
+                </div>
+              )}
               <div className="flex items-end justify-between border-t border-outline-variant/30 pt-4">
                 <span className="text-lg font-bold">결제 예정 금액</span>
                 <span className="text-3xl font-black tracking-tighter text-secondary-container">
-                  {`₩${pricing.total.toLocaleString("ko-KR")}`}
+                  {formatCurrency(summary.totalAmount)}
                 </span>
               </div>
             </div>
@@ -223,22 +414,22 @@ export default function CheckoutPage() {
                 </span>
               </label>
             </div>
-            {canSubmit ? (
-              <Link
-                href="/orders/complete"
-                className="block w-full rounded-xl bg-secondary-container py-5 text-center text-xl font-black text-on-secondary-container shadow-lg shadow-secondary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
-              >
-                {`₩${pricing.total.toLocaleString("ko-KR")} 결제하기`}
-              </Link>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="block w-full cursor-not-allowed rounded-xl bg-surface-container-high py-5 text-center text-xl font-black text-on-surface-variant"
-              >
-                필수 동의 후 결제 가능
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              className={
+                canSubmit
+                  ? "block w-full rounded-xl bg-secondary-container py-5 text-center text-xl font-black text-on-secondary-container shadow-lg shadow-secondary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
+                  : "block w-full cursor-not-allowed rounded-xl bg-surface-container-high py-5 text-center text-xl font-black text-on-surface-variant"
+              }
+            >
+              {submitButtonLabel({
+                canSubmit,
+                minimumSatisfied: summary.minimumOrder.isSatisfied,
+                total: summary.totalAmount
+              })}
+            </button>
             <div className="mt-6 flex items-center justify-center gap-2 text-on-surface-variant/60">
               <Icon name="shield" className="text-sm" />
               <span className="text-[10px] font-bold uppercase tracking-widest">

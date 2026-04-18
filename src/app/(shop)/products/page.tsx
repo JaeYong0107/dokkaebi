@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
 import { ProductCardActions } from "@/components/cart/ProductCardActions";
-import { ClickableCardOverlay } from "@/components/shell/ClickableCardOverlay";
 
 const CATEGORIES = [
   { name: "전체보기", count: "1,240", active: true },
@@ -196,11 +195,12 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {PRODUCTS.map((product) => (
             <article key={product.id} className="group relative">
-              <ClickableCardOverlay
+              <Link
                 href={`/products/${product.id}`}
-                label={`${product.name} 상세 보기`}
+                aria-label={`${product.name} 상세 보기`}
+                className="absolute inset-0 z-10 rounded-[2.5rem]"
               />
-              <div className="relative z-0 mb-6 aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low">
+              <div className="pointer-events-none relative z-0 mb-6 aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.img}
@@ -231,7 +231,7 @@ export default function ProductsPage() {
                   <Icon name="favorite" />
                 </span>
               )}
-              <div className="relative z-20 space-y-1 px-2">
+              <div className="space-y-1 px-2">
                 <p className="text-xs font-bold text-stone-400">
                   {product.eyebrow}
                 </p>
