@@ -1,21 +1,34 @@
 import Link from "next/link";
 import { sampleOrders } from "@/features/order/mock-data";
 import { sampleProducts } from "@/features/product/mock-data";
-import { mockRecentOrderItems } from "@/features/reorder/mock-data";
 import { buildReorderItems } from "@/features/reorder/reorder-service";
 import { formatCurrency } from "@/lib/format";
 import { Icon } from "@/components/common/Icon";
 import { ProductImage } from "@/components/shell/ProductImage";
 
-export default function ReorderPage() {
+type ReorderPageProps = {
+  searchParams?: Promise<{
+    orderId?: string;
+  }>;
+};
+
+export default async function ReorderPage({ searchParams }: ReorderPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const selectedOrder =
+    sampleOrders.find((order) => order.id === resolvedSearchParams?.orderId) ??
+    sampleOrders[0];
+  const sourceItems = selectedOrder.items.map((item) => ({
+    productId: item.productId,
+    quantity: item.quantity
+  }));
   const reorderItems = buildReorderItems({
-    recentOrderItems: mockRecentOrderItems,
+    recentOrderItems: sourceItems,
     products: sampleProducts
   });
 
-  const discontinuedItems = mockRecentOrderItems.filter((item) => {
+  const discontinuedItems = sourceItems.filter((item) => {
     const product = sampleProducts.find((p) => p.id === item.productId);
-    return product && !product.isActive;
+    return !product || !product.isActive;
   });
 
   const subtotal = reorderItems.reduce((sum, item) => {
@@ -34,6 +47,9 @@ export default function ReorderPage() {
         </h1>
         <p className="mt-2 text-sm text-on-surface-variant">
           최근 주문에서 자주 구매한 식자재를 모아두었습니다. 사업자 가격이 자동 적용됩니다.
+        </p>
+        <p className="mt-2 text-xs font-semibold text-primary">
+          현재 선택한 주문: {selectedOrder.orderNumber}
         </p>
       </header>
 
@@ -61,7 +77,7 @@ export default function ReorderPage() {
                 {formatCurrency(order.total)}
               </p>
               <Link
-                href="#current"
+                href={`/reorder?orderId=${order.id}#current`}
                 className="mt-3 flex items-center justify-center gap-1 rounded-full bg-secondary-container/15 py-2 text-xs font-bold text-secondary-container hover:bg-secondary-container/25"
               >
                 <Icon name="autorenew" className="text-base" />

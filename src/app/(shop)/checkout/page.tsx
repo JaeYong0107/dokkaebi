@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import { Icon } from "@/components/common/Icon";
 
 const ORDER_ITEMS = [
@@ -27,6 +30,20 @@ const PAYMENT_METHODS = [
 ];
 
 export default function CheckoutPage() {
+  const [agreedToOrder, setAgreedToOrder] = useState(false);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const canSubmit = agreedToOrder && agreedToPrivacy;
+  const itemCount = ORDER_ITEMS.length;
+  const pricing = useMemo(
+    () => ({
+      subtotal: 43400,
+      shippingFee: 3000,
+      discount: 4000,
+      total: 42400
+    }),
+    []
+  );
+
   return (
     <main className="mx-auto max-w-screen-2xl px-8 py-12">
       {/* Page Title */}
@@ -80,7 +97,7 @@ export default function CheckoutPage() {
           {/* Order Items */}
           <section className="rounded-xl bg-surface-container-low p-8">
             <h2 className="mb-6 text-2xl font-bold tracking-tight text-on-surface">
-              주문 상품 확인 (3)
+              주문 상품 확인 ({itemCount})
             </h2>
             <div className="space-y-4">
               {ORDER_ITEMS.map((item) => (
@@ -165,20 +182,20 @@ export default function CheckoutPage() {
             <div className="mb-8 space-y-4">
               <div className="flex justify-between text-on-surface-variant">
                 <span>총 상품금액</span>
-                <span className="font-medium">₩43,400</span>
+                <span className="font-medium">{`₩${pricing.subtotal.toLocaleString("ko-KR")}`}</span>
               </div>
               <div className="flex justify-between text-on-surface-variant">
                 <span>배송비</span>
-                <span className="font-medium">₩3,000</span>
+                <span className="font-medium">{`₩${pricing.shippingFee.toLocaleString("ko-KR")}`}</span>
               </div>
               <div className="flex justify-between text-red-600">
                 <span>B2B 회원 할인</span>
-                <span className="font-medium">-₩4,000</span>
+                <span className="font-medium">{`-₩${pricing.discount.toLocaleString("ko-KR")}`}</span>
               </div>
               <div className="flex items-end justify-between border-t border-outline-variant/30 pt-4">
                 <span className="text-lg font-bold">결제 예정 금액</span>
                 <span className="text-3xl font-black tracking-tighter text-secondary-container">
-                  ₩42,400
+                  {`₩${pricing.total.toLocaleString("ko-KR")}`}
                 </span>
               </div>
             </div>
@@ -186,6 +203,8 @@ export default function CheckoutPage() {
               <label className="flex cursor-pointer items-start gap-3">
                 <input
                   type="checkbox"
+                  checked={agreedToOrder}
+                  onChange={(event) => setAgreedToOrder(event.target.checked)}
                   className="mt-1 h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary"
                 />
                 <span className="text-xs leading-tight text-on-surface-variant">
@@ -195,6 +214,8 @@ export default function CheckoutPage() {
               <label className="flex cursor-pointer items-start gap-3">
                 <input
                   type="checkbox"
+                  checked={agreedToPrivacy}
+                  onChange={(event) => setAgreedToPrivacy(event.target.checked)}
                   className="mt-1 h-4 w-4 rounded border-outline-variant text-primary focus:ring-primary"
                 />
                 <span className="text-xs leading-tight text-on-surface-variant">
@@ -202,12 +223,22 @@ export default function CheckoutPage() {
                 </span>
               </label>
             </div>
-            <Link
-              href="/orders/complete"
-              className="block w-full rounded-xl bg-secondary-container py-5 text-center text-xl font-black text-on-secondary-container shadow-lg shadow-secondary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
-            >
-              ₩42,400 결제하기
-            </Link>
+            {canSubmit ? (
+              <Link
+                href="/orders/complete"
+                className="block w-full rounded-xl bg-secondary-container py-5 text-center text-xl font-black text-on-secondary-container shadow-lg shadow-secondary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
+              >
+                {`₩${pricing.total.toLocaleString("ko-KR")} 결제하기`}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="block w-full cursor-not-allowed rounded-xl bg-surface-container-high py-5 text-center text-xl font-black text-on-surface-variant"
+              >
+                필수 동의 후 결제 가능
+              </button>
+            )}
             <div className="mt-6 flex items-center justify-center gap-2 text-on-surface-variant/60">
               <Icon name="shield" className="text-sm" />
               <span className="text-[10px] font-bold uppercase tracking-widest">

@@ -19,18 +19,18 @@ export function SiteFooter() {
         <div>
           <h4 className="mb-4 font-bold">서비스</h4>
           <ul className="space-y-2 text-sm text-stone-500">
-            <li><Link href="#" className="hover:text-primary">이용약관</Link></li>
-            <li><Link href="#" className="font-bold text-stone-700 hover:text-primary">개인정보처리방침</Link></li>
-            <li><Link href="#" className="hover:text-primary">배송안내</Link></li>
-            <li><Link href="#" className="hover:text-primary">고객센터</Link></li>
+            <li><Link href="/signup" className="hover:text-primary">이용약관</Link></li>
+            <li><Link href="/login" className="font-bold text-stone-700 hover:text-primary">개인정보처리방침</Link></li>
+            <li><Link href="/orders" className="hover:text-primary">배송안내</Link></li>
+            <li><Link href="/mypage" className="hover:text-primary">고객센터</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="mb-4 font-bold">비즈니스</h4>
           <ul className="space-y-2 text-sm text-stone-500">
-            <li><Link href="#" className="hover:text-primary">입점문의</Link></li>
-            <li><Link href="#" className="hover:text-primary">광고제휴</Link></li>
-            <li><Link href="#" className="hover:text-primary">대량구매상담</Link></li>
+            <li><Link href="/admin" className="hover:text-primary">입점문의</Link></li>
+            <li><Link href="/products" className="hover:text-primary">광고제휴</Link></li>
+            <li><Link href="/reorder" className="hover:text-primary">대량구매상담</Link></li>
           </ul>
         </div>
       </div>

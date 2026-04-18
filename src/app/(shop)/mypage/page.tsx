@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
 
 const FREQUENTLY_BOUGHT = [
@@ -46,10 +47,10 @@ const QUICK_REORDER = [
 ];
 
 const SIDEBAR_LINKS = [
-  { icon: "favorite", label: "찜한 상품" },
-  { icon: "reviews", label: "상품 후기" },
-  { icon: "location_on", label: "배송지 관리" },
-  { icon: "credit_card", label: "결제 수단" }
+  { icon: "favorite", label: "찜한 상품", href: "/products" },
+  { icon: "reviews", label: "상품 후기", href: "/orders" },
+  { icon: "location_on", label: "배송지 관리", href: "/checkout" },
+  { icon: "credit_card", label: "결제 수단", href: "/checkout" }
 ];
 
 export default function MyPage() {
@@ -276,9 +277,9 @@ export default function MyPage() {
           {/* Vertical Menu */}
           <div className="flex flex-col gap-2 rounded-2xl bg-surface-container p-4">
             {SIDEBAR_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href="#"
+                href={link.href}
                 className="group flex items-center justify-between rounded-xl p-4 transition-all hover:bg-white"
               >
                 <div className="flex items-center gap-3">
@@ -292,7 +293,7 @@ export default function MyPage() {
                   name="chevron_right"
                   className="text-sm text-on-surface-variant"
                 />
-              </a>
+              </Link>
             ))}
           </div>
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
 
 const CATEGORIES = [
@@ -89,8 +90,8 @@ export default function ProductsPage() {
           <ul className="space-y-3">
             {CATEGORIES.map((category) => (
               <li key={category.name}>
-                <a
-                  href="#"
+                <Link
+                  href={`/products?category=${encodeURIComponent(category.name)}`}
                   className={
                     category.active
                       ? "group flex items-center justify-between font-bold text-primary"
@@ -107,7 +108,7 @@ export default function ProductsPage() {
                   >
                     {category.count}
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
