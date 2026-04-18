@@ -1,7 +1,14 @@
 import { Suspense } from "react";
+import type { OrderRecord } from "@/features/order/types";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { ReorderView } from "./ReorderView";
 
-export default function ReorderPage() {
+export default async function ReorderPage() {
+  const origin = await getServerOrigin();
+  const response = await fetch(`${origin}/api/orders`, { cache: "no-store" });
+  const data = (await response.json()) as { items: OrderRecord[] };
+  const orders = data.items;
+
   return (
     <Suspense
       fallback={
@@ -18,7 +25,7 @@ export default function ReorderPage() {
         </main>
       }
     >
-      <ReorderView />
+      <ReorderView orders={orders} />
     </Suspense>
   );
 }

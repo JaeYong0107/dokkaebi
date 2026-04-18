@@ -1,80 +1,55 @@
 import { Icon } from "@/shared/ui/Icon";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 
-const ORDERS = [
-  {
-    id: "#20231102-004",
-    name: "이지민",
-    product: "유기농 햇 고구마 외 2건",
-    price: "₩45,000",
-    status: "배송중",
-    statusTone: "bg-primary-fixed text-on-primary-fixed"
-  },
-  {
-    id: "#20231102-003",
-    name: "박준호",
-    product: "무농약 대추방울토마토",
-    price: "₩12,800",
-    status: "결제완료",
-    statusTone: "bg-surface-container-highest text-on-surface-variant"
-  },
-  {
-    id: "#20231102-002",
-    name: "김서영",
-    product: "프리미엄 꿀사과 5kg",
-    price: "₩32,500",
-    status: "준비중",
-    statusTone: "bg-secondary-fixed text-on-secondary-fixed"
-  },
-  {
-    id: "#20231102-001",
-    name: "최현우",
-    product: "새벽배송 샐러드 팩",
-    price: "₩18,200",
-    status: "배송완료",
-    statusTone: "bg-surface-container-highest text-on-surface-variant"
-  }
-];
+type AdminDashboardResponse = {
+  signupAvatars: string[];
+  newSignupCount: number;
+  salesGrowthRate: number;
+  inquiries: Array<{
+    title: string;
+    body: string;
+    meta: string;
+    tone: string;
+  }>;
+  footer: {
+    title: string;
+    description: string;
+    secondaryActionLabel: string;
+    primaryActionLabel: string;
+  };
+  metrics: {
+    totalSales: number;
+    todayOrderCount: number;
+  };
+  recentOrders: Array<{
+    id: string;
+    name: string;
+    product: string;
+    price: string;
+    status: string;
+    statusTone: string;
+  }>;
+  inventory: Array<{
+    productId: string;
+    name: string;
+    remain: string;
+    imageUrl?: string;
+  }>;
+  inquiryCount: number;
+  lowInventoryCount: number;
+  signupAvatarOverflow: number;
+  floatingActionLabel: string;
+};
 
-const SIGNUP_AVATARS = [
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDBa6Ct7jwVNvUAYr6kgmgth1swdtFB0uEw5VinC_sQttLFZpfhUovPYQCIQ0Y5jmdAqHx7x3eIO-ZJZDl1txAPPJPc-WcxJyhPU70-6lO9fM7OXYxzTe7jk3e01wIhGDsnRSEG-rdFt-Ms3EMv5nuBA2OGk0Lj0nTufhhpuWQ9DORURHhgk5x9ORjPUQMCoSxaTDolGUzA6o61-Mp8HgN_s52WwQ_2p7hq5Sz_J9B8wPG7YolZf_lmj_7Mo3e9x80iNvn7kJrcOkg",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuCrwJuVnYCCRlHLiyCeoyGuXUY769ICdQPbILYdBdeyTy-yp5A8I2HNxjYEyQkUqIaRZ2Z5rl5sgRDXeXTvMmSHwP9M4n2eMXCryyNkPFqif4ABd_1IH02NhJ9WQHT8r7jk0JRhcE4mixu1llHJ8m7pMQ-10JhY2GqWtnVUh1GofFh9mfFnPul1os8p_prNjWMGVvGuRziugc9yTZ5Zmg_jMXFuTIcL8sgQunImxAusmrFBnlMxvlAxmCw6Z6zXQ83V-7kiDxdlN2o",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDy_TWQhculgeqTodzEGnSp-1QU-ExByvEnu99f6gHvK0qsQtJYgcFfuyfOSLRB01R3pCuLl3kNSKdGJRAcxXi49DwUW-lsP5gs0QlOX6F5UCx5fzEy-lENeKsoLdCSjm4dn1w5wUUhEMYDpHhujGGD1cz7xhoiaYoESTZODK6zg1VBcfs5Y-W2p8Q6LNXOws3kcij18xDM8Y_XoxGdmstv73jZMobXKWiU3_fDgRTbrTjMhJwspahZuv8i9KuV8e6-037NM0ZY5Tg"
-];
+export default async function AdminDashboardPage() {
+  const origin = await getServerOrigin();
+  const response = await fetch(`${origin}/api/admin/dashboard`, {
+    cache: "no-store"
+  });
+  const data = (await response.json()) as AdminDashboardResponse;
 
-const INVENTORY = [
-  {
-    name: "제주 고당도 감귤",
-    remain: "잔여: 5박스",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAOU2qeWo2jau70wLLc4hXb7NMvR3g6OF4RXuZkKjBaqBzG5cd2h7qtYyliPBS8DA6G4eEZLbxsGP1Insxgax6NsCkI60ZIwVko2zXLjxlHkTeL1fe7DFZDwOHhWT0DMsRIomgZ-xk1R46drcLDTg9b6h4wBf-rP97l-B2D7VIAzBJZONUhNbQGaHIbQuEC80IM-E_q55B90Yu9LrmxBM3y8JpNgqUWnQ1-5MfVC9-R7tWjD-3zbUrg1WVXgT_fbyGIV3UuEGVl3Yw",
-    alt: "Oranges"
-  },
-  {
-    name: "유기농 어린잎 채소",
-    remain: "잔여: 2kg",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC5hjWMBe3XwWBiMQivRBlmyd3lL8L1o9OVSXfkMEgC1um2HDsLM1mpwXjHN2hpB9aXWV4eZnzmRsuk7b5RMe8ALnIZRp93y2XZHL69R8bZ_amh3d7heUfWdF9nnbhzwdD-3GKStb9Hbd7aGmern72LyPS1WLbRxEcOsSL4qiQNT9D3yf_YktM4MmzBSRPVOzpCO7CeUqBX3tipuA45DXUjQsAaxyqHhKGtivQEdm4z97ceWL2dLnEcSeqJcN_IIz1Jv67yLw7pNZ4",
-    alt: "Spinach"
-  }
-];
-
-const INQUIRIES = [
-  {
-    title: "배송 지연 문의",
-    body: "송장 번호가 조회가 안 돼요. 확인 부탁드려요...",
-    meta: "10분 전 · 정우성",
-    tone: "bg-secondary"
-  },
-  {
-    title: "반품/교환 신청",
-    body: "제품 일부가 파손되어 배송되었습니다...",
-    meta: "2시간 전 · 이미연",
-    tone: "bg-outline-variant"
-  }
-];
-
-export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 p-8">
-      {/* Today's Order Summary Bento Grid */}
       <section className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <div className="relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[2rem] bg-primary p-8 text-on-primary md:col-span-2">
           <div className="relative z-10">
@@ -82,11 +57,11 @@ export default function AdminDashboardPage() {
               오늘의 총 매출액
             </p>
             <h2 className="text-5xl font-black tracking-tighter">
-              ₩12,450,800
+              ₩{data.metrics.totalSales.toLocaleString("ko-KR")}
             </h2>
             <div className="mt-4 flex items-center gap-2">
               <span className="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold text-on-primary-fixed">
-                +12.4%
+                +{data.salesGrowthRate}%
               </span>
               <span className="text-xs text-primary-fixed/60">
                 어제 동시간 대비
@@ -105,7 +80,7 @@ export default function AdminDashboardPage() {
               오늘 주문건수
             </p>
             <h3 className="text-4xl font-black tracking-tighter text-on-surface">
-              142
+              {data.metrics.todayOrderCount}
               <span className="ml-1 text-lg font-medium text-on-surface-variant">
                 건
               </span>
@@ -128,12 +103,13 @@ export default function AdminDashboardPage() {
           <div>
             <p className="mb-1 text-xs font-bold opacity-80">신규 가입자</p>
             <h3 className="text-4xl font-black tracking-tighter">
-              28<span className="ml-1 text-lg font-medium">명</span>
+              {data.newSignupCount}
+              <span className="ml-1 text-lg font-medium">명</span>
             </h3>
           </div>
           <div className="flex -space-x-3 overflow-hidden">
-            {SIGNUP_AVATARS.map((src) => (
-              /* eslint-disable-next-line @next/next/no-img-element */
+            {data.signupAvatars.map((src) => (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 key={src}
                 src={src}
@@ -142,15 +118,13 @@ export default function AdminDashboardPage() {
               />
             ))}
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-on-secondary-container text-[10px] font-bold text-secondary-container ring-2 ring-secondary-container">
-              +15
+              +{data.signupAvatarOverflow}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main Operational Area */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Orders Table */}
         <div className="space-y-6 lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-extrabold text-on-surface">
@@ -182,7 +156,7 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10">
-                {ORDERS.map((order) => (
+                {data.recentOrders.map((order) => (
                   <tr
                     key={order.id}
                     className="group cursor-pointer transition-colors hover:bg-surface-container-highest"
@@ -213,9 +187,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Right Sidebar Widgets */}
         <div className="space-y-8">
-          {/* Inventory Alert */}
           <div className="space-y-4 rounded-[2rem] bg-surface-container-high p-6">
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 font-extrabold text-on-surface">
@@ -223,20 +195,20 @@ export default function AdminDashboardPage() {
                 재고 부족 알림
               </h3>
               <span className="rounded bg-error px-2 py-0.5 text-[10px] font-black text-white">
-                3건
+                {data.lowInventoryCount}건
               </span>
             </div>
             <div className="space-y-3">
-              {INVENTORY.map((item) => (
+              {data.inventory.map((item) => (
                 <div
-                  key={item.name}
+                  key={item.productId}
                   className="flex items-center gap-4 rounded-2xl bg-surface-container-lowest p-4"
                 >
                   <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl bg-surface">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={item.img}
-                      alt={item.alt}
+                      src={item.imageUrl}
+                      alt={item.name}
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -256,7 +228,6 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Customer Inquiries */}
           <div className="space-y-4 rounded-[2rem] border border-outline-variant/30 bg-surface-container p-6">
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 font-extrabold text-on-surface">
@@ -268,20 +239,20 @@ export default function AdminDashboardPage() {
               </button>
             </div>
             <div className="space-y-4">
-              {INQUIRIES.map((inq) => (
-                <div key={inq.title} className="flex gap-4">
+              {data.inquiries.map((inquiry) => (
+                <div key={inquiry.title} className="flex gap-4">
                   <div
-                    className={`mt-1.5 h-2 w-2 flex-shrink-0 rounded-full ${inq.tone}`}
+                    className={`mt-1.5 h-2 w-2 flex-shrink-0 rounded-full ${inquiry.tone}`}
                   />
                   <div className="space-y-1">
                     <p className="text-xs font-bold text-on-surface">
-                      {inq.title}
+                      {inquiry.title}
                     </p>
                     <p className="text-[11px] leading-relaxed text-on-surface-variant">
-                      {inq.body}
+                      {inquiry.body}
                     </p>
                     <p className="text-[10px] font-medium text-outline">
-                      {inq.meta}
+                      {inquiry.meta}
                     </p>
                   </div>
                 </div>
@@ -294,7 +265,6 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Footer Action Bar */}
       <footer className="flex flex-wrap items-center justify-between gap-6 rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-6">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -302,28 +272,27 @@ export default function AdminDashboardPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-on-surface">
-              스마트 자동 발주 시스템
+              {data.footer.title}
             </p>
             <p className="text-xs text-on-surface-variant">
-              현재 데이터 기반 최적의 재고 수준을 유지하고 있습니다.
+              {data.footer.description}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <button className="rounded-xl border-2 border-outline-variant px-6 py-2.5 text-sm font-bold text-on-surface-variant transition-colors hover:bg-surface-container">
-            리포트 다운로드
+            {data.footer.secondaryActionLabel}
           </button>
           <button className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg hover:shadow-primary/30">
-            재고 관리 대장
+            {data.footer.primaryActionLabel}
           </button>
         </div>
       </footer>
 
-      {/* Quick Action FAB */}
       <button className="group fixed bottom-8 right-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary text-on-secondary-container shadow-2xl shadow-secondary/40 transition-transform hover:scale-110">
         <Icon name="add" filled className="text-3xl" />
         <span className="pointer-events-none absolute right-20 whitespace-nowrap rounded-xl bg-inverse-surface px-4 py-2 text-xs font-bold text-inverse-on-surface opacity-0 transition-opacity group-hover:opacity-100">
-          새 주문 등록
+          {data.floatingActionLabel}
         </span>
       </button>
     </div>

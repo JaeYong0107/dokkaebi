@@ -1,75 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { buildCartSummary } from "@/features/cart/cart-service";
-import { sampleProducts } from "@/mocks/products";
+import { getOriginalPrice } from "@/features/pricing/pricing-service";
 import { formatCurrency } from "@/shared/lib/format";
+import { useProductsQuery } from "@/shared/hooks/use-products-query";
 import { Icon } from "@/shared/ui/Icon";
 import {
   useCartStore,
   useCartItems,
   useCartCustomerType
 } from "@/store/cart-store";
-
-const RECOMMENDATIONS = [
-  {
-    region: "경상남도 창녕",
-    name: "깐마늘 1kg (업소용)",
-    productId: "prod-garlic-001",
-    badge: "베스트",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB7WBX3sfkBRLz4iCLsP0AMMc-lfnEZzsRxRR1vCGuqaLEHF5iGfSomSjO_RNjmUycA26zULfRS_J6GULbI2YiIrKbGDDo2YYZRGY_fjmv-Fyr5-OAkwqTCqJIyMwiUllAcugXlH_TfEWWwRJltUD1GAYjj-PEL5YCa_PMTd11azQwhUHqu3Pcxbi5eQ8zpbSeRL9F2h5aohe5oCkGMioynkpUSgM3jny4tlB32QqhBsDOEuC-NOn1T7-AjMDCCHkh0Q_9ZZzVSi9k",
-    alt: "Garlic"
-  },
-  {
-    region: "전라남도 무안",
-    name: "청양고추 2kg (박스)",
-    productId: null,
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCdVnkQb5FHKX2ffnSSguNtaYxHbjY_scwqF0vFSUSzXpL7ayzUb9xoCzkkikc1H3dwn4gAsHfq23DvjNuLG6pZjXemK4Pe4jy4OTYWpET2vXbXDIMKHgvxeIjQ_aeLEjq2Hs7uW6KcHgVbaTCsP5c9NKIXGQpWCrslNAiuL2IQFz-U8RNCYor6dU6rW7LSZDj97B65wBWm6YPVVxD1kqMHjzN32RtQwc9XpqPt700RWF0I-Xuus1UM9Jz2Swvvc6OLNavfwinF8pA",
-    alt: "Chili peppers"
-  },
-  {
-    region: "전라남도 무안",
-    name: "햇양파 (대용량)",
-    productId: "prod-onion-001",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDuAaBVTjQk5GOTtQwedoN1jRZQppb4SL1HuyCOd2BM3lQ6a_MofuKKfitLjsXwbsYOhpeSBZD2P2ydJ6ZsL0gJ7E8sYRellm1gE-DVO6pAk4e2DwAzX7q9IGnvcA7jioZ8wCfgnsYaxSWL5swBnXge6GFKvyeQBv7B8v_CvWYuwV1i6tzdMMxqd3l2SBH67xUIlpLx_gAEOGruuRml17kLHZ35tIFpK5bQ0zaZngSGoSZBefZxjh37q_djnZ28h9E3b7l6Hba8nNY",
-    alt: "Yellow onions"
-  },
-  {
-    region: "강원도 고랭지",
-    name: "양배추 3망 (업소용)",
-    productId: null,
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDWrfRaIBaqdRqhzuuIs6zWly7s_j6LRkOFx0PHvBxLbTC6223iXS3jSPA1u8kEd7IhoGHuhgUlDUL9wGI_XIf6SMCFDqr1HCScUDuwbQicDVRW_YgEm1opv84fta0zS8BwvXEgMr_zJBecvqs9QBYNoxL_xKJuWc8-97z3zC69MBsCLZxMEys1YPP8xUNijr5xR1nSHqnEasQH_ryxA2Z-6tMpETJZ08-9gf-6ul4M6q6-09c6QqowB9tQ_-r6ChML5RMS50wQDg",
-    alt: "Cabbage"
-  }
-];
-
-const SKU_MAP: Record<string, string> = {
-  "prod-lettuce-001": "DKB-VG-001",
-  "prod-onion-001": "DKB-VG-042",
-  "prod-carrot-001": "DKB-VG-118",
-  "prod-broccoli-001": "DKB-VG-205",
-  "prod-tomato-001": "DKB-VG-307",
-  "prod-watermelon-001": "DKB-FR-415",
-  "prod-lemon-001": "DKB-FR-218",
-  "prod-egg-001": "DKB-DA-090",
-  "prod-pork-001": "DKB-MT-061",
-  "prod-oil-001": "DKB-PD-024",
-  "prod-potato-001": "DKB-VG-512",
-  "prod-cucumber-001": "DKB-VG-622",
-  "prod-garlic-001": "DKB-VG-755",
-  "prod-pineapple-001": "DKB-FR-911"
-};
+import { useCheckoutStore } from "@/store/checkout-store";
 
 const MIN_ORDER_BUSINESS = 50000;
 
 export default function CartPage() {
+  const router = useRouter();
   const items = useCartItems();
   const customerType = useCartCustomerType();
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const addItem = useCartStore((state) => state.addItem);
+  const setDraftFromCart = useCheckoutStore((state) => state.setDraftFromCart);
+  const { products, isLoading: productsLoading } = useProductsQuery();
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -77,13 +34,22 @@ export default function CartPage() {
   }, []);
 
   const summary = useMemo(
-    () => buildCartSummary({ customerType, items, products: sampleProducts }),
-    [customerType, items]
+    () => buildCartSummary({ customerType, items, products }),
+    [customerType, items, products]
   );
 
   const productById = useMemo(
-    () => Object.fromEntries(sampleProducts.map((p) => [p.id, p])),
-    []
+    () => Object.fromEntries(products.map((p) => [p.id, p])),
+    [products]
+  );
+  const recommendations = useMemo(
+    () =>
+      products
+        .filter((product) => product.isActive)
+        .filter((product) => !items.some((item) => item.productId === product.id))
+        .sort((a, b) => (a.stockQuantity ?? 999) - (b.stockQuantity ?? 999))
+        .slice(0, 4),
+    [items, products]
   );
 
   const minOrderProgress = Math.min(
@@ -91,6 +57,11 @@ export default function CartPage() {
     Math.round((summary.subtotal / MIN_ORDER_BUSINESS) * 100)
   );
   const remainingToMin = Math.max(0, MIN_ORDER_BUSINESS - summary.subtotal);
+
+  const handleCheckout = () => {
+    setDraftFromCart(items, customerType);
+    router.push("/checkout");
+  };
 
   if (!hydrated) {
     return (
@@ -102,6 +73,21 @@ export default function CartPage() {
         </div>
         <div className="rounded-3xl bg-surface-container-low p-12 text-center text-on-surface-variant">
           장바구니를 불러오는 중...
+        </div>
+      </main>
+    );
+  }
+
+  if (productsLoading) {
+    return (
+      <main className="mx-auto max-w-screen-2xl px-8 pb-24 pt-10">
+        <div className="mb-8 flex items-baseline">
+          <h1 className="mr-4 font-headline text-4xl font-black tracking-tight text-primary">
+            장바구니
+          </h1>
+        </div>
+        <div className="rounded-3xl bg-surface-container-low p-12 text-center text-on-surface-variant">
+          상품 정보를 불러오는 중...
         </div>
       </main>
     );
@@ -141,8 +127,9 @@ export default function CartPage() {
             summary.items.map((line) => {
               const product = productById[line.productId];
               if (!product) return null;
-              const sku = SKU_MAP[product.id] ?? product.id;
-              const showOriginal = product.priceNormal > line.unitPrice;
+              const sku = product.sku ?? product.id;
+              const originalPrice = getOriginalPrice(product);
+              const showOriginal = originalPrice > line.unitPrice;
               return (
                 <article
                   key={line.productId}
@@ -153,6 +140,8 @@ export default function CartPage() {
                     className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-surface-container-low"
                   >
                     <ProductImage
+                      imageUrl={product.imageUrl}
+                      alt={product.name}
                       emoji={product.imageEmoji}
                       bg={product.imageBg}
                       size="md"
@@ -203,7 +192,7 @@ export default function CartPage() {
                         {showOriginal && (
                           <p className="text-sm text-on-surface-variant line-through">
                             {formatCurrency(
-                              product.priceNormal * line.quantity
+                              originalPrice * line.quantity
                             )}
                           </p>
                         )}
@@ -306,8 +295,9 @@ export default function CartPage() {
                 {formatCurrency(summary.totalAmount)}
               </span>
             </div>
-            <Link
-              href="/checkout"
+            <button
+              type="button"
+              onClick={handleCheckout}
               aria-disabled={!summary.minimumOrder.isSatisfied || items.length === 0}
               className={
                 "mb-4 flex w-full items-center justify-center gap-3 rounded-xl py-5 font-headline text-xl font-black transition-all " +
@@ -318,7 +308,7 @@ export default function CartPage() {
             >
               주문하기
               <Icon name="arrow_forward" />
-            </Link>
+            </button>
             <p className="text-center text-[10px] text-on-surface-variant/70">
               법인 결제 및 세금계산서 발행은 결제 단계에서 가능합니다.
             </p>
@@ -356,56 +346,51 @@ export default function CartPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-          {RECOMMENDATIONS.map((rec) => {
-            const productId = rec.productId;
+          {recommendations.map((rec, index) => {
+            const productId = rec.id;
             const wrapperContent = (
               <div className="overflow-hidden rounded-2xl bg-surface-container-low transition-shadow group-hover:shadow-lift">
                 <div className="relative h-48 overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={rec.img}
-                    alt={rec.alt}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  <ProductImage
+                    imageUrl={rec.imageUrl}
+                    alt={rec.name}
+                    emoji={rec.imageEmoji}
+                    bg={rec.imageBg}
+                    size="lg"
                   />
-                  {productId && (
-                    <button
-                      type="button"
-                      aria-label="장바구니에 담기"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        addItem(productId, 1);
-                      }}
-                      className="absolute bottom-2 right-2 rounded-full bg-primary p-2 text-white shadow-lg transition-transform hover:scale-110"
-                    >
-                      <Icon name="add_shopping_cart" />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    aria-label="장바구니에 담기"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      addItem(productId, 1);
+                    }}
+                    className="absolute bottom-2 right-2 rounded-full bg-primary p-2 text-white shadow-lg transition-transform hover:scale-110"
+                  >
+                    <Icon name="add_shopping_cart" />
+                  </button>
                 </div>
                 <div className="p-5">
                   <p className="mb-1 text-[10px] font-bold text-on-surface-variant">
-                    {rec.region}
+                    {rec.origin}
                   </p>
                   <h3 className="mb-3 text-sm font-bold">{rec.name}</h3>
-                  {rec.badge && (
+                  {(rec.badges?.[0] ?? index === 0 ? rec.badges?.[0] ?? "추천" : null) ? (
                     <span className="rounded bg-primary-fixed px-1.5 text-[10px] font-bold text-primary">
-                      {rec.badge}
+                      {rec.badges?.[0] ?? "추천"}
                     </span>
-                  )}
+                  ) : null}
                 </div>
               </div>
             );
-            return productId ? (
+            return (
               <Link
-                key={rec.name}
+                key={rec.id}
                 href={`/products/${productId}`}
                 className="group block"
               >
                 {wrapperContent}
               </Link>
-            ) : (
-              <article key={rec.name} className="group">
-                {wrapperContent}
-              </article>
             );
           })}
         </div>

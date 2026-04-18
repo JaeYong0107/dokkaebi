@@ -2,11 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailActions } from "@/components/cart/ProductDetailActions";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
+import type { Product } from "@/features/product/types";
 import {
-  getActiveProducts,
-  getProductById,
-  sampleProducts
-} from "@/mocks/products";
+  getDiscountRate,
+  getOriginalPrice,
+  getUnitPrice
+} from "@/features/pricing/pricing-service";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -16,58 +18,69 @@ type ProductDetailPageProps = {
   }>;
 };
 
-function buildMetrics(productName: string) {
-  if (productName.includes("레터스")) {
-    return [
-      { label: "수분 함량", value: "95%", percent: 95 },
-      { label: "조직감", value: "우수", percent: 88 },
-      { label: "당도(Brix)", value: "4.2", percent: 45 }
-    ];
-  }
-
-  return [
-    { label: "신선도", value: "상", percent: 90 },
-    { label: "재구매율", value: "87%", percent: 87 },
-    { label: "규격 안정성", value: "우수", percent: 82 }
-  ];
-}
-
-function buildNutrition(productName: string) {
-  if (productName.includes("레터스")) {
-    return [
-      { label: "열량", value: "15 kcal" },
-      { label: "식이섬유", value: "1.5g" },
-      { label: "비타민C", value: "25mg" },
-      { label: "칼슘", value: "32mg" }
-    ];
-  }
-
-  return [
-    { label: "열량", value: "42 kcal" },
-    { label: "탄수화물", value: "9.8g" },
-    { label: "비타민A", value: "18%" },
-    { label: "칼륨", value: "320mg" }
-  ];
-}
+type ProductDetailContentResponse = {
+  seriesLabel: string;
+  businessPriceHint: string;
+  shippingCardLabel: string;
+  shippingLeadLabel: string;
+  shippingLeadHighlight: string;
+  originCardLabel: string;
+  tabs: string[];
+  policySections: Array<{
+    title: string;
+    items: string[];
+  }>;
+  recommendationTitle: string;
+  quickReorderLabel: string;
+  quickReorderDescription: string;
+  quickReorderActionLabel: string;
+  sections: {
+    origin: string;
+    metrics: string;
+    nutrition: string;
+  };
+  metrics: Array<{
+    label: string;
+    value: string;
+    percent: number;
+  }>;
+  nutrition: Array<{
+    label: string;
+    value: string;
+  }>;
+};
 
 export default async function ProductDetailPage({
   params
 }: ProductDetailPageProps) {
   const { id } = await params;
-  const product = getProductById(id);
+  const origin = await getServerOrigin();
+  const [productsResponse, contentResponse] = await Promise.all([
+    fetch(`${origin}/api/products`, {
+      cache: "no-store"
+    }),
+    fetch(`${origin}/api/products/${id}/content`, {
+      cache: "no-store"
+    })
+  ]);
+  const productsData = (await productsResponse.json()) as { items: Product[] };
+  const content = (await contentResponse.json()) as ProductDetailContentResponse;
+  const sampleProducts = productsData.items;
+  const product = sampleProducts.find((candidate) => candidate.id === id) ?? null;
 
   if (!product || !product.isActive) {
     notFound();
   }
 
-  const recommendations = getActiveProducts()
+  const recommendations = sampleProducts
+    .filter((candidate) => candidate.isActive)
     .filter((candidate) => candidate.id !== product.id)
     .slice(0, 3);
-  const businessDiscount = Math.round(
-    ((product.priceNormal - product.priceBusiness) / product.priceNormal) * 100
-  );
-  const metrics = buildMetrics(product.name);
-  const nutrition = buildNutrition(product.name);
+  const originalPrice = getOriginalPrice(product);
+  const normalPrice = getUnitPrice(product, "NORMAL");
+  const businessPrice = getUnitPrice(product, "BUSINESS");
+  const normalDiscount = getDiscountRate(product, "NORMAL");
+  const businessDiscount = getDiscountRate(product, "BUSINESS");
   const quickReorderProducts = sampleProducts
     .filter((candidate) => candidate.isActive)
     .slice(0, 3);
@@ -114,14 +127,14 @@ export default async function ProductDetailPage({
               emoji={product.imageEmoji}
               bg={product.imageBg}
               size="lg"
-              className="h-full min-h-[420px] rounded-[1.5rem]"
+              className="h-[420px] rounded-[1.5rem] lg:h-[640px]"
             />
           </div>
         </div>
 
         <div className="col-span-12 flex flex-col lg:col-span-5">
           <div className="mb-2 text-sm font-bold tracking-widest text-primary">
-            [dokkaebi] 산지직송 시리즈
+            {content.seriesLabel}
           </div>
           <h1 className="mb-6 text-4xl font-black leading-tight text-on-surface">
             {product.name}
@@ -137,9 +150,20 @@ export default async function ProductDetailPage({
                 <span className="mb-1 text-sm text-on-surface-variant">
                   일반 판매가
                 </span>
-                <span className="text-lg text-on-surface-variant line-through">
-                  {formatCurrency(product.priceNormal)}
-                </span>
+                {normalDiscount > 0 ? (
+                  <>
+                    <span className="text-lg text-on-surface-variant line-through">
+                      {formatCurrency(originalPrice)}
+                    </span>
+                    <span className="text-sm font-bold text-on-surface">
+                      일반 회원가 {formatCurrency(normalPrice)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-lg font-bold text-on-surface">
+                    {formatCurrency(normalPrice)}
+                  </span>
+                )}
               </div>
               <div className="flex flex-col items-end">
                 <div className="mb-1 flex items-center gap-2">
@@ -148,26 +172,32 @@ export default async function ProductDetailPage({
                   </span>
                 </div>
                 <span className="text-4xl font-black text-primary">
-                  {formatCurrency(product.priceBusiness)}
+                  {formatCurrency(businessPrice)}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-1 text-sm text-on-surface-variant">
               <Icon name="info" className="text-sm" />
-              로그인 후 사업자 가격과 혜택이 자동 반영됩니다
+              {content.businessPriceHint}
             </div>
           </div>
 
           <div className="mb-8 grid grid-cols-2 gap-4">
             <div className="rounded-xl bg-surface-container p-4">
-              <div className="mb-1 text-xs text-on-surface-variant">배송정보</div>
+              <div className="mb-1 text-xs text-on-surface-variant">
+                {content.shippingCardLabel}
+              </div>
               <div className="text-sm font-bold">
-                오전 10시 전 주문 시 <br />
-                <span className="text-primary">오늘 출발</span>
+                {content.shippingLeadLabel} <br />
+                <span className="text-primary">
+                  {content.shippingLeadHighlight}
+                </span>
               </div>
             </div>
             <div className="rounded-xl bg-surface-container p-4">
-              <div className="mb-1 text-xs text-on-surface-variant">원산지</div>
+              <div className="mb-1 text-xs text-on-surface-variant">
+                {content.originCardLabel}
+              </div>
               <div className="text-sm font-bold">
                 {product.origin}
                 <br />
@@ -188,7 +218,7 @@ export default async function ProductDetailPage({
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm text-white">
                   01
                 </span>
-                산지 직송 정보
+                {content.sections.origin}
               </h2>
               <div className="rounded-[2rem] bg-surface-container-low p-10">
                 <div className="mb-3 text-sm text-on-surface-variant">
@@ -211,11 +241,11 @@ export default async function ProductDetailPage({
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm text-white">
                     02
                   </span>
-                  상품 지표
+                  {content.sections.metrics}
                 </h2>
                 <div className="rounded-[2rem] bg-white p-8 shadow-sm">
                   <div className="space-y-6">
-                    {metrics.map((metric) => (
+                    {content.metrics.map((metric) => (
                       <div
                         key={metric.label}
                         className="flex items-center justify-between"
@@ -241,10 +271,10 @@ export default async function ProductDetailPage({
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm text-white">
                     03
                   </span>
-                  영양 정보 (100g 당)
+                  {content.sections.nutrition}
                 </h2>
                 <div className="grid grid-cols-2 gap-6 rounded-[2rem] bg-surface-container-low p-8">
-                  {nutrition.map((item) => (
+                  {content.nutrition.map((item) => (
                     <div key={item.label} className="text-center">
                       <div className="text-xl font-bold text-primary">
                         {item.value}
@@ -261,44 +291,33 @@ export default async function ProductDetailPage({
 
           <div className="mt-20">
             <div className="mb-8 flex border-b border-surface-container-highest">
-              <button
-                type="button"
-                className="border-b-2 border-primary px-8 py-4 font-bold text-primary"
-              >
-                배송/교환/환불 정보
-              </button>
-              <button
-                type="button"
-                className="px-8 py-4 text-on-surface-variant hover:text-on-surface"
-              >
-                상품 문의
-              </button>
-              <button
-                type="button"
-                className="px-8 py-4 text-on-surface-variant hover:text-on-surface"
-              >
-                구매 리뷰
-              </button>
+              {content.tabs.map((tab, index) => (
+                <button
+                  key={tab}
+                  type="button"
+                  className={
+                    index === 0
+                      ? "border-b-2 border-primary px-8 py-4 font-bold text-primary"
+                      : "px-8 py-4 text-on-surface-variant hover:text-on-surface"
+                  }
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
             <div className="space-y-8 rounded-3xl bg-white p-10 text-on-surface-variant">
-              <div>
-                <h4 className="mb-4 font-bold text-on-surface">배송 안내</h4>
-                <ul className="list-disc space-y-2 pl-5 text-sm">
-                  <li>평일 오전 10시 이전 결제 완료 시 당일 발송이 가능합니다.</li>
-                  <li>신선식품 특성상 도서산간 지역은 배송이 제한될 수 있습니다.</li>
-                  <li>배송 상태는 주문 상세와 배송 조회 화면에서 확인할 수 있습니다.</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="mb-4 font-bold text-on-surface">
-                  교환 및 반품 안내
-                </h4>
-                <ul className="list-disc space-y-2 pl-5 text-sm">
-                  <li>신선식품은 단순 변심에 의한 교환 및 반품이 제한됩니다.</li>
-                  <li>상품 파손 또는 품질 이슈는 수령 직후 고객센터로 접수해 주세요.</li>
-                  <li>문제 확인 시 재발송 또는 환불 정책이 적용됩니다.</li>
-                </ul>
-              </div>
+              {content.policySections.map((section) => (
+                <div key={section.title}>
+                  <h4 className="mb-4 font-bold text-on-surface">
+                    {section.title}
+                  </h4>
+                  <ul className="list-disc space-y-2 pl-5 text-sm">
+                    {section.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -307,7 +326,7 @@ export default async function ProductDetailPage({
           <div className="sticky top-28 space-y-8">
             <div className="rounded-3xl bg-primary/5 p-8">
               <h3 className="mb-6 flex items-center gap-2 text-xl font-bold">
-                함께 사면 좋은 상품
+                {content.recommendationTitle}
                 <Icon name="auto_awesome" className="text-sm text-primary" />
               </h3>
               <div className="space-y-6">
@@ -331,7 +350,7 @@ export default async function ProductDetailPage({
                         {recommendation.name}
                       </div>
                       <div className="font-bold text-primary">
-                        {formatCurrency(recommendation.priceBusiness)}
+                        {formatCurrency(getUnitPrice(recommendation, "BUSINESS"))}
                       </div>
                     </div>
                   </Link>
@@ -345,7 +364,7 @@ export default async function ProductDetailPage({
       <div className="fixed bottom-8 left-1/2 z-40 flex w-[90%] max-w-4xl -translate-x-1/2 items-center justify-between rounded-[2rem] border border-white/20 bg-white/80 px-8 py-4 shadow-[0_-8px_32px_rgba(0,76,22,0.1)] backdrop-blur-xl">
         <div className="flex items-center gap-6">
           <div className="border-r border-surface-container-highest pr-6 text-xs font-black uppercase tracking-tighter text-primary">
-            Quick Reorder
+            {content.quickReorderLabel}
           </div>
           <div className="flex gap-2">
             {quickReorderProducts.map((recentProduct) => (
@@ -364,14 +383,14 @@ export default async function ProductDetailPage({
             ))}
           </div>
           <div className="text-sm font-bold text-on-surface-variant">
-            최근 구매한 상품을 빠르게 담으세요
+            {content.quickReorderDescription}
           </div>
         </div>
         <Link
           href="/reorder"
           className="rounded-full bg-secondary-container px-8 py-3 text-sm font-bold text-on-secondary-container shadow-lg shadow-secondary-container/20 transition-transform hover:scale-105"
         >
-          장바구니 전체 담기
+          {content.quickReorderActionLabel}
         </Link>
       </div>
     </main>

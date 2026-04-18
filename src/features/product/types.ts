@@ -9,22 +9,27 @@ export type ProductCategory =
 
 export type Product = {
   id: string;
+  sku?: string;
   name: string;
   description: string;
   category: ProductCategory;
   unit: string;
-  priceNormal: number;
-  priceBusiness: number;
+  basePrice: number;
+  normalDiscountRate: number;
+  businessDiscountRate: number;
   origin: string;
   imageUrl?: string;
   imageEmoji: string;
   imageBg: string;
   badges?: string[];
   isActive: boolean;
+  stockQuantity?: number;
 };
 
 export type Category = {
   id: string;
   name: string;
   icon: string;
+  productCategories?: ProductCategory[];
+  featured?: boolean;
 };

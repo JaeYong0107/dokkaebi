@@ -12,6 +12,7 @@ type CartState = {
 
 type CartActions = {
   setCustomerType: (type: CustomerType) => void;
+  replaceCart: (items: CartInputItem[], customerType?: CustomerType) => void;
   addItem: (productId: string, quantity?: number) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
@@ -20,11 +21,7 @@ type CartActions = {
 
 const INITIAL_STATE: CartState = {
   customerType: "BUSINESS",
-  items: [
-    { productId: "prod-onion-001", quantity: 2 },
-    { productId: "prod-carrot-001", quantity: 1 },
-    { productId: "prod-broccoli-001", quantity: 1 }
-  ]
+  items: []
 };
 
 export const useCartStore = create<CartState & CartActions>()(
@@ -33,6 +30,12 @@ export const useCartStore = create<CartState & CartActions>()(
       ...INITIAL_STATE,
 
       setCustomerType: (type) => set({ customerType: type }),
+
+      replaceCart: (items, customerType) =>
+        set((state) => ({
+          items,
+          customerType: customerType ?? state.customerType
+        })),
 
       addItem: (productId, quantity = 1) =>
         set((state) => {

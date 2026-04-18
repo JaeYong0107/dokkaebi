@@ -1,8 +1,10 @@
 import Link from "next/link";
+import type { OrderRecord } from "@/features/order/types";
+import type { Product } from "@/features/product/types";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
 import type { OrderStatus } from "@/features/order/types";
-import { sampleOrders } from "@/mocks/orders";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -15,7 +17,17 @@ const STATUS_TONE: Record<OrderStatus, string> = {
   CANCELLED: "bg-error-container/40 text-on-error-container"
 };
 
-export default function OrderHistoryPage() {
+export default async function OrderHistoryPage() {
+  const origin = await getServerOrigin();
+  const [ordersResponse, productsResponse] = await Promise.all([
+    fetch(`${origin}/api/orders`, { cache: "no-store" }),
+    fetch(`${origin}/api/products`, { cache: "no-store" })
+  ]);
+  const ordersData = (await ordersResponse.json()) as { items: OrderRecord[] };
+  const productsData = (await productsResponse.json()) as { items: Product[] };
+  const orders = ordersData.items;
+  const sampleProducts = productsData.items;
+
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-8 md:py-10">
       <header className="mb-6">
@@ -46,7 +58,7 @@ export default function OrderHistoryPage() {
       </div>
 
       <div className="space-y-5">
-        {sampleOrders.map((order) => (
+        {orders.map((order) => (
           <article
             key={order.id}
             className="rounded-3xl bg-surface-container-lowest p-6 shadow-lift"
@@ -72,29 +84,34 @@ export default function OrderHistoryPage() {
             </header>
 
             <div className="space-y-3">
-              {order.items.map((item) => (
-                <div
-                  key={item.productId}
-                  className="flex items-center gap-4"
-                >
-                  <div className="h-16 w-16 flex-none overflow-hidden rounded-xl bg-surface-container-low">
-                    <ProductImage
-                      emoji={item.imageEmoji}
-                      bg={item.imageBg}
-                      size="md"
-                    />
+              {order.items.map((item) => {
+                const product = sampleProducts.find(
+                  (candidate) => candidate.id === item.productId
+                );
+
+                return (
+                  <div key={item.productId} className="flex items-center gap-4">
+                    <div className="h-16 w-16 flex-none overflow-hidden rounded-xl bg-surface-container-low">
+                      <ProductImage
+                        imageUrl={product?.imageUrl}
+                        alt={item.productName}
+                        emoji={item.imageEmoji}
+                        bg={item.imageBg}
+                        size="md"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold">{item.productName}</p>
+                      <p className="text-xs text-on-surface-variant">
+                        수량 {item.quantity} · {formatCurrency(item.unitPrice)}
+                      </p>
+                    </div>
+                    <span className="font-headline font-bold text-on-surface">
+                      {formatCurrency(item.lineTotal)}
+                    </span>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold">{item.productName}</p>
-                    <p className="text-xs text-on-surface-variant">
-                      수량 {item.quantity} · {formatCurrency(item.unitPrice)}
-                    </p>
-                  </div>
-                  <span className="font-headline font-bold text-on-surface">
-                    {formatCurrency(item.lineTotal)}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <footer className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-surface-container pt-4">

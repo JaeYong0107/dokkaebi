@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { Logo } from "@/shared/ui/Logo";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -11,7 +12,26 @@ const NAV = [
   { href: "/admin/policy", icon: "tune", label: "정책 관리" }
 ];
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+type AdminProfileResponse = {
+  adminProfile: {
+    email: string;
+    initial: string;
+    subtitle: string;
+    description: string;
+  };
+};
+
+export default async function AdminLayout({
+  children
+}: {
+  children: ReactNode;
+}) {
+  const origin = await getServerOrigin();
+  const response = await fetch(`${origin}/api/admin/dashboard`, {
+    cache: "no-store"
+  });
+  const data = (await response.json()) as AdminProfileResponse;
+
   return (
     <div className="flex min-h-screen bg-surface-container-low">
       {/* Sidebar */}
@@ -30,9 +50,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <div className="mt-12 rounded-2xl bg-primary/5 p-4">
-          <p className="text-xs font-bold text-primary">dokkaebi 관리자</p>
+          <p className="text-xs font-bold text-primary">
+            {data.adminProfile.subtitle}
+          </p>
           <p className="mt-1 text-xs text-on-surface-variant">
-            운영팀 전용 콘솔입니다.
+            {data.adminProfile.description}
           </p>
         </div>
       </aside>
@@ -53,9 +75,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </button>
             <div className="flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1.5">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                A
+                {data.adminProfile.initial}
               </span>
-              <span className="text-sm font-semibold">admin@dokkaebi</span>
+              <span className="text-sm font-semibold">
+                {data.adminProfile.email}
+              </span>
             </div>
           </div>
         </header>

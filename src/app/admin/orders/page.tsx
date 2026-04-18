@@ -1,6 +1,6 @@
-import { sampleOrders } from "@/mocks/orders";
-import { ORDER_STATUS_LABEL } from "@/features/order/types";
+import { ORDER_STATUS_LABEL, type OrderRecord } from "@/features/order/types";
 import type { OrderStatus } from "@/features/order/types";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -22,7 +22,12 @@ const STATUS_TONE: Record<OrderStatus, string> = {
   CANCELLED: "bg-error-container/40 text-on-error-container"
 };
 
-export default function AdminOrdersPage() {
+export default async function AdminOrdersPage() {
+  const origin = await getServerOrigin();
+  const response = await fetch(`${origin}/api/orders`, { cache: "no-store" });
+  const data = (await response.json()) as { items: OrderRecord[] };
+  const orders = data.items;
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
@@ -95,7 +100,7 @@ export default function AdminOrdersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-container">
-            {sampleOrders.map((order) => (
+            {orders.map((order) => (
               <tr key={order.id} className="hover:bg-surface-container-low">
                 <td className="px-4 py-4">
                   <input
@@ -149,7 +154,7 @@ export default function AdminOrdersPage() {
       {/* Bulk actions */}
       <div className="flex items-center justify-between rounded-3xl bg-surface-container-lowest p-4 shadow-lift">
         <p className="text-sm text-on-surface-variant">
-          <span className="font-bold text-on-surface">{sampleOrders.length}</span>건 표시 중
+          <span className="font-bold text-on-surface">{orders.length}</span>건 표시 중
         </p>
         <div className="flex items-center gap-2">
           <button className="rounded-xl border border-outline-variant bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant hover:border-primary">

@@ -1,10 +1,23 @@
 import type { Product } from "@/features/product/types";
 import type { CustomerType } from "./types";
 
-export function getUnitPrice(product: Product, customerType: CustomerType) {
+export function getOriginalPrice(product: Product) {
+  return product.basePrice;
+}
+
+export function getDiscountRate(product: Product, customerType: CustomerType) {
   return customerType === "BUSINESS"
-    ? product.priceBusiness
-    : product.priceNormal;
+    ? product.businessDiscountRate
+    : product.normalDiscountRate;
+}
+
+export function getUnitPrice(product: Product, customerType: CustomerType) {
+  const discountRate = getDiscountRate(product, customerType);
+  return Math.round(product.basePrice * ((100 - discountRate) / 100));
+}
+
+export function getDiscountAmount(product: Product, customerType: CustomerType) {
+  return getOriginalPrice(product) - getUnitPrice(product, customerType);
 }
 
 export function calculateShippingFee(params: {

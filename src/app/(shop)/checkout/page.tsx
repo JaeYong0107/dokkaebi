@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { buildCartSummary } from "@/features/cart/cart-service";
-import { sampleProducts } from "@/mocks/products";
+import {
+  getDiscountAmount,
+  getOriginalPrice
+} from "@/features/pricing/pricing-service";
 import { formatCurrency } from "@/shared/lib/format";
+import { useProductsQuery } from "@/shared/hooks/use-products-query";
 import { Icon } from "@/shared/ui/Icon";
 import { useCartStore } from "@/store/cart-store";
 import {
@@ -45,23 +49,6 @@ function submitButtonLabel({
   return "필수 동의 후 결제 가능";
 }
 
-const SKU_MAP: Record<string, string> = {
-  "prod-lettuce-001": "DKB-VG-001",
-  "prod-onion-001": "DKB-VG-042",
-  "prod-carrot-001": "DKB-VG-118",
-  "prod-broccoli-001": "DKB-VG-205",
-  "prod-tomato-001": "DKB-VG-307",
-  "prod-watermelon-001": "DKB-FR-415",
-  "prod-lemon-001": "DKB-FR-218",
-  "prod-egg-001": "DKB-DA-090",
-  "prod-pork-001": "DKB-MT-061",
-  "prod-oil-001": "DKB-PD-024",
-  "prod-potato-001": "DKB-VG-512",
-  "prod-cucumber-001": "DKB-VG-622",
-  "prod-garlic-001": "DKB-VG-755",
-  "prod-pineapple-001": "DKB-FR-911"
-};
-
 export default function CheckoutPage() {
   const router = useRouter();
 
@@ -88,23 +75,45 @@ export default function CheckoutPage() {
     (state) => state.setAgreedToPrivacy
   );
   const clearCheckout = useCheckoutStore((state) => state.clear);
+  const { products, isLoading: productsLoading } = useProductsQuery();
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     setHydrated(true);
   }, []);
 
-  // draft 가 비어 있으면 cart 항목을 자동 시드 → /cart "주문하기" → /checkout 동선이 끊기지 않도록
+  function isSameItemSet() {
+    if (draftItems.length !== cartItems.length) {
+      return false;
+    }
+
+    return draftItems.every((draftItem, index) => {
+      const cartItem = cartItems[index];
+      return (
+        cartItem?.productId === draftItem.productId &&
+        cartItem?.quantity === draftItem.quantity
+      );
+    });
+  }
+
+  // cart 진입이면 persisted draft 보다 현재 cart 상태를 우선 반영
   useEffect(() => {
     if (!hydrated) return;
-    if (draftItems.length === 0 && cartItems.length > 0) {
+    const shouldSyncCartDraft =
+      cartItems.length > 0 &&
+      (source === null || source === "cart") &&
+      (!isSameItemSet() || draftCustomerType !== cartCustomerType);
+
+    if (shouldSyncCartDraft) {
       setDraftFromCart(cartItems, cartCustomerType);
     }
   }, [
     hydrated,
-    draftItems.length,
+    draftCustomerType,
+    draftItems,
     cartItems,
     cartCustomerType,
+    source,
     setDraftFromCart
   ]);
 
@@ -118,14 +127,14 @@ export default function CheckoutPage() {
       buildCartSummary({
         customerType,
         items,
-        products: sampleProducts
+        products
       }),
-    [customerType, items]
+    [customerType, items, products]
   );
 
   const productById = useMemo(
-    () => Object.fromEntries(sampleProducts.map((p) => [p.id, p])),
-    []
+    () => Object.fromEntries(products.map((p) => [p.id, p])),
+    [products]
   );
 
   const discount = useMemo(
@@ -133,9 +142,9 @@ export default function CheckoutPage() {
       items.reduce((sum, line) => {
         const product = productById[line.productId];
         if (!product) return sum;
-        return sum + (product.priceNormal - product.priceBusiness) * line.quantity;
+        return sum + getDiscountAmount(product, customerType) * line.quantity;
       }, 0),
-    [items, productById]
+    [customerType, items, productById]
   );
 
   const canSubmit =
@@ -144,13 +153,57 @@ export default function CheckoutPage() {
     items.length > 0 &&
     summary.minimumOrder.isSatisfied;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) return;
+
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerType,
+        customerName: customerType === "BUSINESS" ? "두두 한식당" : "이재용",
+        recipient: customerType === "BUSINESS" ? "이사장" : "이재용",
+        shippingAddress:
+          customerType === "BUSINESS"
+            ? "서울특별시 마포구 양화로 45 두두빌딩 2F"
+            : "서울특별시 송파구 올림픽로 300",
+        items: summary.items.flatMap((line) => {
+          const product = productById[line.productId];
+          if (!product) {
+            return [];
+          }
+
+          return [
+            {
+              productId: product.id,
+              productName: product.name,
+              quantity: line.quantity,
+              unitPrice: line.unitPrice,
+              lineTotal: line.lineTotal,
+              imageEmoji: product.imageEmoji,
+              imageBg: product.imageBg
+            }
+          ];
+        }),
+        subtotal: summary.subtotal,
+        shippingFee: summary.shippingFee,
+        total: summary.totalAmount
+      })
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const createdOrder = (await response.json()) as { id: string };
+
     if (effectiveSource === "cart") {
       clearCart();
     }
     clearCheckout();
-    router.push("/orders/complete");
+    router.push(`/orders/complete?orderId=${createdOrder.id}`);
   };
 
   if (!hydrated) {
@@ -191,6 +244,21 @@ export default function CheckoutPage() {
             상품 둘러보기
             <Icon name="arrow_forward" className="text-base" />
           </Link>
+        </div>
+      </main>
+    );
+  }
+
+  if (productsLoading) {
+    return (
+      <main className="mx-auto max-w-screen-2xl px-8 py-12">
+        <header className="mb-12">
+          <h1 className="text-4xl font-extrabold tracking-tighter text-primary">
+            주문/결제
+          </h1>
+        </header>
+        <div className="rounded-xl bg-surface-container-low p-12 text-center text-on-surface-variant">
+          상품 정보를 불러오는 중...
         </div>
       </main>
     );
@@ -262,8 +330,9 @@ export default function CheckoutPage() {
               {summary.items.map((line) => {
                 const product = productById[line.productId];
                 if (!product) return null;
-                const sku = SKU_MAP[product.id] ?? product.id;
-                const showOriginal = product.priceNormal > line.unitPrice;
+                const sku = product.sku ?? product.id;
+                const originalPrice = getOriginalPrice(product);
+                const showOriginal = originalPrice > line.unitPrice;
                 return (
                   <div
                     key={line.productId}
@@ -271,6 +340,8 @@ export default function CheckoutPage() {
                   >
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-container-low">
                       <ProductImage
+                        imageUrl={product.imageUrl}
+                        alt={product.name}
                         emoji={product.imageEmoji}
                         bg={product.imageBg}
                         size="md"
@@ -290,7 +361,7 @@ export default function CheckoutPage() {
                         {showOriginal && (
                           <div className="text-sm text-on-surface-variant line-through">
                             {formatCurrency(
-                              product.priceNormal * line.quantity
+                              originalPrice * line.quantity
                             )}
                           </div>
                         )}
@@ -362,7 +433,9 @@ export default function CheckoutPage() {
                   {formatCurrency(
                     items.reduce((sum, line) => {
                       const p = productById[line.productId];
-                      return p ? sum + p.priceNormal * line.quantity : sum;
+                      return p
+                        ? sum + getOriginalPrice(p) * line.quantity
+                        : sum;
                     }, 0)
                   )}
                 </span>
@@ -377,7 +450,9 @@ export default function CheckoutPage() {
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-red-600">
-                  <span>사업자 할인</span>
+                  <span>
+                    {customerType === "BUSINESS" ? "사업자 할인" : "회원 할인"}
+                  </span>
                   <span className="font-medium">
                     -{formatCurrency(discount)}
                   </span>

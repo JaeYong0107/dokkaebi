@@ -1,13 +1,11 @@
 import { notFound } from "next/navigation";
-import {
-  getOrderById,
-  sampleOrders
-} from "@/mocks/orders";
+import type { OrderRecord } from "@/features/order/types";
 import {
   ORDER_STATUS_LABEL,
   ORDER_STATUS_TIMELINE,
   type OrderStatus
 } from "@/features/order/types";
+import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -60,11 +58,16 @@ function buildTimeline(orderStatus: OrderStatus) {
 
 export default async function TrackingPage({ params }: TrackingPageProps) {
   const { id } = await params;
-  const order = getOrderById(id);
+  const origin = await getServerOrigin();
+  const response = await fetch(`${origin}/api/orders/${id}`, {
+    cache: "no-store"
+  });
 
-  if (!order) {
+  if (!response.ok) {
     notFound();
   }
+
+  const order = (await response.json()) as OrderRecord;
 
   const timeline = buildTimeline(order.orderStatus);
   const currentStep =

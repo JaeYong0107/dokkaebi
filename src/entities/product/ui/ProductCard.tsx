@@ -1,5 +1,11 @@
 import Link from "next/link";
 import type { Product } from "@/features/product/types";
+import {
+  getDiscountRate,
+  getOriginalPrice,
+  getUnitPrice
+} from "@/features/pricing/pricing-service";
+import type { CustomerType } from "@/features/pricing/types";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 import { ProductImage } from "./ProductImage";
@@ -13,9 +19,10 @@ export function ProductCard({
   product,
   showBusinessPrice = true
 }: ProductCardProps) {
-  const discountRate = Math.round(
-    ((product.priceNormal - product.priceBusiness) / product.priceNormal) * 100
-  );
+  const customerType: CustomerType = showBusinessPrice ? "BUSINESS" : "NORMAL";
+  const discountRate = getDiscountRate(product, customerType);
+  const originalPrice = getOriginalPrice(product);
+  const discountedPrice = getUnitPrice(product, customerType);
 
   return (
     <article className="group flex flex-col rounded-[1.75rem] bg-surface-container-lowest p-4 shadow-lift transition-transform hover:-translate-y-1">
@@ -24,6 +31,8 @@ export function ProductCard({
         className="aspect-square overflow-hidden rounded-[1.25rem] bg-surface-container-low"
       >
         <ProductImage
+          imageUrl={product.imageUrl}
+          alt={product.name}
           emoji={product.imageEmoji}
           bg={product.imageBg}
           size="lg"
@@ -50,21 +59,19 @@ export function ProductCard({
         </Link>
         <p className="mt-1 text-xs text-on-surface-variant">{product.unit}</p>
         <div className="mt-3 flex flex-1 flex-col justify-end gap-1">
-          {showBusinessPrice && discountRate > 0 && (
+          {discountRate > 0 && (
             <div className="flex items-baseline gap-1">
               <span className="rounded bg-secondary-container/20 px-1.5 py-0.5 text-[10px] font-bold text-secondary-container">
-                사업자 {discountRate}%
+                {showBusinessPrice ? "사업자" : "일반"} {discountRate}%
               </span>
               <span className="text-xs text-on-surface-variant line-through">
-                {formatCurrency(product.priceNormal)}
+                {formatCurrency(originalPrice)}
               </span>
             </div>
           )}
           <div className="flex items-baseline justify-between">
             <span className="text-lg font-black text-primary">
-              {formatCurrency(
-                showBusinessPrice ? product.priceBusiness : product.priceNormal
-              )}
+              {formatCurrency(discountedPrice)}
             </span>
             <button
               type="button"

@@ -4,24 +4,29 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
+import { getUnitPrice } from "@/features/pricing/pricing-service";
+import type { OrderRecord } from "@/features/order/types";
 import { buildReorderItems } from "@/features/reorder/reorder-service";
-import { sampleOrders } from "@/mocks/orders";
-import { sampleProducts } from "@/mocks/products";
 import { formatCurrency } from "@/shared/lib/format";
+import { useProductsQuery } from "@/shared/hooks/use-products-query";
 import { Icon } from "@/shared/ui/Icon";
 import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
 
-export function ReorderView() {
+type ReorderViewProps = {
+  orders: OrderRecord[];
+};
+
+export function ReorderView({ orders }: ReorderViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderIdFromQuery = searchParams.get("orderId");
+  const { products, isLoading: productsLoading } = useProductsQuery();
 
   const selectedOrder = useMemo(
     () =>
-      sampleOrders.find((order) => order.id === orderIdFromQuery) ??
-      sampleOrders[0],
-    [orderIdFromQuery]
+      orders.find((order) => order.id === orderIdFromQuery) ?? orders[0],
+    [orderIdFromQuery, orders]
   );
 
   const sourceItems = useMemo(
@@ -37,18 +42,18 @@ export function ReorderView() {
     () =>
       buildReorderItems({
         recentOrderItems: sourceItems,
-        products: sampleProducts
+        products
       }),
-    [sourceItems]
+    [sourceItems, products]
   );
 
   const discontinuedItems = useMemo(
     () =>
       sourceItems.filter((item) => {
-        const product = sampleProducts.find((p) => p.id === item.productId);
+        const product = products.find((p) => p.id === item.productId);
         return !product?.isActive;
       }),
-    [sourceItems]
+    [sourceItems, products]
   );
 
   // 사용자가 자유롭게 수량을 조정할 수 있도록 로컬 상태로 관리
@@ -96,10 +101,12 @@ export function ReorderView() {
   const subtotal = useMemo(
     () =>
       draftEntries.reduce((sum, entry) => {
-        const product = sampleProducts.find((p) => p.id === entry.productId);
-        return product ? sum + product.priceBusiness * entry.quantity : sum;
+        const product = products.find((p) => p.id === entry.productId);
+        return product
+          ? sum + getUnitPrice(product, "BUSINESS") * entry.quantity
+          : sum;
       }, 0),
-    [draftEntries]
+    [draftEntries, products]
   );
 
   const cartCustomerType = useCartStore((state) => state.customerType);
@@ -122,6 +129,24 @@ export function ReorderView() {
 
   const canSubmit = draftEntries.length > 0;
 
+  if (productsLoading) {
+    return (
+      <main className="mx-auto w-full max-w-6xl px-6 py-8 md:py-10">
+        <header className="mb-8">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            fast reorder
+          </p>
+          <h1 className="mt-2 font-headline text-3xl font-black md:text-4xl">
+            한 번의 탭으로 다시 담기
+          </h1>
+        </header>
+        <div className="rounded-3xl bg-surface-container-low p-12 text-center text-on-surface-variant">
+          상품 정보를 불러오는 중...
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-8 md:py-10">
       <header className="mb-8">
@@ -143,7 +168,7 @@ export function ReorderView() {
       <section className="mb-10">
         <h2 className="mb-4 font-headline text-lg font-bold">최근 주문</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {sampleOrders.slice(0, 3).map((order) => {
+          {orders.slice(0, 3).map((order) => {
             const isSelected = order.id === selectedOrder.id;
             return (
               <article
@@ -199,7 +224,7 @@ export function ReorderView() {
           )}
 
           {draftEntries.map((entry) => {
-            const product = sampleProducts.find(
+            const product = products.find(
               (p) => p.id === entry.productId
             );
             if (!product) return null;
@@ -257,7 +282,9 @@ export function ReorderView() {
                       </button>
                     </div>
                     <span className="font-headline font-bold text-primary">
-                      {formatCurrency(product.priceBusiness * entry.quantity)}
+                      {formatCurrency(
+                        getUnitPrice(product, "BUSINESS") * entry.quantity
+                      )}
                     </span>
                   </div>
                 </div>
@@ -273,7 +300,7 @@ export function ReorderView() {
               </h3>
               <ul className="space-y-2 text-sm text-on-surface-variant">
                 {discontinuedItems.map((item) => {
-                  const product = sampleProducts.find(
+                  const product = products.find(
                     (p) => p.id === item.productId
                   );
                   return (

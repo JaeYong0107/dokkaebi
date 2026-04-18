@@ -1,16 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { sampleProducts } from "@/mocks/products";
+import { sampleProducts } from "@/shared/lib/data/products";
 import {
   calculateShippingFee,
+  getDiscountRate,
   getUnitPrice,
   validateMinimumOrder
 } from "./pricing-service";
 
 describe("pricing-service", () => {
-  it("returns a business price for business customers", () => {
+  it("returns a discount-applied business price for business customers", () => {
     const price = getUnitPrice(sampleProducts[0], "BUSINESS");
 
-    expect(price).toBe(sampleProducts[0].priceBusiness);
+    expect(price).toBe(14430);
+  });
+
+  it("returns the configured discount rate by customer type", () => {
+    expect(getDiscountRate(sampleProducts[0], "NORMAL")).toBe(
+      sampleProducts[0].normalDiscountRate
+    );
+    expect(getDiscountRate(sampleProducts[0], "BUSINESS")).toBe(
+      sampleProducts[0].businessDiscountRate
+    );
   });
 
   it("gives business customers free shipping", () => {
