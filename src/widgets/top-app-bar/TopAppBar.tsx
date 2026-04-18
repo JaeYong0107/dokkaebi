@@ -27,12 +27,12 @@ export function TopAppBar() {
           <div className="group relative">
             <Icon
               name="search"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-on-surface-variant/60 transition-colors group-focus-within:text-primary"
             />
             <input
               type="text"
               placeholder="신선한 식재료를 검색해보세요"
-              className="w-full rounded-md border-none bg-surface-variant py-2.5 pl-11 pr-4 text-sm transition-all focus:ring-2 focus:ring-primary/40"
+              className="w-full rounded-2xl border border-outline-variant/60 bg-surface-container-lowest py-3 pl-14 pr-5 text-sm text-on-surface shadow-ambient transition-all placeholder:text-on-surface-variant/55 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10"
             />
           </div>
         </div>
