@@ -12,7 +12,7 @@ const CATEGORIES = [
 
 const PRODUCTS = [
   {
-    id: "lettuce",
+    id: "prod-lettuce-001",
     eyebrow: "무농약 산지직송",
     name: "국내산 청상추 1kg (박스)",
     priceOriginal: "18,500원",
@@ -23,7 +23,7 @@ const PRODUCTS = [
     alt: "Fresh Lettuce"
   },
   {
-    id: "potato",
+    id: "prod-potato-001",
     eyebrow: "강원도 수미감자",
     name: "수미감자 5kg (특)",
     priceOriginal: "24,000원",
@@ -34,7 +34,7 @@ const PRODUCTS = [
     alt: "Fresh Potatoes"
   },
   {
-    id: "onion",
+    id: "prod-onion-001",
     eyebrow: "대용량 식자재",
     name: "국산 양파 15kg (대)",
     priceOriginal: "32,000원",
@@ -44,7 +44,7 @@ const PRODUCTS = [
     alt: "Fresh Onions"
   },
   {
-    id: "carrot",
+    id: "prod-carrot-001",
     eyebrow: "세척 당근",
     name: "제주 흙당근 10kg",
     priceOriginal: "28,000원",
@@ -54,7 +54,7 @@ const PRODUCTS = [
     alt: "Fresh Carrots"
   },
   {
-    id: "cucumber",
+    id: "prod-cucumber-001",
     eyebrow: "선별 오이",
     name: "백오이 50개 (특)",
     priceOriginal: "45,000원",
@@ -64,7 +64,7 @@ const PRODUCTS = [
     alt: "Fresh Cucumbers"
   },
   {
-    id: "garlic",
+    id: "prod-garlic-001",
     eyebrow: "의성 육쪽마늘",
     name: "깐마늘 1kg (대용량)",
     priceOriginal: "15,000원",
@@ -193,8 +193,11 @@ export default function ProductsPage() {
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {PRODUCTS.map((product) => (
-            <article key={product.id} className="group">
-              <div className="relative mb-6 aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low">
+            <article key={product.id} className="group relative">
+              <Link
+                href={`/products/${product.id}`}
+                className="relative mb-6 block aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.img}
@@ -216,19 +219,25 @@ export default function ProductsPage() {
                     BEST
                   </div>
                 )}
-                {product.fav && (
-                  <button className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur transition-transform active:scale-90">
-                    <Icon name="favorite" />
-                  </button>
-                )}
-              </div>
+              </Link>
+              {product.fav && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute bottom-[8.5rem] right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur"
+                >
+                  <Icon name="favorite" />
+                </span>
+              )}
               <div className="space-y-1 px-2">
                 <p className="text-xs font-bold text-stone-400">
                   {product.eyebrow}
                 </p>
-                <h3 className="truncate font-headline text-lg font-bold text-on-surface">
+                <Link
+                  href={`/products/${product.id}`}
+                  className="block truncate font-headline text-lg font-bold text-on-surface transition-colors hover:text-primary"
+                >
                   {product.name}
-                </h3>
+                </Link>
                 <div className="mb-3 flex items-center gap-2">
                   <span className="text-sm text-stone-400 line-through">
                     {product.priceOriginal}

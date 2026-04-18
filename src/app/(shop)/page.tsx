@@ -28,7 +28,7 @@ const QUICK_REORDER = [
 
 const POPULAR_PRODUCTS = [
   {
-    id: "carrot",
+    id: "prod-carrot-001",
     category: "채소/야채",
     name: "신선 특당근 10kg",
     price: 21800,
@@ -37,14 +37,14 @@ const POPULAR_PRODUCTS = [
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAD3_bLeOHLZKpHNQTEHtVEUtK_NXew-E12Wrg7RagVazg9GEXfoSwQEeiHTtQwWH8AP3NAjqMMH_z1mw0MbQqeHTb2RgeeSlHKsyjg-Dsk0ifZJA6j90tRkKDRZ7Wy8ipVb07li_3EYvKwGeJeN8dfWRibcWyA4EEHHIXwJ2F2jBqo_6FkGR_u_djIQWdbvxf34nM2GzuLBbeO75xfcu37Jvqm4u5fAdx2rb_NZ65PGCKS3v0c4fYkf9wMky7Lxf0TOb6J6XSwIOQ"
   },
   {
-    id: "broccoli",
+    id: "prod-broccoli-001",
     category: "채소/야채",
     name: "친환경 브로콜리 2입",
     price: 4900,
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBcwS92TEeDYpNW7eH3OxetSfXLwggPiQV4s2qWGpkngICTP_dTgOQDRy56VZXWztj0eVenRVSuSEik9iPfwCCMmkOcFBUX1H34Yt8YIYYhjLYkvsNgoG8spRcipvCCzAsdj-o5HdHYlZYZnMOUmVkDRQo2MxQP8GUH5j8lPTvVLKjuM9zNqpuJCxr2LgmnyZm7kBwwRhTetK0lpIzRsfruY7jAdw_Leeg49a3tpGnN-GFJZFcFLfGdoQAW_f0qhFV4BZcblvfpLC8"
   },
   {
-    id: "garlic",
+    id: "prod-garlic-001",
     category: "양념/조미료",
     name: "의성 깐마늘 1kg (대)",
     price: 13200,
@@ -52,7 +52,7 @@ const POPULAR_PRODUCTS = [
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDUFgN-BXmNZhidLoJwU8PWDCfXyD1ngT8ULhclbT3MRFQQ_FzOfWrqOo4PJb2kwp4FWJ9PC0LZySTLKATfmh4OcypnfnN3bAVhNm7zcF7_BtnU2IwzHuxS7yk7m8q6YFcS6xcAF-nymECkwtTv7pbpFivtKrr68Mrk-nQefBx6woAeOpgUhf1gql6rSZ-izKAZkxSM_G6pWk8Bcd_tYB2s5rOPnaAxy0icdV_Lyg3qFZQ9Zd-ideMI9DC3iK0eAB02DrRSLQQv8yk"
   },
   {
-    id: "onion",
+    id: "prod-onion-001",
     category: "채소/야채",
     name: "햇양파 5kg (대)",
     price: 9800,
@@ -60,7 +60,7 @@ const POPULAR_PRODUCTS = [
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCnu3bLwfGd0QxqByRy-V4Z4i8d9LkTAfv44mlL1fMssdjbOMYWXd5maDYafm8kNR-cvagHxLGCSCZReQhDCM1HPr-dM-rzFpYJRxI-e17C418wBRxMg3Sdvkke06Z36UA3JfXUmzHOVX9M7K2w4xG1FQsWGu15d4db-_tEFxQlyw2VUMDpd9mIFKwUio1InOglZHrtjdH-EG0y3RtBRvjK0-1bkOmRFONmv0OImmIXx5XWTIZxJUfC_44B1eY-U6pAvxdxu5YH1ZE"
   },
   {
-    id: "pineapple",
+    id: "prod-pineapple-001",
     category: "과일",
     name: "골드파인애플 1수",
     price: 7500,
@@ -185,7 +185,10 @@ export default function HomePage() {
               key={product.id}
               className="group rounded-[1.5rem] bg-surface-container-lowest p-4 transition-all hover:shadow-xl hover:shadow-stone-200/50"
             >
-              <div className="relative mb-4 aspect-square overflow-hidden rounded-xl bg-surface-container-low">
+              <Link
+                href={`/products/${product.id}`}
+                className="relative mb-4 block aspect-square overflow-hidden rounded-xl bg-surface-container-low"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={product.img}
@@ -199,13 +202,16 @@ export default function HomePage() {
                     {product.badge.label}
                   </div>
                 )}
-              </div>
+              </Link>
               <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-stone-500">
                 {product.category}
               </p>
-              <h3 className="mb-2 line-clamp-1 text-sm font-bold text-on-surface">
+              <Link
+                href={`/products/${product.id}`}
+                className="mb-2 block line-clamp-1 text-sm font-bold text-on-surface transition-colors hover:text-primary"
+              >
                 {product.name}
-              </h3>
+              </Link>
               <div className="mb-3 flex items-center gap-2">
                 <span className="font-headline text-lg font-extrabold tracking-tight text-primary">
                   {formatCurrency(product.price)}
