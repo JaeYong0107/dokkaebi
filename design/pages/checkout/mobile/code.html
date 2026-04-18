@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#572000",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#ffdbcc",
+                    "primary": "#004c16",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "surface-container-high": "#e5eae0",
+                    "surface-container-low": "#f1f5eb",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f6fbf1",
+                    "outline": "#707a6d",
+                    "on-secondary-fixed": "#351000",
+                    "on-primary-fixed": "#002106",
+                    "surface-tint": "#176d29",
+                    "on-surface-variant": "#40493e",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffbccb",
+                    "primary-fixed": "#a1f6a1",
+                    "outline-variant": "#bfcaba",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#a04100",
+                    "secondary-container": "#fe6b00",
+                    "background": "#f6fbf1",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#181d17",
+                    "surface-container-highest": "#dfe4da",
+                    "on-surface": "#181d17",
+                    "surface-bright": "#f6fbf1",
+                    "surface-variant": "#dfe4da",
+                    "surface-dim": "#d7dbd2",
+                    "surface-container": "#ebefe6",
+                    "inverse-on-surface": "#eef2e8",
+                    "inverse-primary": "#86d988",
+                    "tertiary": "#771e3d",
+                    "secondary-fixed-dim": "#ffb693",
+                    "tertiary-container": "#953654",
+                    "on-primary-fixed-variant": "#005319",
+                    "on-secondary-fixed-variant": "#7a3000",
+                    "inverse-surface": "#2d322b",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffd9e0",
+                    "primary-container": "#0b6623",
+                    "on-tertiary-fixed-variant": "#7f2543",
+                    "on-tertiary-fixed": "#3f0019",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8de28f",
+                    "primary-fixed-dim": "#86d988"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .glass-panel {
+            background: rgba(246, 251, 241, 0.8);
+            backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar (Simplified for Transactional Flow) -->
+<header class="bg-[#f6fbf1] dark:bg-zinc-950 font-['Manrope'] tracking-tight antialiased docked full-width top-0 z-50 transition-colors duration-200">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#004c16]" style="font-variation-settings: 'FILL' 1;">arrow_back_ios_new</span>
+<span class="text-2xl font-black text-[#004c16] dark:text-green-500 tracking-tighter">dokkaebi</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#40493e]">shopping_cart</span>
+</div>
+</div>
+</header>
+<main class="flex-grow px-4 pt-4 pb-40 max-w-lg mx-auto w-full space-y-4">
+<!-- Progress Header -->
+<div class="mb-6">
+<h1 class="text-2xl font-extrabold text-primary tracking-tight">주문/결제</h1>
+<p class="text-on-surface-variant text-sm mt-1">도깨비의 신선한 상품이 곧 도착합니다.</p>
+</div>
+<!-- Accordion Steps Container -->
+<div class="space-y-4">
+<!-- Step 1: Shipping (Active) -->
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="p-5 flex justify-between items-center bg-surface-container-high">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 flex items-center justify-center bg-primary text-white rounded-full text-xs font-bold">1</span>
+<h2 class="font-bold text-lg text-primary">배송 정보</h2>
+</div>
+<span class="material-symbols-outlined text-primary">keyboard_arrow_up</span>
+</div>
+<div class="p-5 space-y-4">
+<div class="bg-surface-container-low p-4 rounded-xl">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-0.5 rounded-full">기본 배송지</span>
+<button class="text-primary text-xs font-bold border-b border-primary">변경</button>
+</div>
+<p class="font-bold text-on-surface mb-1">서울특별서 서초구 강남대로 123</p>
+<p class="text-sm text-on-surface-variant">에이비씨 빌딩 15층 1502호</p>
+<div class="mt-3 flex items-center gap-2 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">person</span>
+<span>김철수 · 010-1234-5678</span>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-2">배송 요청사항</label>
+<select class="w-full bg-surface-container-highest border-none rounded-lg text-sm focus:ring-2 focus:ring-primary h-12">
+<option>문 앞에 놓아주세요</option>
+<option>경비실에 맡겨주세요</option>
+<option>직접 입력</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Step 2: Order Items (Collapsed) -->
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="p-5 flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-3 opacity-60">
+<span class="w-7 h-7 flex items-center justify-center bg-outline text-white rounded-full text-xs font-bold">2</span>
+<h2 class="font-bold text-lg text-on-surface">상품 확인 (3건)</h2>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">keyboard_arrow_down</span>
+</div>
+<!-- Hidden items but hinting with tonal layering if expanded -->
+<div class="px-5 pb-5 pt-2">
+<div class="flex gap-4 items-center">
+<div class="w-16 h-16 rounded-xl bg-surface-container-high overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" data-alt="Close up of fresh organic green kale leaves with water droplets and vibrant texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyneZ-UfmFtA3eP6zrAIirwsQpPjnDbBblW-uUTtsLPeI88TLRmul5igXL3iIRW9kfes_Qaymdr0qfY-pMNILRnSiJIDcbXTWwaF41041-e5JLQm6UDVW4TWmx5iH_QrPEVvXQmfI7Vd6w9RAPb1HVRVl5aKFEmxCcVtzEN377STdpPhQqMC9Pq4I8hizdj5m_1eQPqMdOlSPtqXoQaaQn7XCtZVxwYQhm-jcnCOkXLIM9J_cYnqHJg7qJxm7NdqZXBzoAlKEFY2Y"/>
+</div>
+<div class="flex-grow">
+<p class="text-sm font-bold text-on-surface line-clamp-1">유기농 초당 옥수수 외 2건</p>
+<p class="text-xs text-on-surface-variant">내일 새벽 7시 전 도착 보장</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 3: Payment Method (Active State) -->
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="p-5 flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 flex items-center justify-center bg-outline text-white rounded-full text-xs font-bold">3</span>
+<h2 class="font-bold text-lg text-on-surface">결제 수단</h2>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">keyboard_arrow_down</span>
+</div>
+<div class="p-5">
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-primary text-white rounded-xl border-2 border-primary transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="text-xs font-bold">도깨비페이</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-surface-container-high text-on-surface-variant rounded-xl border-2 border-transparent transition-all active:scale-95">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="text-xs font-bold">신용/체크카드</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-surface-container-high text-on-surface-variant rounded-xl border-2 border-transparent transition-all active:scale-95">
+<span class="material-symbols-outlined">qr_code_2</span>
+<span class="text-xs font-bold">네이버페이</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-surface-container-high text-on-surface-variant rounded-xl border-2 border-transparent transition-all active:scale-95">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-xs font-bold">무통장입금</span>
+</button>
+</div>
+<div class="mt-6 bg-surface-container-low rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-xl">redeem</span>
+</div>
+<div>
+<p class="text-[10px] text-primary font-bold">가용 포인트</p>
+<p class="text-sm font-extrabold text-on-surface">4,520 P</p>
+</div>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed text-xs font-bold px-3 py-1.5 rounded-full">모두 사용</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Summary Info (Before Sticky Footer) -->
+<div class="pt-6 space-y-3 pb-8">
+<div class="flex justify-between items-center text-on-surface-variant text-sm">
+<span>총 상품금액</span>
+<span class="font-medium">45,800원</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant text-sm">
+<span>배송비</span>
+<span class="font-medium">3,000원</span>
+</div>
+<div class="flex justify-between items-center text-error text-sm">
+<span>포인트 할인</span>
+<span class="font-medium">-4,500원</span>
+</div>
+<div class="h-px bg-surface-container-highest my-2"></div>
+<div class="flex justify-between items-end">
+<span class="font-bold text-on-surface">최종 결제금액</span>
+<span class="text-3xl font-black text-primary tracking-tighter">44,300<span class="text-lg font-bold ml-1">원</span></span>
+</div>
+</div>
+<!-- Safety Notice -->
+<div class="p-4 bg-surface-container rounded-xl flex gap-3 items-start">
+<span class="material-symbols-outlined text-primary text-lg">verified_user</span>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+                도깨비는 고객님의 안전한 결제를 위해 최선을 다하고 있습니다. 
+                모든 결제 정보는 암호화되어 보호되며, 관련 법규를 준수합니다.
+            </p>
+</div>
+</main>
+<!-- Bottom Fixed CTA Section -->
+<div class="fixed bottom-0 left-0 w-full glass-panel z-50 p-5 pb-8 shadow-[0_-8px_32px_rgba(0,76,22,0.06)] border-t border-surface-container-high">
+<div class="max-w-lg mx-auto space-y-4">
+<div class="flex items-center gap-2">
+<input class="rounded text-primary focus:ring-primary bg-surface-container-lowest border-outline-variant" id="terms" type="checkbox"/>
+<label class="text-xs text-on-surface-variant font-medium" for="terms">결제 서비스 이용약관 및 개인정보 제공에 동의합니다.</label>
+</div>
+<button class="w-full h-16 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl shadow-xl shadow-primary/20 flex items-center justify-between px-6 transition-transform active:scale-95">
+<div class="flex flex-col items-start">
+<span class="text-[10px] font-bold text-primary-fixed uppercase tracking-widest">Confirm Payment</span>
+<span class="text-lg font-extrabold tracking-tight">44,300원 결제하기</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold opacity-80">지금 주문</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Quick Floating Top Up Visual (One-handed logic: placed slightly higher than thumb base) -->
+<button class="fixed right-6 bottom-36 w-12 h-12 bg-white text-primary rounded-full shadow-2xl flex items-center justify-center border border-surface-container-high transition-transform active:scale-90">
+<span class="material-symbols-outlined">expand_less</span>
+</button>
+</body></html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#572000",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#ffdbcc",
+                    "primary": "#004c16",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "surface-container-high": "#e5eae0",
+                    "surface-container-low": "#f1f5eb",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f6fbf1",
+                    "outline": "#707a6d",
+                    "on-secondary-fixed": "#351000",
+                    "on-primary-fixed": "#002106",
+                    "surface-tint": "#176d29",
+                    "on-surface-variant": "#40493e",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffbccb",
+                    "primary-fixed": "#a1f6a1",
+                    "outline-variant": "#bfcaba",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#a04100",
+                    "secondary-container": "#fe6b00",
+                    "background": "#f6fbf1",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#181d17",
+                    "surface-container-highest": "#dfe4da",
+                    "on-surface": "#181d17",
+                    "surface-bright": "#f6fbf1",
+                    "surface-variant": "#dfe4da",
+                    "surface-dim": "#d7dbd2",
+                    "surface-container": "#ebefe6",
+                    "inverse-on-surface": "#eef2e8",
+                    "inverse-primary": "#86d988",
+                    "tertiary": "#771e3d",
+                    "secondary-fixed-dim": "#ffb693",
+                    "tertiary-container": "#953654",
+                    "on-primary-fixed-variant": "#005319",
+                    "on-secondary-fixed-variant": "#7a3000",
+                    "inverse-surface": "#2d322b",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffd9e0",
+                    "primary-container": "#0b6623",
+                    "on-tertiary-fixed-variant": "#7f2543",
+                    "on-tertiary-fixed": "#3f0019",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8de28f",
+                    "primary-fixed-dim": "#86d988"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex overflow-hidden">
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex flex-col w-72 bg-surface-container border-r border-outline-variant/10 h-screen sticky top-0 overflow-y-auto">
+<div class="px-8 h-20 flex items-center mb-6">
+<span class="text-2xl font-black text-primary tracking-tighter uppercase">dokkaebi</span>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label">대시보드</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label">주문관리</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label">상품관리</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label">고객관리</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label">통계</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="bg-surface-container-highest rounded-2xl p-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional headshot of a smiling manager with soft lighting and natural background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyKY95U4sNdY6Y8OMqoDLKBDuDDQYo3LU-sN8jcQONBaEHUCTbkuDVYq7-2QKbtGq9Xz_TQVAHSJSatgfwHFyodwATepySUjNRjNfaoR9jdwMt8xV2p5tIJlnARuvMB0gdx1hDQwJ37N15c5UjQC3Q0rO0-GirchcVRQu8gdE_TmJL9G5pFVhknrL1T-4pzv3ItblAzf83PjTb41qy7M7AmIZQ2t886q2jI0DUhaq4upjItCn9zbITdIXtFwRTawSViUHzUy1JmiE"/>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">김관리 마스터</p>
+<p class="text-[10px] text-on-surface-variant">시스템 관리자</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-on-surface-variant">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto relative h-screen">
+<!-- Header -->
+<header class="h-20 bg-surface/80 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-8">
+<h1 class="text-2xl font-extrabold text-primary tracking-tight">대시보드 개요</h1>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-high rounded-full border-none focus:ring-2 focus:ring-primary w-64 text-sm font-label" placeholder="검색..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto space-y-8">
+<!-- Today's Order Summary Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="md:col-span-2 bg-primary rounded-[2rem] p-8 text-on-primary relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+<div class="relative z-10">
+<p class="text-primary-fixed/80 font-bold tracking-widest text-xs uppercase mb-2">오늘의 총 매출액</p>
+<h2 class="text-5xl font-black tracking-tighter">₩12,450,800</h2>
+<div class="mt-4 flex items-center gap-2">
+<span class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full text-xs font-bold">+12.4%</span>
+<span class="text-primary-fixed/60 text-xs">어제 동시간 대비</span>
+</div>
+</div>
+<div class="absolute -right-10 -bottom-10 w-48 h-48 bg-primary-container rounded-full blur-3xl opacity-50"></div>
+<div class="absolute right-8 top-8">
+<span class="material-symbols-outlined text-5xl opacity-30">trending_up</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-[2rem] p-8 flex flex-col justify-between border-b-4 border-primary">
+<div>
+<p class="text-on-surface-variant font-bold text-xs mb-1">오늘 주문건수</p>
+<h3 class="text-4xl font-black text-on-surface tracking-tighter">142<span class="text-lg font-medium ml-1 text-on-surface-variant">건</span></h3>
+</div>
+<div class="flex items-end justify-between">
+<div class="flex gap-1">
+<div class="w-1.5 h-6 bg-primary/20 rounded-full"></div>
+<div class="w-1.5 h-10 bg-primary/40 rounded-full"></div>
+<div class="w-1.5 h-8 bg-primary/60 rounded-full"></div>
+<div class="w-1.5 h-12 bg-primary rounded-full"></div>
+</div>
+<span class="text-[10px] font-bold text-primary">실시간 업데이트</span>
+</div>
+</div>
+<div class="bg-secondary-container rounded-[2rem] p-8 text-on-secondary-container flex flex-col justify-between">
+<div>
+<p class="font-bold text-xs mb-1 opacity-80">신규 가입자</p>
+<h3 class="text-4xl font-black tracking-tighter">28<span class="text-lg font-medium ml-1">명</span></h3>
+</div>
+<div class="flex -space-x-3 overflow-hidden">
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-secondary-container" data-alt="avatar of a smiling man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBa6Ct7jwVNvUAYr6kgmgth1swdtFB0uEw5VinC_sQttLFZpfhUovPYQCIQ0Y5jmdAqHx7x3eIO-ZJZDl1txAPPJPc-WcxJyhPU70-6lO9fM7OXYxzTe7jk3e01wIhGDsnRSEG-rdFt-Ms3EMv5nuBA2OGk0Lj0nTufhhpuWQ9DORURHhgk5x9ORjPUQMCoSxaTDolGUzA6o61-Mp8HgN_s52WwQ_2p7hq5Sz_J9B8wPG7YolZf_lmj_7Mo3e9x80iNvn7kJrcOkg"/>
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-secondary-container" data-alt="avatar of a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrwJuVnYCCRlHLiyCeoyGuXUY769ICdQPbILYdBdeyTy-yp5A8I2HNxjYEyQkUqIaRZ2Z5rl5sgRDXeXTvMmSHwP9M4n2eMXCryyNkPFqif4ABd_1IH02NhJ9WQHT8r7jk0JRhcE4mixu1llHJ8m7pMQ-10JhY2GqWtnVUh1GofFh9mfFnPul1os8p_prNjWMGVvGuRziugc9yTZ5Zmg_jMXFuTIcL8sgQunImxAusmrFBnlMxvlAxmCw6Z6zXQ83V-7kiDxdlN2o"/>
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-secondary-container" data-alt="avatar of a young person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy_TWQhculgeqTodzEGnSp-1QU-ExByvEnu99f6gHvK0qsQtJYgcFfuyfOSLRB01R3pCuLl3kNSKdGJRAcxXi49DwUW-lsP5gs0QlOX6F5UCx5fzEy-lENeKsoLdCSjm4dn1w5wUUhEMYDpHhujGGD1cz7xhoiaYoESTZODK6zg1VBcfs5Y-W2p8Q6LNXOws3kcij18xDM8Y_XoxGdmstv73jZMobXKWiU3_fDgRTbrTjMhJwspahZuv8i9KuV8e6-037NM0ZY5Tg"/>
+<div class="h-8 w-8 rounded-full bg-on-secondary-container text-secondary-container flex items-center justify-center text-[10px] font-bold ring-2 ring-secondary-container">+15</div>
+</div>
+</div>
+</section>
+<!-- Main Operational Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Recent Orders Summary (Left/Main) -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-extrabold text-on-surface">최근 주문 요약</h2>
+<button class="text-primary font-bold text-sm hover:underline">전체보기</button>
+</div>
+<div class="bg-surface-container-low rounded-3xl overflow-hidden">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-outline-variant/10">
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase">주문번호</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase">고객명</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase">상품명</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase">금액</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase text-right">상태</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-medium text-sm text-on-surface">#20231102-004</td>
+<td class="px-6 py-5 text-sm font-semibold">이지민</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">유기농 햇 고구마 외 2건</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">₩45,000</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-primary-fixed text-on-primary-fixed">배송중</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-medium text-sm text-on-surface">#20231102-003</td>
+<td class="px-6 py-5 text-sm font-semibold">박준호</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">무농약 대추방울토마토</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">₩12,800</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-surface-container-highest text-on-surface-variant">결제완료</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-medium text-sm text-on-surface">#20231102-002</td>
+<td class="px-6 py-5 text-sm font-semibold">김서영</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">프리미엄 꿀사과 5kg</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">₩32,500</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-secondary-fixed text-on-secondary-fixed">준비중</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors cursor-pointer group">
+<td class="px-6 py-5 font-medium text-sm text-on-surface">#20231102-001</td>
+<td class="px-6 py-5 text-sm font-semibold">최현우</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">새벽배송 샐러드 팩</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">₩18,200</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-surface-container-highest text-on-surface-variant">배송완료</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Widgets (Right Sidebar Area) -->
+<div class="space-y-8">
+<!-- Inventory Alert Widget -->
+<div class="bg-surface-container-high rounded-[2rem] p-6 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-extrabold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-xl">warning</span>
+                                재고 부족 알림
+                            </h3>
+<span class="bg-error text-white px-2 py-0.5 rounded text-[10px] font-black">3건</span>
+</div>
+<div class="space-y-3">
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4">
+<div class="w-12 h-12 bg-surface rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="vibrant fresh oranges stacked together" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOU2qeWo2jau70wLLc4hXb7NMvR3g6OF4RXuZkKjBaqBzG5cd2h7qtYyliPBS8DA6G4eEZLbxsGP1Insxgax6NsCkI60ZIwVko2zXLjxlHkTeL1fe7DFZDwOHhWT0DMsRIomgZ-xk1R46drcLDTg9b6h4wBf-rP97l-B2D7VIAzBJZONUhNbQGaHIbQuEC80IM-E_q55B90Yu9LrmxBM3y8JpNgqUWnQ1-5MfVC9-R7tWjD-3zbUrg1WVXgT_fbyGIV3UuEGVl3Yw"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-on-surface">제주 고당도 감귤</p>
+<p class="text-[10px] text-error font-medium">잔여: 5박스</p>
+</div>
+<button class="text-primary material-symbols-outlined hover:bg-primary/10 rounded-full p-1">add_box</button>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 opacity-80">
+<div class="w-12 h-12 bg-surface rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="fresh green baby spinach leaves close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5hjWMBe3XwWBiMQivRBlmyd3lL8L1o9OVSXfkMEgC1um2HDsLM1mpwXjHN2hpB9aXWV4eZnzmRsuk7b5RMe8ALnIZRp93y2XZHL69R8bZ_amh3d7heUfWdF9nnbhzwdD-3GKStb9Hbd7aGmern72LyPS1WLbRxEcOsSL4qiQNT9D3yf_YktM4MmzBSRPVOzpCO7CeUqBX3tipuA45DXUjQsAaxyqHhKGtivQEdm4z97ceWL2dLnEcSeqJcN_IIz1Jv67yLw7pNZ4"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-on-surface">유기농 어린잎 채소</p>
+<p class="text-[10px] text-error font-medium">잔여: 2kg</p>
+</div>
+<button class="text-primary material-symbols-outlined hover:bg-primary/10 rounded-full p-1">add_box</button>
+</div>
+</div>
+</div>
+<!-- Customer Inquiries Widget -->
+<div class="bg-surface-container rounded-[2rem] p-6 space-y-4 border border-outline-variant/30">
+<div class="flex items-center justify-between">
+<h3 class="font-extrabold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">forum</span>
+                                고객 문의 현황
+                            </h3>
+<button class="text-[11px] font-bold text-on-surface-variant">모두보기</button>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="w-2 h-2 rounded-full bg-secondary mt-1.5 flex-shrink-0"></div>
+<div class="space-y-1">
+<p class="text-xs font-bold text-on-surface">배송 지연 문의</p>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">송장 번호가 조회가 안 돼요. 확인 부탁드려요...</p>
+<p class="text-[10px] text-outline font-medium">10분 전 · 정우성</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-2 h-2 rounded-full bg-outline-variant mt-1.5 flex-shrink-0"></div>
+<div class="space-y-1">
+<p class="text-xs font-bold text-on-surface">반품/교환 신청</p>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">제품 일부가 파손되어 배송되었습니다...</p>
+<p class="text-[10px] text-outline font-medium">2시간 전 · 이미연</p>
+</div>
+</div>
+</div>
+<button class="w-full py-3 bg-on-surface text-surface text-xs font-bold rounded-xl hover:opacity-90 transition-opacity">
+                            문의 응대 시작하기
+                        </button>
+</div>
+</div>
+</div>
+<!-- Footer-style Action Bar -->
+<footer class="bg-surface-container-lowest rounded-3xl p-6 flex flex-wrap items-center justify-between gap-6 border border-outline-variant/20">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">스마트 자동 발주 시스템</p>
+<p class="text-xs text-on-surface-variant">현재 데이터 기반 최적의 재고 수준을 유지하고 있습니다.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2.5 rounded-xl border-2 border-outline-variant text-on-surface-variant text-sm font-bold hover:bg-surface-container transition-colors">리포트 다운로드</button>
+<button class="px-6 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:shadow-lg hover:shadow-primary/30 transition-all">재고 관리 대장</button>
+</div>
+</footer>
+</div>
+</main>
+<!-- Quick Action FAB (Optional Contextual Rendering) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-secondary text-on-secondary-container rounded-2xl shadow-2xl shadow-secondary/40 flex items-center justify-center group hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl font-variation-settings-'FILL' 1">add</span>
+<span class="absolute right-20 bg-inverse-surface text-inverse-on-surface px-4 py-2 rounded-xl text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">새 주문 등록</span>
+</button>
+</body></html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>주문 완료 | dokkaebi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#572000",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffdbcc",
+                        "primary": "#004c16",
+                        "tertiary-fixed-dim": "#ffb1c3",
+                        "surface-container-high": "#e5eae0",
+                        "surface-container-low": "#f1f5eb",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f6fbf1",
+                        "outline": "#707a6d",
+                        "on-secondary-fixed": "#351000",
+                        "on-primary-fixed": "#002106",
+                        "surface-tint": "#176d29",
+                        "on-surface-variant": "#40493e",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffbccb",
+                        "primary-fixed": "#a1f6a1",
+                        "outline-variant": "#bfcaba",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#a04100",
+                        "secondary-container": "#fe6b00",
+                        "background": "#f6fbf1",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#181d17",
+                        "surface-container-highest": "#dfe4da",
+                        "on-surface": "#181d17",
+                        "surface-bright": "#f6fbf1",
+                        "surface-variant": "#dfe4da",
+                        "surface-dim": "#d7dbd2",
+                        "surface-container": "#ebefe6",
+                        "inverse-on-surface": "#eef2e8",
+                        "inverse-primary": "#86d988",
+                        "tertiary": "#771e3d",
+                        "secondary-fixed-dim": "#ffb693",
+                        "tertiary-container": "#953654",
+                        "on-primary-fixed-variant": "#005319",
+                        "on-secondary-fixed-variant": "#7a3000",
+                        "inverse-surface": "#2d322b",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffd9e0",
+                        "primary-container": "#0b6623",
+                        "on-tertiary-fixed-variant": "#7f2543",
+                        "on-tertiary-fixed": "#3f0019",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8de28f",
+                        "primary-fixed-dim": "#86d988"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar (Transactional Suppressed Version) -->
+<header class="bg-[#f6fbf1] font-['Manrope'] tracking-tight antialiased docked full-width top-0 z-50 flat no-shadows">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black text-[#004c16] tracking-tighter">dokkaebi</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-[#eef5e9] p-2 rounded-full transition-colors" data-icon="shopping_cart">shopping_cart</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-[#eef5e9] p-2 rounded-full transition-colors" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center justify-start pt-12 pb-24 px-4 max-w-4xl mx-auto w-full">
+<!-- Success Confirmation Section -->
+<div class="text-center mb-12">
+<div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary mb-6 shadow-xl">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="text-4xl font-extrabold text-primary font-headline tracking-tight mb-3">주문이 완료되었습니다</h1>
+<p class="text-on-surface-variant text-lg">도깨비와 함께 신선한 하루를 준비해 주셔서 감사합니다.</p>
+</div>
+<!-- Order Info Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
+<!-- Left: Logistics Card -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<h2 class="text-on-surface-variant font-label text-sm font-bold uppercase tracking-widest mb-6">배송 안내</h2>
+<div class="flex items-start gap-4 mb-4">
+<span class="material-symbols-outlined text-primary bg-surface-container-low p-2 rounded-lg" data-icon="local_shipping">local_shipping</span>
+<div>
+<p class="text-sm text-on-surface-variant">배송 예정일</p>
+<p class="text-xl font-bold text-on-surface">내일 오전 7시 전 도착 예정</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-surface-container-low">
+<p class="text-xs text-on-surface-variant mb-2">주문 번호</p>
+<p class="text-base font-mono font-bold tracking-wider">DKB-20231027-8892</p>
+</div>
+</div>
+<!-- Right: Messaging Card -->
+<div class="bg-primary-container p-8 rounded-xl flex flex-col justify-center relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-on-primary-container text-3xl" data-icon="chat_bubble">chat_bubble</span>
+<h2 class="text-on-primary-container font-headline font-bold text-xl">카카오톡 알림톡</h2>
+</div>
+<p class="text-on-primary-container leading-relaxed">
+                        카카오톡으로 주문 내역과 상세 영수증이 발송되었습니다.<br/>
+                        배송이 시작되면 다시 한번 안내해 드릴게요.
+                    </p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-9xl" data-icon="mark_chat_unread">mark_chat_unread</span>
+</div>
+</div>
+</div>
+<!-- Order Summary Section -->
+<div class="w-full bg-surface-container-low rounded-xl p-8 mb-12">
+<h3 class="font-headline font-bold text-xl text-on-surface mb-6">주문 상품 요약</h3>
+<div class="space-y-4">
+<!-- Product Row 1 -->
+<div class="flex items-center gap-6 bg-surface-container-lowest p-4 rounded-xl">
+<div class="w-20 h-20 rounded-lg overflow-hidden bg-surface-variant flex-shrink-0">
+<img alt="Organic Kale" class="w-full h-full object-cover" data-alt="vibrant organic green kale leaves bunch on a minimalist clean white background studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdLlemMHxI-70aeV0LT22N8UjgZtnx3ghubOBnWdc0MZcP9xaeYuyL3TUXLEh7_muirjHzJYi0ydIiWtljsYPFIhLv8I15Zo4EvXN0epp_XiWVqqzDjjAKVnJFrLNAdDzxDf1hqROdhoH3C72zeBRBtRVrtuPDufSrq56NRGxVmmBQzTxGCJlgOxK_GKkM4Fg0pUJMO37UubJID10LgR4dLeQSvDg22ve1zelBiqeS5MUXavGxAUrqrzv7vFSKVI5C7VdUlK2256o"/>
+</div>
+<div class="flex-grow">
+<p class="text-xs text-on-surface-variant font-medium mb-1">프리미엄 채소</p>
+<h4 class="font-bold text-on-surface">[도깨비 직송] 무농약 유기농 케일 300g</h4>
+<p class="text-sm text-on-surface-variant mt-1">1개 / 3,400원</p>
+</div>
+</div>
+<!-- Product Row 2 -->
+<div class="flex items-center gap-6 bg-surface-container-lowest p-4 rounded-xl">
+<div class="w-20 h-20 rounded-lg overflow-hidden bg-surface-variant flex-shrink-0">
+<img alt="Premium Beef" class="w-full h-full object-cover" data-alt="close-up of fresh marbled raw beef steak with a sprig of rosemary on a dark slate background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk2Q_MOFJzqXKlQY4LKPm0dqME48tvWmjGD4878iqo-sr2aiXCkgkvncy1-BHnhWOH7JYecQmhbViW3H_fXHTuE2au6FY4Pdh1e5w5iN0iZKW-WaIpMX663ASzkEwCfU8S39A92Kxh7VjDZcE7CA3X25Y9HWzw9q-VIOkhH3s_5lWGdVC6WR65YyxU86NkYmJi0zWEwg4gkQbS1IRfjuRdhne7gBJzzxBeoYVdk5cVyLl3YpRlb-DhK_daOqPnipNQaqaCHxAVwWE"/>
+</div>
+<div class="flex-grow">
+<p class="text-xs text-on-surface-variant font-medium mb-1">고기 · 정육</p>
+<h4 class="font-bold text-on-surface">1등급 한우 채끝등심 구이용 200g</h4>
+<p class="text-sm text-on-surface-variant mt-1">2개 / 58,000원</p>
+</div>
+</div>
+</div>
+<!-- Total Pricing -->
+<div class="mt-8 pt-6 border-t border-outline-variant/30 flex justify-between items-end">
+<span class="text-on-surface-variant">최종 결제 금액</span>
+<div class="text-right">
+<span class="text-sm text-on-surface-variant mr-2">총 2개 품목</span>
+<span class="text-3xl font-black text-primary">61,400원</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+<button class="px-12 py-4 bg-surface-container-highest text-on-surface font-bold rounded-md hover:bg-surface-variant transition-all active:scale-95 flex items-center justify-center gap-2">
+                주문 내역 보기
+            </button>
+<button class="px-12 py-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-md shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2">
+                쇼핑 계속하기
+                <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Floating Reorder Bar (Brand Identity Signature) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-surface-bright/80 backdrop-blur-2xl px-6 py-3 rounded-full shadow-2xl flex items-center gap-4 z-40 border border-white/20">
+<span class="text-xs font-bold text-primary uppercase tracking-tighter">최근 구매 품목 재주문</span>
+<div class="flex -space-x-2">
+<img alt="Carrot" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="macro close-up of vibrant orange fresh carrots with earthy texture and green tops" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPulowX3TCw2NmScRts62LkFZ1EHzmfNwYFlfpb_51ZnUvFPIl7FwaJZjzEqAlbOG6rXsYVEa3fj6hKTGzH1sh_KDAjH9ZQZj4g-BcMFm1fS9ysGvufTAT9g50qv8EdP0jVSvCMzUl_2D07Av2f5RpCEwuV_fwkfDJGYkrD237SBG2IcRfnATWwEwfSbUJfnKVEMtG9k3bZogGYHtejLZvcLyBPAj98j2oCteyE81caKqpJ94RkJrCvPCjyQXm3pFInPP-bpgZ1UQ"/>
+<img alt="Milk" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="glass bottle of fresh milk with condensation on surface on a light green background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjl-zorzFDA408GjiGMyKeL0_tr-emW07dJAJbNeh2bFJb96fBA9IQcZsDjn71ipIMS8GR_PA7EMCBAxeJmWz4pUprsJznejlEGSb0KKjrjsJ8N0gX13qPYon2aMGVnNoIjM_1P0g_DZojySDcWF3Z4LdvkUA9tWdXpLdL0l_1uUMaY23d3io9JMvx8hWWJFBmiK_PnQ2ff78wpxw15_FZcu-ACKqu71ErIE0WYijzCD2UbZ0tiM6_YTxuPwv7wkvE-2sV04aUulM"/>
+<img alt="Pineapple" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="stylized vibrant yellow pineapple on a minimalist sage green background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbuW5fiKKomKXT6J5RB73ylV5r-7hRGngplo8cuBPsHBzkjfYTxCsOgRkk8UsZPYzp4Gva5clpbqq6g-Y46jqNpsul-aBXWneJJPMUH5nTlRScWJvxotmmm0dKqVMqO8yM8zhMtBoQCbtdlvpGqvzFq0XdQ8OCU8spMrJzt2zojOz8cG3zIp3V4QF_9EhoxQqIx2M2QLXJbpIL4QSiL6vW0IdHeOcbEpKcEVmgTn0n1V5tYUrQQ7h0GE0tcp3aQznMuGEtzsNVutY"/>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="add_circle">add_circle</span>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container py-12 px-8 mt-auto">
+<div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
+<div>
+<div class="text-xl font-black text-primary tracking-tighter mb-4">dokkaebi</div>
+<p class="text-sm text-on-surface-variant max-w-xs leading-relaxed">
+                    새벽을 깨우는 가장 신선한 도깨비의 선물. 
+                    우리는 자연의 속도와 물류의 정밀함을 결합합니다.
+                </p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-12">
+<div>
+<h5 class="text-xs font-bold text-primary mb-4 uppercase">고객 센터</h5>
+<ul class="text-sm text-on-surface-variant space-y-2">
+<li>1588-0000</li>
+<li>카카오톡 1:1 상담</li>
+<li>자주 묻는 질문</li>
+</ul>
+</div>
+<div>
+<h5 class="text-xs font-bold text-primary mb-4 uppercase">회사 정보</h5>
+<ul class="text-sm text-on-surface-variant space-y-2">
+<li>소개</li>
+<li>채용</li>
+<li>제휴 문의</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto mt-12 pt-8 border-t border-outline-variant/30 text-[10px] text-on-surface-variant/60 flex justify-between">
+<span>© 2023 DOKKAEBI CORP. ALL RIGHTS RESERVED.</span>
+<div class="flex gap-4">
+<span>이용약관</span>
+<span class="font-bold">개인정보처리방침</span>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#572000",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#ffdbcc",
+                    "primary": "#004c16",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "surface-container-high": "#e5eae0",
+                    "surface-container-low": "#f1f5eb",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f6fbf1",
+                    "outline": "#707a6d",
+                    "on-secondary-fixed": "#351000",
+                    "on-primary-fixed": "#002106",
+                    "surface-tint": "#176d29",
+                    "on-surface-variant": "#40493e",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffbccb",
+                    "primary-fixed": "#a1f6a1",
+                    "outline-variant": "#bfcaba",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#a04100",
+                    "secondary-container": "#fe6b00",
+                    "background": "#f6fbf1",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#181d17",
+                    "surface-container-highest": "#dfe4da",
+                    "on-surface": "#181d17",
+                    "surface-bright": "#f6fbf1",
+                    "surface-variant": "#dfe4da",
+                    "surface-dim": "#d7dbd2",
+                    "surface-container": "#ebefe6",
+                    "inverse-on-surface": "#eef2e8",
+                    "inverse-primary": "#86d988",
+                    "tertiary": "#771e3d",
+                    "secondary-fixed-dim": "#ffb693",
+                    "tertiary-container": "#953654",
+                    "on-primary-fixed-variant": "#005319",
+                    "on-secondary-fixed-variant": "#7a3000",
+                    "inverse-surface": "#2d322b",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffd9e0",
+                    "primary-container": "#0b6623",
+                    "on-tertiary-fixed-variant": "#7f2543",
+                    "on-tertiary-fixed": "#3f0019",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8de28f",
+                    "primary-fixed-dim": "#86d988"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .glass-panel {
+            background: rgba(246, 251, 241, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-[#f6fbf1] dark:bg-zinc-950 font-['Manrope'] tracking-tight antialiased fixed top-0 z-50 w-full">
+<nav class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-black text-[#004c16] dark:text-green-500 tracking-tighter">dokkaebi</span>
+<div class="hidden md:flex gap-8">
+<a class="text-[#40493e] dark:text-zinc-400 font-medium hover:text-[#004c16] transition-colors duration-200" href="#">B2B 도매</a>
+<a class="text-[#40493e] dark:text-zinc-400 font-medium hover:text-[#004c16] transition-colors duration-200" href="#">B2C 소매</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-[#eef5e9] dark:bg-zinc-900 rounded-full px-4 py-2 w-64 group">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body" placeholder="상품 검색" type="text"/>
+</div>
+<div class="flex gap-4">
+<button class="material-symbols-outlined p-2 rounded-full hover:bg-[#eef5e9] transition-colors duration-200" data-icon="shopping_cart">shopping_cart</button>
+<button class="material-symbols-outlined p-2 rounded-full hover:bg-[#eef5e9] transition-colors duration-200" data-icon="account_circle">account_circle</button>
+</div>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+<!-- Delivery Tracker Header -->
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<span class="text-primary font-bold tracking-widest text-xs uppercase mb-2 block">TRACKING YOUR ORDER</span>
+<h1 class="text-4xl font-extrabold tracking-tighter text-on-surface">배송 상세 정보</h1>
+<p class="text-on-surface-variant mt-2 font-medium">운송장 번호: <span class="text-on-surface font-bold">7502-3948-1102</span> <span class="bg-surface-container-high px-2 py-0.5 rounded text-xs ml-2">CJ대한통운</span></p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-highest text-on-surface px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]">print</span>
+                    영수증 출력
+                </button>
+<button class="bg-primary text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+                    고객센터 문의
+                </button>
+</div>
+</div>
+<!-- Main Dashboard Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Tracking Progress Section (Left Column) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Status Visualizer Card -->
+<div class="bg-surface-container-lowest p-8 rounded-[2rem] shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-center mb-12">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<h3 class="font-bold text-xl">배송중</h3>
+<p class="text-sm text-on-surface-variant">오늘 오후 2시 - 4시 사이 도착 예정</p>
+</div>
+</div>
+<div class="text-right">
+<span class="block text-xs font-bold text-outline uppercase tracking-wider">Estimated Delivery</span>
+<span class="text-2xl font-black text-primary">Today, 15:30</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="relative px-4">
+<div class="absolute top-1/2 left-0 w-full h-1 bg-surface-container-high -translate-y-1/2"></div>
+<div class="absolute top-1/2 left-0 w-2/3 h-1 bg-primary -translate-y-1/2 transition-all duration-1000"></div>
+<div class="relative flex justify-between">
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white z-10 border-4 border-surface-container-lowest shadow-md">
+<span class="material-symbols-outlined text-sm">inventory_2</span>
+</div>
+<span class="text-sm font-bold text-primary">상품준비중</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white z-10 border-4 border-surface-container-lowest shadow-md">
+<span class="material-symbols-outlined text-sm">conveyor_belt</span>
+</div>
+<span class="text-sm font-bold text-primary">배송중</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-outline-variant z-10 border-4 border-surface-container-lowest">
+<span class="material-symbols-outlined text-sm">home_pin</span>
+</div>
+<span class="text-sm font-medium text-outline">배송완료</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Location / Terminal Map -->
+<div class="bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-sm aspect-[16/9] relative group">
+<img class="w-full h-full object-cover" data-alt="Modern satellite map interface showing delivery truck moving through a metropolitan neighborhood with clean UI overlays" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyc-gwPFj4FfpUPkAKXjs8a9DWYu07fo8PxfcOioGqIlyWhwG0bbQOL0GnQJ7GtzXcvecoCe8OwnHbmdwNLEU0DDAWGXzBAA0vjcZurpKXBHO1Gd9W_JHxb5of1uVkSmZGpw7vkFu_KY9c86m3IO1VXZUfk0m_ubJEVLPQXGdnAqBSPvp4tcCP2DMd4W3i1IdohGBa-Fx_I4I3JxgL2UxZX19Ew6dy3_U96Q_spMMb-OVFjIPPyQv27HHBWnVOr0U5Ty0pXiRlTfA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+<!-- Courier Info Floating Card -->
+<div class="absolute bottom-6 left-6 right-6 glass-panel p-6 rounded-2xl flex items-center justify-between border border-white/20">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="Portrait of a friendly professional delivery driver wearing a company uniform and cap smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvLjptU4zqFl57ltCUto6N9OkURh8svPmR4wgs7Ht2jrkmkgqLz-tF6ZDrwX6-ZVNkqbyHV92QIz9fJ_tDx00Z9PFyBE0QPPsM4sojYEC6oGg83zLQuwF1DP5vsfKJWQj-ctA4lEj2sOu4LWvdO0djd6SrlGv918BgfSRjbi6XKG18G-_l5VVsTi1BoAewNxhNfUhfjH0H10Kf0-M-FUZrTMlbUVYFM2RxEyXxFs2bnBBMU2ucBcR7DenG8h_kx_fMrlhtXrldoxc"/>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">김태호 기사님</h4>
+<div class="flex items-center gap-1 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">star</span>
+<span>4.9 (2,400+)</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="bg-white/90 p-3 rounded-xl hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-primary">call</span>
+</button>
+<button class="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary-container transition-colors">
+                                메세지 보내기
+                            </button>
+</div>
+</div>
+<!-- Map Legend -->
+<div class="absolute top-6 right-6 flex flex-col gap-2">
+<div class="bg-white/90 backdrop-blur-md px-3 py-2 rounded-lg flex items-center gap-2 text-xs font-bold shadow-sm">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+                            현재 위치
+                        </div>
+<div class="bg-white/90 backdrop-blur-md px-3 py-2 rounded-lg flex items-center gap-2 text-xs font-bold shadow-sm">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+                            목적지
+                        </div>
+</div>
+</div>
+</div>
+<!-- Side Information (Right Column) -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Shipping Address Card -->
+<div class="bg-surface-container p-8 rounded-[2rem] space-y-6">
+<div class="flex justify-between items-start">
+<h3 class="text-xl font-extrabold tracking-tight">배송지 정보</h3>
+<button class="text-primary font-bold text-sm hover:underline">변경하기</button>
+</div>
+<div class="space-y-4">
+<div>
+<span class="text-xs font-bold text-outline uppercase tracking-widest block mb-1">Receiver</span>
+<p class="font-bold text-lg">홍길동 <span class="text-sm font-medium text-on-surface-variant ml-2">010-****-5678</span></p>
+<div class="mt-2 inline-flex items-center gap-1.5 bg-surface-container-high px-3 py-1 rounded-full text-[11px] font-bold text-primary">
+<span class="material-symbols-outlined text-[14px]">verified_user</span>
+                                안심번호 사용중
+                            </div>
+</div>
+<div>
+<span class="text-xs font-bold text-outline uppercase tracking-widest block mb-1">Address</span>
+<p class="text-on-surface-variant font-medium leading-relaxed">
+                                서울특별시 강남구 테헤란로 427<br/>
+                                위워크 타워 15층 102호
+                            </p>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/30">
+<span class="text-xs font-bold text-outline uppercase tracking-widest block mb-2">Delivery Note</span>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-sm italic text-on-surface-variant">
+                            "문 앞에 놓아주시고 벨은 누르지 말아주세요. 감사합니다!"
+                        </div>
+</div>
+</div>
+<!-- Package Summary Card -->
+<div class="bg-surface-container-lowest p-8 rounded-[2rem] border border-surface-container-high">
+<h3 class="text-xl font-extrabold tracking-tight mb-6">주문 상품 요약</h3>
+<div class="flex items-center gap-4 p-4 bg-surface rounded-2xl">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up of vibrant fresh organic vegetables including tomatoes, peppers, and greens in a crate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvB2UVENn8pUPZbXqaf5lp4Stj0RE-MPvOp6i4Cyg6SMXuhtF8hMNn2353Vmlzmu2adDj1OacK4oo4KcZQ4BSwcssyXLwNkE_WrB1EQYSNcnBfNOdrrweWCYxFoUBzRKFhWtzrfFLUyeNBqPHg6PbyBNeqr5kg5boLpYKljPuVzowI8gee1X1QkrcObu-Vdam-Qdarazg10IN8wNdDuhoJh_9vZS5sxS41Aoegh6753AZKwt9CG9Jtbou77yw_yB8wI0AlIk8MWV0"/>
+</div>
+<div>
+<p class="font-bold line-clamp-1">친환경 유기농 신선 채소 세트 외 3건</p>
+<p class="text-xs text-on-surface-variant mt-1">주문번호: 20231024-001248</p>
+<p class="text-primary font-bold mt-1">₩54,900</p>
+</div>
+</div>
+<button class="w-full mt-6 py-4 rounded-xl border-2 border-surface-container-highest font-bold text-on-surface-variant hover:bg-surface transition-colors">
+                        상세 주문 내역 보기
+                    </button>
+</div>
+<!-- Promotional / Quick Help -->
+<div class="bg-secondary-container p-8 rounded-[2rem] text-on-secondary-container relative overflow-hidden group">
+<div class="relative z-10">
+<h4 class="font-black text-2xl tracking-tighter mb-2">무료 배송 혜택</h4>
+<p class="text-sm font-medium opacity-90 leading-snug">지금 멤버십 가입하고 모든 주문에 대해 무제한 무료 배송을 받으세요.</p>
+<button class="mt-6 bg-on-secondary-container text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform">
+                            Join Now
+                        </button>
+</div>
+<div class="absolute -right-10 -bottom-10 opacity-20 transform group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[160px]">redeem</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Timeline (Horizontal Scrollable or Grid) -->
+<section class="mt-16">
+<h3 class="text-2xl font-extrabold tracking-tight mb-8">실시간 배송 타임라인</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Item 1 (Done) -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<span class="text-xs font-bold text-outline uppercase tracking-wider">Step 01</span>
+</div>
+<h4 class="font-bold mb-1">상품 준비 완료</h4>
+<p class="text-xs text-on-surface-variant">10월 24일 09:12</p>
+<p class="text-sm mt-3 text-on-surface-variant leading-relaxed">경기도 광주 통합물류센터에서 상품 검수가 완료되었습니다.</p>
+</div>
+<!-- Item 2 (Done) -->
+<div class="bg-surface-container-low p-6 rounded-2xl relative">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<span class="text-xs font-bold text-outline uppercase tracking-wider">Step 02</span>
+</div>
+<h4 class="font-bold mb-1">터미널 입고</h4>
+<p class="text-xs text-on-surface-variant">10월 24일 14:45</p>
+<p class="text-sm mt-3 text-on-surface-variant leading-relaxed">이천 Hub 터미널에 입고되어 간선 상차 작업 중입니다.</p>
+</div>
+<!-- Item 3 (Current) -->
+<div class="bg-surface-container-highest p-6 rounded-2xl border-2 border-primary relative ring-4 ring-primary/5">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+</div>
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Step 03 (Current)</span>
+</div>
+<h4 class="font-black text-primary mb-1">간선 하차</h4>
+<p class="text-xs text-primary font-bold">10월 25일 08:30</p>
+<p class="text-sm mt-3 text-on-surface-variant font-medium leading-relaxed">서초구 배송 캠프에 도착하여 배송 기사님 배정 중입니다.</p>
+</div>
+<!-- Item 4 (Pending) -->
+<div class="bg-surface-container-low p-6 rounded-2xl opacity-50">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded-full bg-outline-variant text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">pending</span>
+</div>
+<span class="text-xs font-bold text-outline uppercase tracking-wider">Step 04</span>
+</div>
+<h4 class="font-bold mb-1">배송 완료 예정</h4>
+<p class="text-xs text-on-surface-variant">오늘 도착 예정</p>
+<p class="text-sm mt-3 text-on-surface-variant leading-relaxed">고객님의 소중한 상품이 곧 도착할 예정입니다.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Meta -->
+<footer class="max-w-7xl mx-auto px-6 py-12 border-t border-surface-container-high flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-8">
+<span class="text-xl font-black text-outline tracking-tighter">dokkaebi</span>
+<div class="flex gap-6 text-sm font-medium text-on-surface-variant">
+<a class="hover:text-primary" href="#">개인정보처리방침</a>
+<a class="hover:text-primary" href="#">이용약관</a>
+<a class="hover:text-primary" href="#">공지사항</a>
+</div>
+</div>
+<p class="text-xs text-outline font-medium">© 2023 DOKKAEBI Logistics Inc. All rights reserved.</p>
+</footer>
+<!-- Glassmorphic Quick Reorder Bar (Design System Signature) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-lg px-4 z-50">
+<div class="glass-panel p-4 rounded-full shadow-2xl border border-white/40 flex items-center justify-between">
+<div class="flex items-center gap-4 pl-2">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Thumbnail of fresh organic grocery box" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB530tAzEs8-sQrEU48DK4Ys6-Q8oR0Gv7N5qR_ctcD6BOpHAH6JOvajzM-XXM8kDN7g0aU0PRRPnvqWTdaSZIKlbvoFRitfFsroX-UqVDXO7BleImiv_CHQKA4Tao6m1VcqEnx5uYsCaEC2pjSmBnh7F8WOk5z8bWoEQVj8cS1sap9E_XDqE2WhnM2B8COCvgrI0akYcqgRR9DUVFiNtT6bsDjB9STnqLOPIAH-2Av7oMwftTlrEYlw0ZoQVtfJzuxOjdQVnjnSVM"/>
+<div class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">3</div>
+</div>
+<div class="hidden sm:block">
+<p class="text-xs font-bold leading-tight">빠른 재구매</p>
+<p class="text-[10px] text-on-surface-variant font-medium">자주 사는 채소 꾸러미</p>
+</div>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-tighter hover:scale-95 active:scale-90 transition-transform">
+                Reorder Now
+            </button>
+</div>
+</div>
+</body></html>

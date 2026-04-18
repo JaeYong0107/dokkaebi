@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>dokkaebi - 마이페이지</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#572000",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffdbcc",
+                        "primary": "#004c16",
+                        "tertiary-fixed-dim": "#ffb1c3",
+                        "surface-container-high": "#e5eae0",
+                        "surface-container-low": "#f1f5eb",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f6fbf1",
+                        "outline": "#707a6d",
+                        "on-secondary-fixed": "#351000",
+                        "on-primary-fixed": "#002106",
+                        "surface-tint": "#176d29",
+                        "on-surface-variant": "#40493e",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffbccb",
+                        "primary-fixed": "#a1f6a1",
+                        "outline-variant": "#bfcaba",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#a04100",
+                        "secondary-container": "#fe6b00",
+                        "background": "#f6fbf1",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#181d17",
+                        "surface-container-highest": "#dfe4da",
+                        "on-surface": "#181d17",
+                        "surface-bright": "#f6fbf1",
+                        "surface-variant": "#dfe4da",
+                        "surface-dim": "#d7dbd2",
+                        "surface-container": "#ebefe6",
+                        "inverse-on-surface": "#eef2e8",
+                        "inverse-primary": "#86d988",
+                        "tertiary": "#771e3d",
+                        "secondary-fixed-dim": "#ffb693",
+                        "tertiary-container": "#953654",
+                        "on-primary-fixed-variant": "#005319",
+                        "on-secondary-fixed-variant": "#7a3000",
+                        "inverse-surface": "#2d322b",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffd9e0",
+                        "primary-container": "#0b6623",
+                        "on-tertiary-fixed-variant": "#7f2543",
+                        "on-tertiary-fixed": "#3f0019",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8de28f",
+                        "primary-fixed-dim": "#86d988"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f6fbf1;
+            color: #181d17;
+        }
+        .headline-font { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-[#f6fbf1] dark:bg-zinc-950 font-['Manrope'] tracking-tight antialiased docked full-width top-0 z-50 flat no-shadows h-20 w-full sticky">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-black text-[#004c16] dark:text-green-500 tracking-tighter">dokkaebi</span>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-[#40493e] dark:text-zinc-400 font-medium hover:text-[#004c16] transition-colors duration-200" href="#">B2B 도매</a>
+<a class="text-[#40493e] dark:text-zinc-400 font-medium hover:text-[#004c16] transition-colors duration-200" href="#">B2C 소매</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-[#40493e] hover:bg-[#eef5e9] p-2 rounded-full transition-colors">search</button>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#40493e] hover:bg-[#eef5e9] p-2 rounded-full transition-colors">shopping_cart</button>
+<!-- Active State for MyPage (Account Circle) -->
+<button class="flex items-center gap-2 text-[#004c16] dark:text-green-400 font-bold border-b-2 border-[#004c16] pb-1 h-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="text-sm">김도깨비님</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 py-10 flex flex-col gap-10 pb-32">
+<!-- Profile & Grade Section (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- User Info Card -->
+<div class="md:col-span-4 bg-surface-container-lowest rounded-xl p-8 flex flex-col justify-between shadow-sm border-none relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<div>
+<span class="text-primary font-bold headline-font tracking-tight text-lg mb-2 block">DOKKAEBI GARDENER</span>
+<h1 class="text-4xl font-extrabold headline-font text-on-surface mb-4">김도깨비 <span class="text-primary">님</span></h1>
+<div class="inline-flex items-center gap-2 bg-primary-container px-3 py-1 rounded-full text-white text-sm font-bold">
+<span class="material-symbols-outlined text-sm">stars</span>
+<span>최고 등급: 하이 가드너</span>
+</div>
+</div>
+<div class="mt-8">
+<button class="text-sm font-semibold text-primary flex items-center gap-1 hover:underline">
+                        회원정보 수정 <span class="material-symbols-outlined text-xs">arrow_forward_ios</span>
+</button>
+</div>
+</div>
+<!-- Stats Bento Cards -->
+<div class="md:col-span-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between hover:bg-surface-container-high transition-colors">
+<span class="text-on-surface-variant font-medium text-sm">보유 쿠폰</span>
+<p class="text-3xl font-black headline-font text-primary mt-2">12<span class="text-lg font-bold ml-1">장</span></p>
+</div>
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between hover:bg-surface-container-high transition-colors">
+<span class="text-on-surface-variant font-medium text-sm">적립금</span>
+<p class="text-3xl font-black headline-font text-primary mt-2">45,200<span class="text-lg font-bold ml-1">원</span></p>
+</div>
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between hover:bg-surface-container-high transition-colors">
+<span class="text-on-surface-variant font-medium text-sm">진행중인 주문</span>
+<p class="text-3xl font-black headline-font text-primary mt-2">3<span class="text-lg font-bold ml-1">건</span></p>
+</div>
+<div class="bg-primary-container text-white rounded-xl p-6 flex flex-col justify-between items-start">
+<span class="text-white/80 font-medium text-sm">1:1 문의 내역</span>
+<div class="flex items-end justify-between w-full mt-2">
+<p class="text-3xl font-black headline-font">0<span class="text-lg font-bold ml-1">건</span></p>
+<button class="bg-white/20 hover:bg-white/30 p-2 rounded-full backdrop-blur-md">
+<span class="material-symbols-outlined text-lg">chat_bubble</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Business Conversion Banner (High Density Visual) -->
+<section class="bg-on-surface text-white rounded-xl overflow-hidden flex flex-col md:flex-row items-center justify-between p-8 relative">
+<div class="z-10 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary-fixed">
+<span class="material-symbols-outlined">business_center</span>
+<span class="font-bold tracking-widest text-xs uppercase">B2B Membership</span>
+</div>
+<h2 class="text-2xl font-bold headline-font">사업자 전용 혜택을 놓치지 마세요</h2>
+<p class="text-on-surface-variant dark:text-zinc-400 text-sm opacity-80">대량 구매 할인, 정기 배송 및 세금 계산서 발행 자동화</p>
+</div>
+<div class="mt-6 md:mt-0 z-10">
+<button class="bg-primary hover:bg-primary-container text-white px-8 py-3 rounded-full font-bold transition-all active:scale-95">
+                    사업자 인증하기
+                </button>
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-primary/20 pointer-events-none"></div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<!-- Left Column: Frequently Bought & Orders -->
+<div class="lg:col-span-2 flex flex-col gap-10">
+<!-- Frequently Bought Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-extrabold headline-font flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">recycling</span>
+                            자주 사는 상품
+                        </h3>
+<button class="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors">전체보기</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Horizontal Product Card 1 -->
+<div class="bg-surface-container-low rounded-xl p-4 flex gap-4 items-center group hover:bg-surface-container-high transition-colors">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-white">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Close-up of fresh organic baby spinach leaves with water droplets in a professional studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvxkb5RTyM3qoqgV3g3nl3Dm3BD1ID64Mx508UsS3RZu7vsB8uIiPrLJqaL0Qevfaq-G9eaQpSPtmJ-dR3ANLJz4lCHLeJHi8j8vjYZOubS6U6LCjWFZhvnDNqyHZiUenwmjZpJBnzaofuYzDRwDnufmFNN3roW4Z4atQ_DaRurWFRB_1vp4ZOv-zdrpK0Gziowubdd3QwaYEVEGEIDBEJfbT5qBQwlR1Wig6bI3kg4p2EZ7wqSbyGSFD6ifFP5_JYEFpkjgWJQwU"/>
+</div>
+<div class="flex-grow flex flex-col justify-between h-full">
+<div>
+<span class="text-[10px] text-primary font-bold uppercase tracking-tighter">유기농 인증</span>
+<h4 class="font-bold text-on-surface line-clamp-1">친환경 어린잎 채소 500g</h4>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-lg font-black headline-font text-primary">8,900원</span>
+<span class="text-xs text-on-surface-variant line-through italic">10,200원</span>
+</div>
+</div>
+<button class="mt-2 bg-primary text-white rounded-full px-4 py-1.5 text-xs font-bold flex items-center justify-center gap-2 w-max hover:bg-primary-container transition-all active:scale-90">
+<span class="material-symbols-outlined text-sm">shopping_basket</span>
+                                    재주문
+                                </button>
+</div>
+</div>
+<!-- Horizontal Product Card 2 -->
+<div class="bg-surface-container-low rounded-xl p-4 flex gap-4 items-center group hover:bg-surface-container-high transition-colors">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-white">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Vibrant fresh orange carrots with green tops arranged neatly on a rustic wooden background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBwCQO2Ti8o4ForqNWfN1Pb5LVhr1wDkl1En8vIB9rywq0ieqoqKED86PkX-egSO4Doi99v8rx5QoR_0Ia78g9D9-c-mJDV7g6NNxT6ZXEpeKek9TQHnzn4f3xKJZtLsjg_Zhu8SBjz6Cbh7siiaxhohSVJIrf_7MQsCwLygcW26ayqNgJ8o_HCqnnpy6vlYJnInApuc2dtrscy5IXaOmSf4w2H-WSYt6ZGz2-m7ql3t_yq_cIySELv7j-TmUIuHhYCabW0HA7mvw"/>
+</div>
+<div class="flex-grow flex flex-col justify-between h-full">
+<div>
+<span class="text-[10px] text-primary font-bold uppercase tracking-tighter">베스트셀러</span>
+<h4 class="font-bold text-on-surface line-clamp-1">제주 흙당근 1kg (특상)</h4>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-lg font-black headline-font text-primary">4,500원</span>
+</div>
+</div>
+<button class="mt-2 bg-primary text-white rounded-full px-4 py-1.5 text-xs font-bold flex items-center justify-center gap-2 w-max hover:bg-primary-container transition-all active:scale-90">
+<span class="material-symbols-outlined text-sm">shopping_basket</span>
+                                    재주문
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Orders List -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-extrabold headline-font flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">local_shipping</span>
+                            최근 주문 내역
+                        </h3>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Order Entry 1 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+<div class="bg-surface-container-high px-6 py-3 flex justify-between items-center">
+<div class="flex items-center gap-4 text-sm">
+<span class="font-bold">2024.05.12</span>
+<span class="text-on-surface-variant">주문번호: 240512-00912</span>
+</div>
+<button class="text-xs font-bold text-primary flex items-center gap-1">주문상세보기 <span class="material-symbols-outlined text-[10px]">arrow_forward</span></button>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-6">
+<div class="flex -space-x-4">
+<div class="w-16 h-16 rounded-full border-4 border-white overflow-hidden bg-surface">
+<img class="w-full h-full object-cover" data-alt="Close up of various green vegetables and fruits" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmxeNQmq3aGXGfICoCa9Bqb6ZH9Cn17xGH-9-onxrx05o-XEbJqVz1N-EEXgwiNXJghCWwCD5VL9KkOYE37P6aCt4pzkSIWe7SdUF09hpA3rxfptIkM25CvdcN-YDtx8rnoS3COOo-5GYasWkkdiWhJ3RHscUw2Mkmmy41jwyyEBJ_xA2wCmRuc5elaJjhsGdOrztSl6xIu3GIg9tbBHt-COwXoiZ-e790F5yfxJkMSyxUV0DgNNu_dRqNylE5njHoI7gqiH4nauw"/>
+</div>
+<div class="w-16 h-16 rounded-full border-4 border-white overflow-hidden bg-surface flex items-center justify-center bg-surface-container">
+<span class="text-xs font-bold">+4</span>
+</div>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-lg">무항생제 한우 1등급 외 5건</h5>
+<p class="text-on-surface-variant text-sm font-medium">배송완료 · 124,500원</p>
+</div>
+<button class="bg-secondary-container text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                                        전체 다시 담기
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Order Entry 2 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm opacity-80 grayscale-[0.3]">
+<div class="bg-surface-container-high px-6 py-3 flex justify-between items-center">
+<div class="flex items-center gap-4 text-sm">
+<span class="font-bold">2024.04.28</span>
+<span class="text-on-surface-variant">주문번호: 240428-00456</span>
+</div>
+<button class="text-xs font-bold text-primary flex items-center gap-1">주문상세보기 <span class="material-symbols-outlined text-[10px]">arrow_forward</span></button>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-6">
+<div class="flex -space-x-4">
+<div class="w-16 h-16 rounded-full border-4 border-white overflow-hidden bg-surface">
+<img class="w-full h-full object-cover" data-alt="Bundle of fresh green asparagus on a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbdYMm-uSY17Ii839QWjtGxzqjW1vu-4dqlOZu7CYFhaq-1M2gcQX0xI_1RJsXdrSLocFpIGRSXtYygVlVrLCAWaiuIopzrxQVW7KqICaIcvhALagt_3ybSWKs5IaU0NIVDAalw1J9YSFUt5QmFgZqO9eYCD8DA772zVsUqfGzLV6z8zlz1FjVzZ5qEkztoI8Y7sxz__vF_dmD4N9noxI4BW0uc6F0acVOld8DFByDJGehfnyF9EHLn9719Qg0HBUUTlBspJYekzY"/>
+</div>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-lg">신선 아스파라거스 250g 1팩</h5>
+<p class="text-on-surface-variant text-sm font-medium">배송완료 · 6,800원</p>
+</div>
+<button class="bg-surface-container-highest text-on-surface-variant px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                                        전체 다시 담기
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar / Settings -->
+<div class="flex flex-col gap-6">
+<!-- Quick Reorder Floating Style Bar (Design System Signature) -->
+<div class="bg-surface-bright/80 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-xl">
+<h4 class="font-bold headline-font mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                        빠른 재주문 바
+                    </h4>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between bg-white p-3 rounded-lg">
+<span class="text-sm font-medium">우유 (900ml)</span>
+<button class="material-symbols-outlined text-primary bg-primary-fixed p-1 rounded-md text-sm">add</button>
+</div>
+<div class="flex items-center justify-between bg-white p-3 rounded-lg">
+<span class="text-sm font-medium">달걀 (20구)</span>
+<button class="material-symbols-outlined text-primary bg-primary-fixed p-1 rounded-md text-sm">add</button>
+</div>
+<div class="flex items-center justify-between bg-white p-3 rounded-lg">
+<span class="text-sm font-medium">두부 (300g)</span>
+<button class="material-symbols-outlined text-primary bg-primary-fixed p-1 rounded-md text-sm">add</button>
+</div>
+</div>
+</div>
+<!-- Vertical Menu Links -->
+<div class="bg-surface-container rounded-2xl p-4 flex flex-col gap-2">
+<a class="flex items-center justify-between p-4 rounded-xl hover:bg-white transition-all group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">favorite</span>
+<span class="font-bold">찜한 상품</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 rounded-xl hover:bg-white transition-all group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">reviews</span>
+<span class="font-bold">상품 후기</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 rounded-xl hover:bg-white transition-all group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">location_on</span>
+<span class="font-bold">배송지 관리</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4 rounded-xl hover:bg-white transition-all group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">credit_card</span>
+<span class="font-bold">결제 수단</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+</a>
+</div>
+<!-- 1:1 Inquiry Button (Primary CTA) -->
+<button class="w-full bg-on-surface text-white p-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-primary transition-all active:scale-95 group">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">support_agent</span>
+                    1:1 문의하기
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Hidden on desktop via md:hidden rule) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl shadow-[0_-8px_32px_rgba(0,76,22,0.06)] z-50 rounded-t-3xl font-['Inter'] text-[11px] font-bold">
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2 hover:text-[#004c16]">
+<span class="material-symbols-outlined">home</span>
+<span>홈</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2 hover:text-[#004c16]">
+<span class="material-symbols-outlined">grid_view</span>
+<span>카테고리</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2 hover:text-[#004c16]">
+<span class="material-symbols-outlined">search</span>
+<span>검색</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2 hover:text-[#004c16]">
+<span class="material-symbols-outlined">favorite</span>
+<span>찜한상품</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#0b6623] text-white rounded-2xl px-4 py-2 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span>마이페이지</span>
+</div>
+</nav>
+</body></html>

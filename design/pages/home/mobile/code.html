@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>dokkaebi | B2B 식자재 유통 플랫폼</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f3f6",
+                    "primary-container": "#0b6623",
+                    "surface-container-highest": "#e2e2e5",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#86d988",
+                    "primary-fixed-dim": "#86d988",
+                    "surface": "#f9f9fc",
+                    "secondary-fixed-dim": "#ffb693",
+                    "inverse-surface": "#2f3133",
+                    "on-background": "#1a1c1e",
+                    "tertiary": "#771e3d",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "on-primary-container": "#8de28f",
+                    "surface-tint": "#176d29",
+                    "on-primary-fixed-variant": "#005319",
+                    "surface-dim": "#dadadc",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#a1f6a1",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#1a1c1e",
+                    "on-tertiary-container": "#ffbccb",
+                    "on-secondary-container": "#572000",
+                    "inverse-on-surface": "#f0f0f3",
+                    "tertiary-fixed": "#ffd9e0",
+                    "on-primary-fixed": "#002106",
+                    "outline": "#707a6d",
+                    "on-tertiary-fixed-variant": "#7f2543",
+                    "on-surface-variant": "#40493e",
+                    "on-error": "#ffffff",
+                    "primary": "#004c16",
+                    "secondary-fixed": "#ffdbcc",
+                    "on-tertiary-fixed": "#3f0019",
+                    "secondary-container": "#fe6b00",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eeeef0",
+                    "surface-bright": "#f9f9fc",
+                    "on-secondary-fixed-variant": "#7a3000",
+                    "surface-container-high": "#e8e8ea",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#953654",
+                    "surface-variant": "#e2e2e5",
+                    "secondary": "#a04100",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#bfcaba",
+                    "on-secondary-fixed": "#351000",
+                    "background": "#f9f9fc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9fc; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-stone-900/80 backdrop-blur-md fixed top-0 z-50 w-full">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black tracking-tighter text-green-900 dark:text-green-400">dokkaebi</span>
+<span class="hidden md:block text-stone-500 hover:text-green-600 font-['Plus_Jakarta_Sans'] tracking-tight">사업자 전용</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="p-2 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors rounded-full active:scale-95">
+<span class="material-symbols-outlined text-stone-700">shopping_cart</span>
+</div>
+<div class="p-2 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors rounded-full active:scale-95">
+<span class="material-symbols-outlined text-stone-700">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-32">
+<!-- Hero Section -->
+<section class="px-6 mb-10">
+<div class="relative rounded-[2rem] overflow-hidden bg-primary h-64 flex items-end p-8">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary to-primary-container opacity-90"></div>
+<img class="absolute inset-0 w-full h-full object-cover mix-blend-overlay" data-alt="Close-up of vibrant fresh vegetables like bell peppers and kale with artistic lighting and high contrast editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmCta99mCOEVK3I7CVEPmXzAP7zyhYTnNgI1YK2Rlr_G34ZHdcycRdfO4C7Epc0gO-8Y3iTfeUamMY13B3ZBWAgRmWQQgMf7sqrLMiyHZTyKR2Ny9rPwba8INh1R51hrZAhAk5hcxEHwAQgzGP1xHPEhd8QNBHOK6NSJckGDuOkld-5mpjZPA3VqHs-VTBAf0zZp6nWxruVb6aSawgjMQ2lgNNTR3sdXpbnzwEFDl86fIqYEDI5dLY9ICYLDus5U4GEFeybhYk-JU"/>
+<div class="relative z-10">
+<h1 class="text-3xl font-extrabold text-white leading-tight tracking-tight mb-2">오늘 새벽에 수확한<br/>신선한 제철 식자재</h1>
+<p class="text-on-primary-container font-medium">사장님들을 위한 특별 배송 서비스</p>
+</div>
+</div>
+</section>
+<!-- 최근 주문 다시 보기 (Quick Reorder) -->
+<section class="mb-10">
+<div class="flex justify-between items-end px-6 mb-4">
+<h2 class="text-xl font-bold tracking-tight text-on-surface">최근 주문 다시 보기</h2>
+<button class="text-sm font-semibold text-primary">전체보기</button>
+</div>
+<div class="flex overflow-x-auto no-scrollbar gap-4 px-6">
+<!-- Reorder Item 1 -->
+<div class="flex-none w-40 bg-surface-container-lowest rounded-3xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+<div class="aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="Studio photography of premium orange carrots on a clean neutral background, high resolution editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQJPExrdjlpaVUdvG1w0-iDjmj2q67H4qLpRRPK2uynaewfNa51hgLaBcZ2vT6d2_2BMJPl4gGtUzWBa8cZrh1gk5as8VIoq9F-f_qZkWNgOUN0Arz_PsjK2nzyu7qu0yf5VfYhE-b3ppyV8aFhrLCt8Z2MFfaZMPUrUrfyXyLkiuFMWE1iZ8-RueR54uLD1nnGU0mVXnpOHni1vRtwpbPU38ePRri6EcmUKUOOD-L-57asVsKLSA4OTp9f3qTg6EZUAGGNk6WNxA"/>
+</div>
+<p class="text-sm font-bold text-on-surface truncate">국산 흙당근 10kg</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="text-xs font-bold text-secondary">재구매 5회</span>
+</div>
+<button class="w-full mt-3 py-2 bg-secondary rounded-full text-white text-xs font-bold active:scale-95 transition-transform">담기</button>
+</div>
+<!-- Reorder Item 2 -->
+<div class="flex-none w-40 bg-surface-container-lowest rounded-3xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+<div class="aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="Professional flat lay of fresh green broccoli florets with water droplets, sharp focus culinary editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEN178NPLRNrWrDYCSWxaxOvCZSaO9PKuf92KuFZJIU0jpvuvXR3bQMWkU6DX8Okp0slnJ5DNFvH0UdE8NXGJFvQRFWcWvdlkUOg3tCDJQ3eg3M048vU2inwQWtMpNPOuBQsJPyCskAIR1ngOM2Aea9Zjxl0Iaia1EcfK4M_URwHTmvK-IPGEkXX88Xnr4d34ayKA1HC159L14Y4I-PPDmkIn61sEpTf7rI2StAKeyUlcSYco5P9VB1sc2tANVzAG6CDmk_ZTGdtM"/>
+</div>
+<p class="text-sm font-bold text-on-surface truncate">유기농 브로콜리 5kg</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="text-xs font-bold text-secondary">재구매 2회</span>
+</div>
+<button class="w-full mt-3 py-2 bg-secondary rounded-full text-white text-xs font-bold active:scale-95 transition-transform">담기</button>
+</div>
+<!-- Reorder Item 3 -->
+<div class="flex-none w-40 bg-surface-container-lowest rounded-3xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+<div class="aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="Detailed macro shot of white eggs in a rustic carton, warm kitchen lighting, editorial food photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFz01jRsfGHam9FVXqv1J5Fc5NZ2Zdx5iMFwEAAv0UikNsPlfXTGPWLlBbgPSz8l0KaKsOcGbq9ps4ozKWr7gNaLfYY81W2nAb9TFrVMsqslnslAjXLMJ12pnrtjGPQl231javywc-4lhbrFmQY2In8a5mSal7BnQJhWOACSYxyvGMwNM-o43Jkvj1j6TjvgGb-hpmXe7giaJJHmif9d1ndIWUKwy553zz3IuJYy2h_x_97tdMRDXcm3rIp_8vQs1KZONzypsccuo"/>
+</div>
+<p class="text-sm font-bold text-on-surface truncate">무항생제 왕란 60구</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="text-xs font-bold text-secondary">재구매 12회</span>
+</div>
+<button class="w-full mt-3 py-2 bg-secondary rounded-full text-white text-xs font-bold active:scale-95 transition-transform">담기</button>
+</div>
+</div>
+</section>
+<!-- 카테고리 그리드 -->
+<section class="px-6 mb-12">
+<div class="grid grid-cols-4 gap-y-8 gap-x-4">
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">eco</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">야채/채소</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">nutrition</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">과일</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">set_meal</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">수산/해산</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">kebab_dining</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">축산</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">egg</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">유제품/계란</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">liquor</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">소스/조미료</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">inventory_2</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">가공식품</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-3xl">grid_view</span>
+</div>
+<span class="text-xs font-semibold text-on-surface-variant">전체보기</span>
+</div>
+</div>
+</section>
+<!-- 오늘의 신선 특가 (Bento Style) -->
+<section class="px-6 mb-10">
+<div class="flex items-center gap-2 mb-6">
+<h2 class="text-2xl font-black tracking-tighter text-on-surface">오늘의 신선 특가</h2>
+<span class="bg-secondary-container text-on-secondary px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">HOT</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Large Bento Item -->
+<div class="col-span-2 bg-surface-container-lowest rounded-[2.5rem] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] relative overflow-hidden group">
+<div class="relative z-10 w-2/3">
+<span class="inline-block bg-tertiary-container text-white text-[10px] font-bold px-3 py-1 rounded-full mb-3">사업자 단독 특가</span>
+<h3 class="text-xl font-bold text-on-surface mb-1">고창 꿀수박 8kg 이상</h3>
+<p class="text-sm text-on-surface-variant mb-4">내일 아침 도착 보장</p>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-black text-primary">24,900원</span>
+<span class="text-sm text-stone-400 line-through">32,000원</span>
+</div>
+</div>
+<img class="absolute top-1/2 -right-10 -translate-y-1/2 w-48 h-48 object-cover rounded-full rotate-12 transition-transform group-hover:scale-110" data-alt="Juicy slices of ripe red watermelon on a dark plate, minimalist editorial composition with vibrant colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvbWjPHyYP_P7jvDOsYFuSpWDax_pQcgJo43mbcvAX0vWI1abXCiKgagGUuUNAVMk2B4jTnnFuPr6Cpag3wuewMdhEet1ejWRFyGmcX_dDkbX9Fl-LPFEJWKQNhHrGBNMXGcM-EWycAnJ89xA52o-Db_kNrnPS0IC3Ezo7gmTDWyIn7Ke8KwuLrur3ssPNTvcM4_vkHKU30_Ilk8lJH5paaOGqjEvRrD1IMkbyopQNyaZeyhGLKxFRw8rx5Q6AIJMKEGgpNFYUmoE"/>
+</div>
+<!-- Small Bento Item 1 -->
+<div class="bg-surface-container-low rounded-[2.5rem] p-5 flex flex-col gap-4">
+<div class="aspect-square rounded-3xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional close-up of fresh red tomatoes with green stems on a white background, high-end food catalog style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByEqCY4ooW7Wrjsge_KqMqNQzbXC3ox67W5ppTkx2Lnb46teKtMq-Up8lYUN2xiOmkQfoZUf_09waTHuzOwaPz5pbqYFgn_E63pAdrrUFH6wlA7zZGXXt3Nz7CGZNI-OY6dT2dwd2VlNIzDjhXmJgo4J91HIik1_F1NXsvlJW2Zuz63JrxfSUPrHmDWu_rPHuxYh1_G9u1F-JOZf1GKfPWEWgu3p5JdXK2LX8Q_bciUv9gIg-W09M_kEfc16HOWFMDZqHSJZs6NRQ"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface truncate">완토마토 5kg</h3>
+<div class="mt-1">
+<span class="text-lg font-black text-primary">15,800원</span>
+</div>
+</div>
+</div>
+<!-- Small Bento Item 2 -->
+<div class="bg-surface-container-low rounded-[2.5rem] p-5 flex flex-col gap-4">
+<div class="aspect-square rounded-3xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Fresh yellow lemons piled together, bright natural lighting, artistic kitchen aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV7k5L3GFG1mLSyiiE7SXBiFgnZL_2zOWDM_I5BQ2LxTohDJj7fzY-WgIvUMw3Srtzwa6-2vRXHyO2Jc8q-ZhOzo4Gp9KfKZbCCMitChEdr12CZAwVJJHtvJT9xvQ-CxgYsaMjjNfCKQBxTQWMxXFNGlGoqTDVC5hB-z3UzTb8kRmK1BSGp8oIQ6kXWqxC0mIEwLtOkfKM-ekv_QtMtpFikxgfcyI6BEKg3hXObjsaCcupAa5cRV7gKA-IiY1RA18_tFSPQFlLgR0"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface truncate">레몬 (미국산) 20과</h3>
+<div class="mt-1">
+<span class="text-lg font-black text-primary">12,400원</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Business Trust Section -->
+<section class="px-6 mb-10">
+<div class="bg-surface-container-highest rounded-[2rem] p-8 text-center">
+<span class="material-symbols-outlined text-4xl text-primary mb-4" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h3 class="text-lg font-bold text-on-surface mb-2">dokkaebi 신선 약속</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                    HACCP 인증 시설에서 직접 검수하고 배송합니다.<br/>
+                    품질 불만족 시 100% 환불 보장.
+                </p>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/90 dark:bg-stone-950/90 backdrop-blur-xl flex justify-around items-center px-4 pt-3 pb-8 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl border-t border-stone-100 dark:border-stone-800">
+<!-- 홈 (Active) -->
+<a class="flex flex-col items-center justify-center bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 rounded-2xl px-5 py-2 transition-all tap-highlight-none active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">홈</span>
+</a>
+<!-- 카테고리 -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:text-orange-500 transition-all tap-highlight-none active:scale-90" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">카테고리</span>
+</a>
+<!-- 재주문 -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:text-orange-500 transition-all tap-highlight-none active:scale-90" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">재주문</span>
+</a>
+<!-- 검색 -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:text-orange-500 transition-all tap-highlight-none active:scale-90" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">검색</span>
+</a>
+<!-- 마이 -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:text-orange-500 transition-all tap-highlight-none active:scale-90" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">마이</span>
+</a>
+</nav>
+<!-- FAB for mobile Quick Purchase (Contextual Home Screen) -->
+<button class="fixed bottom-28 right-6 w-14 h-14 bg-secondary-container text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</button>
+</body></html>

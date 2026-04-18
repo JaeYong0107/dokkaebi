@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#572000",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#ffdbcc",
+                    "primary": "#004c16",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "surface-container-high": "#e5eae0",
+                    "surface-container-low": "#f1f5eb",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f6fbf1",
+                    "outline": "#707a6d",
+                    "on-secondary-fixed": "#351000",
+                    "on-primary-fixed": "#002106",
+                    "surface-tint": "#176d29",
+                    "on-surface-variant": "#40493e",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffbccb",
+                    "primary-fixed": "#a1f6a1",
+                    "outline-variant": "#bfcaba",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#a04100",
+                    "secondary-container": "#fe6b00",
+                    "background": "#f6fbf1",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#181d17",
+                    "surface-container-highest": "#dfe4da",
+                    "on-surface": "#181d17",
+                    "surface-bright": "#f6fbf1",
+                    "surface-variant": "#dfe4da",
+                    "surface-dim": "#d7dbd2",
+                    "surface-container": "#ebefe6",
+                    "inverse-on-surface": "#eef2e8",
+                    "inverse-primary": "#86d988",
+                    "tertiary": "#771e3d",
+                    "secondary-fixed-dim": "#ffb693",
+                    "tertiary-container": "#953654",
+                    "on-primary-fixed-variant": "#005319",
+                    "on-secondary-fixed-variant": "#7a3000",
+                    "inverse-surface": "#2d322b",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffd9e0",
+                    "primary-container": "#0b6623",
+                    "on-tertiary-fixed-variant": "#7f2543",
+                    "on-tertiary-fixed": "#3f0019",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8de28f",
+                    "primary-fixed-dim": "#86d988"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Top Navigation Bar -->
+<header class="bg-[#f6fbf1] dark:bg-zinc-950 font-['Manrope'] tracking-tight antialiased docked full-width top-0 z-50 sticky">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto">
+<div class="text-2xl font-black text-[#004c16] dark:text-green-500 tracking-tighter">dokkaebi</div>
+<nav class="hidden md:flex items-center space-x-12">
+<a class="text-[#40493e] dark:text-zinc-400 font-medium hover:text-[#004c16] transition-colors duration-200" href="#">B2B 도매</a>
+<a class="text-[#004c16] dark:text-green-400 font-bold border-b-2 border-[#004c16] pb-1" href="#">B2C 소매</a>
+</nav>
+<div class="flex items-center space-x-6">
+<div class="relative hidden lg:block">
+<input class="bg-[#eef5e9] dark:bg-zinc-900 border-none rounded-full px-6 py-2 w-64 focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="신선한 버터헤드를 검색해보세요" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2 text-on-surface-variant">search</span>
+</div>
+<div class="flex items-center space-x-4">
+<button class="hover:bg-[#eef5e9] p-2 rounded-full transition-colors"><span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span></button>
+<button class="hover:bg-[#eef5e9] p-2 rounded-full transition-colors"><span class="material-symbols-outlined" data-icon="account_circle">account_circle</span></button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-screen-2xl mx-auto px-8 py-12">
+<!-- Breadcrumbs -->
+<nav class="flex items-center space-x-2 text-on-surface-variant text-sm mb-8">
+<span>홈</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>채소</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-bold">버터헤드 레터스</span>
+</nav>
+<!-- Product Hero Section (Asymmetric Layout) -->
+<div class="grid grid-cols-12 gap-12 mb-20">
+<!-- Product Gallery -->
+<div class="col-span-12 lg:col-span-7 flex gap-4">
+<div class="flex flex-col gap-4">
+<div class="w-20 h-20 bg-surface-container-high rounded-xl overflow-hidden cursor-pointer hover:ring-2 ring-primary transition-all">
+<img class="w-full h-full object-cover" data-alt="close-up of vibrant green butterhead lettuce leaves showing delicate ruffled edges and moisture droplets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD641zzoBu6pVm1rVHBCkWDkbwtFCmKh3-yuJjM3RY_g16cVwqv9RO_LkEF_eKW_J-Oj_3cWrbFh4aEmSYzPoT4Ek3iKnClJdVpQycFWo7PJSApHQh4qRIa9QHJKCltrz84TKDTHgyPKDn1QgBp1p1MP8iXg3nVp0PZnvpGpAgqGGxE1Aq65b3QSPkh4Egmi81Xiv2BvcnEQHU3oqzkcGDmwWieMB4P8CScF3H7AQ0ot8XqC9SkI4QQeBPODgg9iLJsr6uA-3cS_pc"/>
+</div>
+<div class="w-20 h-20 bg-surface-container-high rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="organic farm field with rows of fresh green butterhead lettuce plants under bright morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUMzjgSEeWBHKWshX_LtQR24ggRHWXmpIYO8viTk98_brspqsJlTFglua75KXZGWBCsrlzWxJ_fzOgF04fwwMjMrrJew6FU5S1QkVqmTYdFNmGju581_SJBN1CV6joeiIScEd8Iw-QRaPMI15_wKQC48KtsHt9yloGS0KysM6Fdok7HwMsQLbw46BosT2bdkjQ5oRxJ_Z6JXqkOHtPwm-Rwvt39pp0eZe2YtuO2cQIiPfKx1Sl1xRpWWlCknFj6xP4-rt1bkJ8S7M"/>
+</div>
+<div class="w-20 h-20 bg-surface-container-high rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="freshly harvested butterhead lettuce in a rustic wooden crate on a stone countertop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj7c1TIGwj4CQatCHHpxqAsPv1xbKEQhXDFw3iyVkkeHDuelF4rPkpHUYB_Oqyhvmbh_KBiSszQmgpFqEchVrywqZ4b9Phdg6Ky-VOwH86faWr8IT21WE1IXwt5u-wYhVwXPcndi_EDk7y43WtHs8LXDLyQxCQswQoRjYKbOIZL84sz4TURdXLbrF8Dv4TYY8_HG7hCWykyDil8y0iyHw1uXIeBmI29N3OfJsQWabo-FPULSEcIxv3oYQetW5wGUgYgkKbz5SOATs"/>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-[2rem] overflow-hidden relative group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="high quality studio photography of a whole butterhead lettuce head showing its lush green circular heart and vibrant leaves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZdgxf1LlisLPITLUZ023MP1knlJ2l2k8Y72l7Y7uFYVS6t-tXORQ0hfBpDZVn5BexlRAAJB9tu3kW7LC5oj_kI8AOLdwSVp3v-BBuPspIzdS2S5A5q-I0CHx0CkiNVwLfyTlvKUnb5c55JDQd4FXclCYjfYuwv2MZT0yXyBAOCOBsPcppEy5czar9lAs8syiwcImcv8Zwk7d47ZAzsJgG_mIuEAA-we5Me42bEXF61m9KoAQ7aWgaMx_-sAnixIwhgjwjdKnwqk4"/>
+<div class="absolute top-6 left-6 flex flex-col gap-2">
+<span class="bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase">산지직송</span>
+<span class="bg-white/90 backdrop-blur-md text-primary px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">무농약 인증</span>
+</div>
+</div>
+</div>
+<!-- Product Purchase Actions -->
+<div class="col-span-12 lg:col-span-5 flex flex-col">
+<div class="mb-2 text-primary font-bold tracking-widest text-sm">[dokkaebi] 산지직송 시리즈</div>
+<h1 class="text-4xl font-black text-on-surface mb-6 leading-tight">무농약 버터헤드 레터스 1kg <br/><span class="text-on-surface-variant font-medium text-2xl">신선함 그대로 담았습니다</span></h1>
+<div class="bg-surface-container-low rounded-2xl p-6 mb-8 border-l-4 border-primary">
+<div class="flex justify-between items-end mb-4">
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-sm mb-1">일반 판매가</span>
+<span class="text-on-surface-variant line-through text-lg">18,500원</span>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-secondary-container text-on-secondary-container text-xs font-bold px-2 py-0.5 rounded">사업자 22% 할인</span>
+</div>
+<span class="text-primary text-4xl font-black">14,430<span class="text-xl">원</span></span>
+</div>
+</div>
+<div class="text-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">info</span>
+                        로그인 후 사업자 전용 추가 혜택을 확인하세요
+                    </div>
+</div>
+<!-- Bento Grid Style Info -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container rounded-xl p-4">
+<div class="text-xs text-on-surface-variant mb-1">배송정보</div>
+<div class="text-sm font-bold">오전 10시 전 주문 시 <br/><span class="text-primary">오늘 출발</span></div>
+</div>
+<div class="bg-surface-container rounded-xl p-4">
+<div class="text-xs text-on-surface-variant mb-1">원산지</div>
+<div class="text-sm font-bold">경상북도 청도군 <br/>덕산 농장</div>
+</div>
+</div>
+<!-- Quantity Selector -->
+<div class="mb-8">
+<div class="text-sm font-bold mb-4">수량 선택</div>
+<div class="flex items-center bg-white border border-outline-variant rounded-xl w-fit overflow-hidden">
+<button class="px-4 py-3 hover:bg-surface-container-low text-primary"><span class="material-symbols-outlined">remove</span></button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-lg" type="number" value="1"/>
+<button class="px-4 py-3 hover:bg-surface-container-low text-primary"><span class="material-symbols-outlined">add</span></button>
+</div>
+</div>
+<!-- CTAs -->
+<div class="flex gap-4">
+<button class="flex-1 border-2 border-primary text-primary font-bold py-4 rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">shopping_cart</span> 장바구니
+                    </button>
+<button class="flex-[2] bg-gradient-to-br from-primary to-primary-container text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/10 hover:opacity-90 transition-all">
+                        바로 구매하기
+                    </button>
+</div>
+</div>
+</div>
+<!-- Detail Tabs & Content -->
+<div class="grid grid-cols-12 gap-12 mt-12 border-t-2 border-surface-container pt-12">
+<div class="col-span-12 lg:col-span-8">
+<!-- Info Section: Bento Style -->
+<div class="space-y-12">
+<section>
+<h2 class="text-2xl font-black mb-8 flex items-center gap-3">
+<span class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center text-sm">01</span>
+                            산지 직송 정보
+                        </h2>
+<div class="relative h-96 rounded-[2rem] overflow-hidden group">
+<img class="w-full h-full object-cover" data-alt="aerial drone shot of a green valley with small organic farms and a clear river nearby" data-location="Cheongdo-gun, Gyeongsangbuk-do" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdNQjgoz99EmoAtDm556Hrsm6SG3aeZYOjQkSNpwHvV5W8LO1UBmXbS3ODKuzfC1du6wEldeiWuetvGlS6tQP0OF5W-XGSE2uoopZSuy8B8ZDG6mNjSWyycdIyxexMKKLrWB9m3reUacSX25qDH6N93YOn6TGfnhL4i30-wBKbbJg5K3E36BdAqc5hVDADIPxMhckpcuXhyJFkgmJK-jEUNorT0lHnFRKGgAgwYdgT86zcas54wjnk-3gpf-0sLQJHDEOqqFKhfJQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-10">
+<div class="text-white/80 text-sm mb-2">경상북도 청도군 덕산길 124</div>
+<div class="text-white text-3xl font-bold">덕산 농장 : 이영수 농부</div>
+<p class="text-white/70 mt-4 max-w-md">"우리 가족이 먹는다는 마음으로 30년째 무농약 수경재배를 고집하고 있습니다. 가장 신선할 때 따서 바로 보내드립니다."</p>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-2 gap-8">
+<div>
+<h2 class="text-2xl font-black mb-8 flex items-center gap-3">
+<span class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center text-sm">02</span>
+                                신선도 데이터
+                            </h2>
+<div class="bg-white p-8 rounded-[2rem] shadow-sm">
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-medium">수분 함량</span>
+<div class="flex-1 mx-4 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[95%]"></div>
+</div>
+<span class="font-bold">95%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-medium">조직감</span>
+<div class="flex-1 mx-4 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[88%]"></div>
+</div>
+<span class="font-bold">우수</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-medium">당도(Brix)</span>
+<div class="flex-1 mx-4 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%]"></div>
+</div>
+<span class="font-bold">4.2</span>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-2xl font-black mb-8 flex items-center gap-3">
+<span class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center text-sm">03</span>
+                                영양 정보 (100g 당)
+                            </h2>
+<div class="bg-surface-container-low p-8 rounded-[2rem] grid grid-cols-2 gap-6">
+<div class="text-center">
+<div class="text-primary font-bold text-xl">15 kcal</div>
+<div class="text-xs text-on-surface-variant">열량</div>
+</div>
+<div class="text-center">
+<div class="text-primary font-bold text-xl">1.5g</div>
+<div class="text-xs text-on-surface-variant">식이섬유</div>
+</div>
+<div class="text-center">
+<div class="text-primary font-bold text-xl">25mg</div>
+<div class="text-xs text-on-surface-variant">비타민C</div>
+</div>
+<div class="text-center">
+<div class="text-primary font-bold text-xl">32mg</div>
+<div class="text-xs text-on-surface-variant">칼슘</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Policy Tabs -->
+<div class="mt-20">
+<div class="flex border-b border-surface-container-highest mb-8">
+<button class="px-8 py-4 border-b-2 border-primary font-bold text-primary">배송/교환/환불 정보</button>
+<button class="px-8 py-4 text-on-surface-variant hover:text-on-surface">상품 문의 (24)</button>
+<button class="px-8 py-4 text-on-surface-variant hover:text-on-surface">구매 리뷰 (158)</button>
+</div>
+<div class="bg-white p-10 rounded-3xl space-y-8 text-on-surface-variant">
+<div>
+<h4 class="font-bold text-on-surface mb-4">배송 안내</h4>
+<ul class="list-disc pl-5 space-y-2 text-sm">
+<li>평일 오전 10시 이전 결제 완료 시 당일 수확 및 발송됩니다.</li>
+<li>신선식품 특성상 제주 및 도서산간 지역은 배송이 제한될 수 있습니다.</li>
+<li>롯데택배를 통해 안전하게 배송됩니다.</li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-on-surface mb-4">교환 및 반품 안내</h4>
+<ul class="list-disc pl-5 space-y-2 text-sm">
+<li>신선식품은 단순 변심에 의한 교환 및 반품이 불가합니다.</li>
+<li>상품 파손 또는 품질 문제가 있을 경우, 수령 직후 사진 촬영과 함께 고객센터로 문의주세요.</li>
+<li>수령 후 24시간 이내 접수된 건에 한하여 100% 재발송 또는 환불 처리해드립니다.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Sidebar Recommendation -->
+<aside class="col-span-12 lg:col-span-4">
+<div class="sticky top-28 space-y-8">
+<div class="bg-primary/5 rounded-3xl p-8">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            함께 사면 좋은 상품
+                            <span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+</h3>
+<div class="space-y-6">
+<!-- Rec Card 1 -->
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-20 h-20 bg-surface-container rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="fresh red cherry tomatoes in a clear container on a white table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9Zjf_rnd0K3rgO9NwqE_7QPsHy7y0X0yPkVyJl55iJulCu2CdOhHBxDd0on8aeJv-fJF4LqiVQTg9mZ1RpTUQa6ziplxU1CbNRKMt6c8AeJEAMi7FILseXzTxX3rpdMcO-VQEwi0mAobFawq-Ol1IoKOhZUt1jHkC-8lbCe1KflQSw5sg_6n30TmaDv-TKokRPAb6aTIfJ_jM-W3kJR52__ersv83MVQ0OUa1X8Ig0uCAejOKUoAI27dbZmgffhhxqz9vrHy8X_I"/>
+</div>
+<div class="flex flex-col justify-center">
+<div class="text-sm font-bold group-hover:text-primary transition-colors">무농약 대추방울토마토 500g</div>
+<div class="text-primary font-bold">5,800원</div>
+</div>
+</div>
+<!-- Rec Card 2 -->
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-20 h-20 bg-surface-container rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="creamy balsamic dressing bottle with fresh herbs in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2IEOw8zPyy0OMjfImqmqdtg3vF8TcBV9m0bvmReE3WzLCeMOg43z4g3dZNixWjpv1bcbqYw2lhMGvosEDM2mDR9WwH1Pp7IvUmqx-JTE2_bSl2BgBHvpk1HHboAAnh66T5q_Bz1ZmeWMLElKy6CM24OqPlBBrNNAC-iSethSa-Lax8cv05I2UCFgbGipTq8_6o8H6DIgF1m3x494QHTc3hJ8tqDHMxmci97ocn9Dxz1_wrR7NEGkg1g8DJh-vsh4QTCzelOHlbDU"/>
+</div>
+<div class="flex flex-col justify-center">
+<div class="text-sm font-bold group-hover:text-primary transition-colors">수제 오리엔탈 드레싱 250ml</div>
+<div class="text-primary font-bold">4,200원</div>
+</div>
+</div>
+<!-- Rec Card 3 -->
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-20 h-20 bg-surface-container rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform" data-alt="bag of mixed organic nuts and seeds including almonds and walnuts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZtHpfjKR7tOdfNTLKpTf4RQ0cZWwx6XDv69iCQB5Cj0iu8iflsGclXjJQa2iaM6A9K9iYp2R-dN7XDHS1sI8JrqjClYD_l-j7Oe5PqkHBa_UElEzR-WxPCBodE59w6JhQyfWojglxWjLnxdQLCMOiiCW-hkHKNSwAeClSCfW8PhDTuPxOxhHEszKs7V78LlvVZSEPsmhJwUWSVd93FDwPKvwTjmZd2KdosVs_jNxhtgZABO_PhuLosWOTP59svMmEcpqQCDr9Zww"/>
+</div>
+<div class="flex flex-col justify-center">
+<div class="text-sm font-bold group-hover:text-primary transition-colors">샐러드용 견과 믹스 10팩</div>
+<div class="text-primary font-bold">8,900원</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Floating Reorder Bar (Shared Component Logic) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-[0_-8px_32px_rgba(0,76,22,0.1)] px-8 py-4 flex items-center justify-between z-40 border border-white/20">
+<div class="flex items-center gap-6">
+<div class="text-xs font-black text-primary tracking-tighter uppercase border-r border-surface-container-highest pr-6">Quick Reorder</div>
+<div class="flex gap-2">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden ring-2 ring-white"><img class="w-full h-full object-cover" data-alt="small icon of fresh green lettuce" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAALdUyXs6Mbd1tJw7MUpAF-CNaNgUJrSvSEOKbXa885UXstdkt5tpz4tPzh-jcVwbagiXBIEG1utQ6cBtMkJ3WtJ6FcNMDaNkkT4b7ds3Dyo_vMA2xSOeXKtH90oilupZ-lJX5zDLRxFmamGmWzXizARRZxeXax4LXd1VgUKR2yXEJvvxs3L-t_JdRPlVQyn8uKs13muhlBQcX68ryMkCNeBVbE944bTNRuM3JAkA8Ye97lURINQO_Zt4pZn1B3K3J_yaFefb9LsU"/></div>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden ring-2 ring-white"><img class="w-full h-full object-cover" data-alt="small icon of red tomatoes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3QEEYeQmprGqHkjhmqTbeoT8ayO8fnvRXEGYAFck_W1pkbxA6gYJCCV4SZ5Gv2GSmC2E_O_8vsT8hAoFXDGeqaYpmW_0icOL_OqbLBgOTcczQlDSsj3R67TJfGCR9bJs1m_YI72mbmj41jGMp62Q0h47_xWVMKjijwzQKLbLrber_Xuk9B7RXR-DKosE3cgdq_dWANW4NfVJqm5pBxrlzha31d3ZTBNWEhMmU2BBA7glQTdnb3hSeP-TilnZBcJ3L2o9Vw3-Zxus"/></div>
+</div>
+<div class="text-sm font-bold text-on-surface-variant">최근 구매한 상품을 빠르게 담으세요</div>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-secondary-container/20 hover:scale-105 transition-transform">
+            장바구니 전체 담기
+        </button>
+</div>
+<!-- Mobile Navigation (Suppressed on large screens by style_shell_layout logic) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl z-50 rounded-t-3xl shadow-[0_-8px_32px_rgba(0,76,22,0.06)]">
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[11px] font-bold">홈</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] text-[11px] font-bold">카테고리</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Inter'] text-[11px] font-bold">검색</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-['Inter'] text-[11px] font-bold">찜한상품</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40493e] dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] text-[11px] font-bold">마이페이지</span>
+</div>
+</nav>
+<footer class="bg-surface-container py-20 px-8 mt-20">
+<div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="col-span-1 md:col-span-2">
+<div class="text-2xl font-black text-primary tracking-tighter mb-6 uppercase">dokkaebi</div>
+<p class="text-on-surface-variant max-w-md mb-8">도깨비는 산지의 신선함을 기술로 연결하는 고성능 식자재 유통 플랫폼입니다. 불필요한 유통 단계를 줄여 생산자와 소비자 모두에게 최상의 가치를 제공합니다.</p>
+<div class="flex gap-4">
+<span class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-primary shadow-sm font-bold">fb</span>
+<span class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-primary shadow-sm font-bold">ig</span>
+</div>
+</div>
+<div>
+<h5 class="font-bold mb-6 uppercase text-sm tracking-widest">Customer Care</h5>
+<ul class="space-y-4 text-on-surface-variant text-sm">
+<li>1544-0000</li>
+<li>평일 09:00 - 18:00</li>
+<li>hello@dokkaebi.com</li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold mb-6 uppercase text-sm tracking-widest">Legal</h5>
+<ul class="space-y-4 text-on-surface-variant text-sm">
+<li>이용약관</li>
+<li>개인정보처리방침</li>
+<li>사업자 정보 확인</li>
+</ul>
+</div>
+</div>
+</footer>
+</body></html>
