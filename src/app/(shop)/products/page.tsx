@@ -6,6 +6,7 @@ import type { Product } from "@/features/product/types";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+import { FilterToggleCheckbox } from "@/widgets/product-list/FilterToggleCheckbox";
 
 type Category = {
   id: string;
@@ -31,6 +32,49 @@ type SiteContentResponse = {
     loadMoreLabel: string;
   };
 };
+
+type SortKey = "popular" | "price" | "freshness";
+
+const SORT_KEYS: SortKey[] = ["popular", "price", "freshness"];
+
+function isSortKey(value: string | undefined): value is SortKey {
+  return value === "popular" || value === "price" || value === "freshness";
+}
+
+function buildHref(
+  base: string,
+  current: Record<string, string | string[] | undefined>,
+  updates: Record<string, string | undefined>
+) {
+  const next = new URLSearchParams();
+  for (const [key, value] of Object.entries(current)) {
+    if (typeof value === "string" && value.length > 0) {
+      next.set(key, value);
+    }
+  }
+  for (const [key, value] of Object.entries(updates)) {
+    if (value === undefined) {
+      next.delete(key);
+    } else {
+      next.set(key, value);
+    }
+  }
+  const qs = next.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
+function isDealProduct(product: Product) {
+  return (product.badges ?? []).some(
+    (badge) =>
+      badge.includes("특가") || badge.includes("단독") || badge.includes("BEST")
+  );
+}
+
+function isFreeShippingProduct(product: Product) {
+  return (product.badges ?? []).some(
+    (badge) => badge.includes("도착") || badge.includes("발송")
+  );
+}
 
 export default function ProductsPage({
   searchParams
@@ -58,6 +102,12 @@ async function ProductsPageContent({
   const query = (await searchParamsPromise) ?? {};
   const selectedCategoryId =
     typeof query.category === "string" ? query.category : "all";
+  const sortKey: SortKey =
+    typeof query.sort === "string" && isSortKey(query.sort)
+      ? query.sort
+      : "popular";
+  const dealsOnly = query.dealsOnly === "1";
+  const freeShippingOnly = query.freeShipping === "1";
 
   const [productsResponse, categoriesResponse, ordersResponse, contentResponse] =
     await Promise.all([
@@ -79,28 +129,6 @@ async function ProductsPageContent({
     (category) => category.id === selectedCategoryId
   );
 
-  const filteredProducts =
-    selectedCategory && selectedCategory.id !== "all"
-      ? activeProducts.filter((product) =>
-          selectedCategory.productCategories?.includes(product.category)
-        )
-      : activeProducts;
-
-  const categoryItems = categoriesData.items.map((category) => {
-    const count =
-      category.id === "all"
-        ? activeProducts.length
-        : activeProducts.filter((product) =>
-            category.productCategories?.includes(product.category)
-          ).length;
-
-    return {
-      ...category,
-      count,
-      active: category.id === (selectedCategory?.id ?? "all")
-    };
-  });
-
   const orderCountByProductId = ordersData.items.reduce<Record<string, number>>(
     (acc, order) => {
       order.items.forEach((item) => {
@@ -111,10 +139,63 @@ async function ProductsPageContent({
     {}
   );
 
-  const products = [...filteredProducts].sort(
-    (a, b) => (orderCountByProductId[b.id] ?? 0) - (orderCountByProductId[a.id] ?? 0)
-  );
-  const visibleProducts = products.slice(0, 12);
+  // 1) 카테고리 필터
+  let filteredProducts =
+    selectedCategory && selectedCategory.id !== "all"
+      ? activeProducts.filter((product) =>
+          selectedCategory.productCategories?.includes(product.category)
+        )
+      : activeProducts;
+
+  // 2) 부가 필터 (사업자 특가/배송 보장)
+  if (dealsOnly) {
+    filteredProducts = filteredProducts.filter(isDealProduct);
+  }
+  if (freeShippingOnly) {
+    filteredProducts = filteredProducts.filter(isFreeShippingProduct);
+  }
+
+  // 3) 정렬
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortKey === "price") {
+      return getUnitPrice(a, "BUSINESS") - getUnitPrice(b, "BUSINESS");
+    }
+    if (sortKey === "freshness") {
+      // mock 상 stockQuantity 미보유 → id 역순으로 "신상" 근사
+      return b.id.localeCompare(a.id);
+    }
+    return (
+      (orderCountByProductId[b.id] ?? 0) - (orderCountByProductId[a.id] ?? 0)
+    );
+  });
+
+  const visibleProducts = sortedProducts.slice(0, 12);
+
+  const categoryItems = categoriesData.items.map((category) => {
+    const baseList =
+      category.id === "all"
+        ? activeProducts
+        : activeProducts.filter((product) =>
+            category.productCategories?.includes(product.category)
+          );
+    let count = baseList.length;
+    if (dealsOnly) count = baseList.filter(isDealProduct).length;
+    if (freeShippingOnly)
+      count = baseList.filter(isFreeShippingProduct).length;
+    return {
+      ...category,
+      count,
+      active: category.id === (selectedCategory?.id ?? "all")
+    };
+  });
+
+  const sortLabels = content.catalog.sortOptions;
+  const sortItems = SORT_KEYS.map((key, index) => ({
+    key,
+    label: sortLabels[index] ?? key,
+    active: key === sortKey
+  }));
+
   const sidebarTitleLines = content.catalog.sidebarBanner.title.split("\n");
 
   return (
@@ -128,11 +209,9 @@ async function ProductsPageContent({
             {categoryItems.map((category) => (
               <li key={category.id}>
                 <Link
-                  href={
-                    category.id === "all"
-                      ? "/products"
-                      : `/products?category=${category.id}`
-                  }
+                  href={buildHref("/products", query, {
+                    category: category.id === "all" ? undefined : category.id
+                  })}
                   className={
                     category.active
                       ? "group flex items-center justify-between font-bold text-primary"
@@ -171,24 +250,14 @@ async function ProductsPageContent({
             </div>
           </div>
           <div className="space-y-2">
-            <label className="flex cursor-pointer items-center gap-3">
-              <input
-                type="checkbox"
-                className="h-5 w-5 rounded-md border-outline-variant text-primary focus:ring-primary"
-              />
-              <span className="text-sm font-medium">
-                {content.catalog.highlightOnlyLabel}
-              </span>
-            </label>
-            <label className="flex cursor-pointer items-center gap-3">
-              <input
-                type="checkbox"
-                className="h-5 w-5 rounded-md border-outline-variant text-primary focus:ring-primary"
-              />
-              <span className="text-sm font-medium">
-                {content.catalog.freeShippingLabel}
-              </span>
-            </label>
+            <FilterToggleCheckbox
+              paramKey="dealsOnly"
+              label={content.catalog.highlightOnlyLabel}
+            />
+            <FilterToggleCheckbox
+              paramKey="freeShipping"
+              label={content.catalog.freeShippingLabel}
+            />
           </div>
         </div>
 
@@ -226,94 +295,105 @@ async function ProductsPageContent({
             </p>
           </div>
           <div className="flex items-center gap-6 text-sm font-bold text-on-surface-variant">
-            {content.catalog.sortOptions.map((option, index) => (
-              <button
-                key={option}
+            {sortItems.map((option) => (
+              <Link
+                key={option.key}
+                href={buildHref("/products", query, {
+                  sort: option.key === "popular" ? undefined : option.key
+                })}
                 className={
-                  index === 0
+                  option.active
                     ? "border-b-2 border-primary pb-1 text-primary"
                     : "border-b-2 border-transparent pb-1 transition-colors hover:text-primary"
                 }
               >
-                {option}
-              </button>
+                {option.label}
+              </Link>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-          {visibleProducts.map((product, index) => (
-            <article key={product.id} className="group relative">
-              <Link
-                href={`/products/${product.id}`}
-                aria-label={`${product.name} 상세 보기`}
-                className="absolute inset-0 z-10 rounded-[2.5rem]"
-              />
-              <div className="pointer-events-none relative z-0 mb-6 aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        {sortedProducts.length === 0 ? (
+          <div className="rounded-3xl border-2 border-dashed border-outline-variant/40 bg-surface-container-low p-16 text-center text-sm text-on-surface-variant">
+            선택한 조건에 맞는 상품이 없습니다. 필터를 조정해 보세요.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleProducts.map((product, index) => (
+              <article key={product.id} className="group relative">
+                <Link
+                  href={`/products/${product.id}`}
+                  aria-label={`${product.name} 상세 보기`}
+                  className="absolute inset-0 z-10 rounded-[2.5rem]"
                 />
-                <div className="absolute left-4 top-4">
-                  {(product.badges ?? []).map((badge) => (
-                    <span
-                      key={badge}
-                      className="rounded-full bg-tertiary px-3 py-1 text-[10px] font-black tracking-tighter text-white shadow-lg"
-                    >
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-                {index === 0 ? (
-                  <div className="absolute right-4 top-4 rounded-full bg-orange-500 px-3 py-1 text-[10px] font-black tracking-tighter text-white">
-                    BEST
+                <div className="pointer-events-none relative z-0 mb-6 aspect-square overflow-hidden rounded-[2.5rem] bg-surface-container-low">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute left-4 top-4">
+                    {(product.badges ?? []).map((badge) => (
+                      <span
+                        key={badge}
+                        className="rounded-full bg-tertiary px-3 py-1 text-[10px] font-black tracking-tighter text-white shadow-lg"
+                      >
+                        {badge}
+                      </span>
+                    ))}
                   </div>
+                  {index === 0 && sortKey === "popular" ? (
+                    <div className="absolute right-4 top-4 rounded-full bg-orange-500 px-3 py-1 text-[10px] font-black tracking-tighter text-white">
+                      BEST
+                    </div>
+                  ) : null}
+                </div>
+                {index === 0 && sortKey === "popular" ? (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute bottom-[8.5rem] right-4 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur"
+                  >
+                    <Icon name="favorite" />
+                  </span>
                 ) : null}
-              </div>
-              {index === 0 ? (
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute bottom-[8.5rem] right-4 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur"
-                >
-                  <Icon name="favorite" />
-                </span>
-              ) : null}
-              <div className="space-y-1 px-2">
-                <p className="text-xs font-bold text-stone-400">
-                  {product.origin}
-                </p>
-                <h3 className="truncate font-headline text-lg font-bold text-on-surface transition-colors group-hover:text-primary">
-                  {product.name}
-                </h3>
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="text-sm text-stone-400 line-through">
-                    {formatCurrency(getOriginalPrice(product))}
-                  </span>
-                  <span className="font-headline text-xl font-extrabold text-primary">
-                    {formatCurrency(getUnitPrice(product, "BUSINESS"))}
-                  </span>
+                <div className="space-y-1 px-2">
+                  <p className="text-xs font-bold text-stone-400">
+                    {product.origin}
+                  </p>
+                  <h3 className="truncate font-headline text-lg font-bold text-on-surface transition-colors group-hover:text-primary">
+                    {product.name}
+                  </h3>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="text-sm text-stone-400 line-through">
+                      {formatCurrency(getOriginalPrice(product))}
+                    </span>
+                    <span className="font-headline text-xl font-extrabold text-primary">
+                      {formatCurrency(getUnitPrice(product, "BUSINESS"))}
+                    </span>
+                  </div>
+                  <div className="relative z-20">
+                    <ProductCardActions productId={product.id} />
+                  </div>
                 </div>
-                <div className="relative z-20">
-                  <ProductCardActions productId={product.id} />
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
 
-        <div className="mt-20 flex justify-center">
-          <button className="group flex items-center gap-4 rounded-full border border-stone-100 bg-white px-8 py-4 shadow-sm transition-all hover:border-primary">
-            <span className="font-bold text-on-surface">
-              {content.catalog.loadMoreLabel} ({visibleProducts.length} / {products.length})
-            </span>
-            <Icon
-              name="expand_more"
-              className="text-primary transition-transform group-hover:translate-y-1"
-            />
-          </button>
-        </div>
+        {sortedProducts.length > 0 && (
+          <div className="mt-20 flex justify-center">
+            <button className="group flex items-center gap-4 rounded-full border border-stone-100 bg-white px-8 py-4 shadow-sm transition-all hover:border-primary">
+              <span className="font-bold text-on-surface">
+                {content.catalog.loadMoreLabel} ({visibleProducts.length} / {sortedProducts.length})
+              </span>
+              <Icon
+                name="expand_more"
+                className="text-primary transition-transform group-hover:translate-y-1"
+              />
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );
