@@ -7,7 +7,8 @@ import { useCartStore } from "@/store/cart-store";
 export function CartSeedBootstrap() {
   const items = useCartStore((state) => state.items);
   const replaceCart = useCartStore((state) => state.replaceCart);
-  const [persistReady, setPersistReady] = useState(useCartStore.persist.hasHydrated());
+  // SSG/SSR 단계에서는 persist API가 아직 연결되지 않을 수 있으므로 초기값은 항상 false 로 둔다
+  const [persistReady, setPersistReady] = useState(false);
 
   useEffect(() => {
     if (useCartStore.persist.hasHydrated()) {
