@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { Product } from "@/features/product/types";
 import { fetchProducts } from "@/shared/api/products";
 
@@ -10,44 +10,23 @@ type UseProductsQueryResult = {
   error: string | null;
 };
 
+export const productsQueryKey = ["products"] as const;
+
 export function useProductsQuery(): UseProductsQueryResult {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery({
+    queryKey: productsQueryKey,
+    queryFn: () => fetchProducts()
+  });
 
-  useEffect(() => {
-    let cancelled = false;
+  return {
+    products: query.data ?? [],
+    isLoading: query.isPending,
+    error: extractErrorMessage(query.error)
+  };
+}
 
-    async function loadProducts() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const items = await fetchProducts();
-
-        if (!cancelled) {
-          setProducts(items);
-        }
-      } catch (loadError) {
-        if (!cancelled) {
-          setError(
-            loadError instanceof Error
-              ? loadError.message
-              : "상품 데이터를 불러오지 못했습니다."
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    loadProducts();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { products, isLoading, error };
+function extractErrorMessage(error: unknown): string | null {
+  if (!error) return null;
+  if (error instanceof Error) return error.message;
+  return "상품 데이터를 불러오지 못했습니다.";
 }

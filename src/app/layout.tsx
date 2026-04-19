@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import { QueryProvider } from "@/providers/QueryProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,7 +38,9 @@ export default function RootLayout({
       lang="ko"
       className={`${inter.variable} ${manrope.variable} ${jakarta.variable}`}
     >
-      <body className="bg-surface text-on-surface font-sans">{children}</body>
+      <body className="bg-surface text-on-surface font-sans">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
