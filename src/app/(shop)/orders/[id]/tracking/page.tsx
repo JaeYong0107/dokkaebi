@@ -8,6 +8,7 @@ import {
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+import { PrintReceiptButton } from "@/widgets/tracking-actions/PrintReceiptButton";
 
 type TrackingPageProps = {
   params: Promise<{
@@ -94,13 +95,7 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
           </p>
         </div>
         <div className="flex gap-3">
-          <button
-            type="button"
-            className="flex items-center gap-2 rounded-xl bg-surface-container-highest px-6 py-3 font-bold text-on-surface transition-colors hover:bg-surface-variant"
-          >
-            <Icon name="print" className="text-[20px]" />
-            영수증 출력
-          </button>
+          <PrintReceiptButton />
           <button
             type="button"
             className="flex items-center gap-2 rounded-xl bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105"
