@@ -1,11 +1,10 @@
 import { Suspense } from "react";
 import type { OrderRecord } from "@/features/order/types";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { ReorderView } from "./ReorderView";
 
 export default async function ReorderPage() {
-  const origin = await getServerOrigin();
-  const response = await fetch(`${origin}/api/orders`, { cache: "no-store" });
+  const response = await serverFetch("/api/orders");
   const data = (await response.json()) as { items: OrderRecord[] };
   const orders = data.items;
 

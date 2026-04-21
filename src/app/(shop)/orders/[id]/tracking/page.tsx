@@ -5,7 +5,7 @@ import {
   ORDER_STATUS_TIMELINE,
   type OrderStatus
 } from "@/features/order/types";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -58,10 +58,7 @@ function buildTimeline(orderStatus: OrderStatus) {
 
 export default async function TrackingPage({ params }: TrackingPageProps) {
   const { id } = await params;
-  const origin = await getServerOrigin();
-  const response = await fetch(`${origin}/api/orders/${id}`, {
-    cache: "no-store"
-  });
+  const response = await serverFetch(`/api/orders/${id}`);
 
   if (!response.ok) {
     notFound();

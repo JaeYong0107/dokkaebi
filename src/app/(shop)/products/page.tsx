@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { OrderRecord } from "@/features/order/types";
 import { getUnitPrice } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { Icon } from "@/shared/ui/Icon";
 import { FilterToggleCheckbox } from "@/widgets/product-list/FilterToggleCheckbox";
 import { ProductGridCard } from "@/widgets/product-list/ProductGridCard";
@@ -80,24 +80,14 @@ export default function ProductsPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const originPromise = getServerOrigin();
-
-  return (
-    <ProductsPageContent
-      originPromise={originPromise}
-      searchParamsPromise={searchParams}
-    />
-  );
+  return <ProductsPageContent searchParamsPromise={searchParams} />;
 }
 
 async function ProductsPageContent({
-  originPromise,
   searchParamsPromise
 }: {
-  originPromise: Promise<string>;
   searchParamsPromise?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const origin = await originPromise;
   const query = (await searchParamsPromise) ?? {};
   const selectedCategoryId =
     typeof query.category === "string" ? query.category : "all";
@@ -110,10 +100,10 @@ async function ProductsPageContent({
 
   const [productsResponse, categoriesResponse, ordersResponse, contentResponse] =
     await Promise.all([
-      fetch(`${origin}/api/products`, { cache: "no-store" }),
-      fetch(`${origin}/api/categories`, { cache: "no-store" }),
-      fetch(`${origin}/api/orders`, { cache: "no-store" }),
-      fetch(`${origin}/api/site-content`, { cache: "no-store" })
+      serverFetch("/api/products"),
+      serverFetch("/api/categories"),
+      serverFetch("/api/orders"),
+      serverFetch("/api/site-content")
     ]);
 
   const productsData = (await productsResponse.json()) as { items: Product[] };

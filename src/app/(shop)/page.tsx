@@ -3,7 +3,7 @@ import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import type { OrderRecord } from "@/features/order/types";
 import { getUnitPrice } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -55,17 +55,16 @@ function getBadgeTone(label: string) {
 }
 
 export default async function HomePage() {
-  const origin = await getServerOrigin();
   const [
     productsResponse,
     ordersResponse,
     categoriesResponse,
     contentResponse,
   ] = await Promise.all([
-    fetch(`${origin}/api/products`, { cache: "no-store" }),
-    fetch(`${origin}/api/orders`, { cache: "no-store" }),
-    fetch(`${origin}/api/categories`, { cache: "no-store" }),
-    fetch(`${origin}/api/site-content`, { cache: "no-store" }),
+    serverFetch("/api/products"),
+    serverFetch("/api/orders"),
+    serverFetch("/api/categories"),
+    serverFetch("/api/site-content"),
   ]);
 
   const productsData = (await productsResponse.json()) as { items: Product[] };

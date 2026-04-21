@@ -4,7 +4,7 @@ import type { Product } from "@/features/product/types";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
 import type { OrderStatus } from "@/features/order/types";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -59,7 +59,6 @@ export default async function OrderHistoryPage({
 }: Readonly<{
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }>) {
-  const origin = await getServerOrigin();
   const query = (await searchParams) ?? {};
   const statusFilter: StatusFilter =
     typeof query.status === "string" && isStatusFilter(query.status)
@@ -67,8 +66,8 @@ export default async function OrderHistoryPage({
       : "ALL";
 
   const [ordersResponse, productsResponse] = await Promise.all([
-    fetch(`${origin}/api/orders`, { cache: "no-store" }),
-    fetch(`${origin}/api/products`, { cache: "no-store" })
+    serverFetch("/api/orders"),
+    serverFetch("/api/products")
   ]);
   const ordersData = (await ordersResponse.json()) as { items: OrderRecord[] };
   const productsData = (await productsResponse.json()) as { items: Product[] };

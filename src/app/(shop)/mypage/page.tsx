@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -62,8 +62,7 @@ type MyPageResponse = {
 };
 
 export default async function MyPage() {
-  const origin = await getServerOrigin();
-  const response = await fetch(`${origin}/api/mypage`, { cache: "no-store" });
+  const response = await serverFetch("/api/mypage");
   const data = (await response.json()) as MyPageResponse;
 
   return (

@@ -8,7 +8,7 @@ import {
   getOriginalPrice,
   getUnitPrice
 } from "@/features/pricing/pricing-service";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -54,14 +54,9 @@ export default async function ProductDetailPage({
   params
 }: ProductDetailPageProps) {
   const { id } = await params;
-  const origin = await getServerOrigin();
   const [productsResponse, contentResponse] = await Promise.all([
-    fetch(`${origin}/api/products`, {
-      cache: "no-store"
-    }),
-    fetch(`${origin}/api/products/${id}/content`, {
-      cache: "no-store"
-    })
+    serverFetch("/api/products"),
+    serverFetch(`/api/products/${id}/content`)
   ]);
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const content = (await contentResponse.json()) as ProductDetailContentResponse;

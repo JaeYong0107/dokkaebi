@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { OrderRecord } from "@/features/order/types";
 import type { Product } from "@/features/product/types";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
-import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -22,10 +22,9 @@ export default async function OrderCompletePage({
     notFound();
   }
 
-  const origin = await getServerOrigin();
   const [orderResponse, productsResponse] = await Promise.all([
-    fetch(`${origin}/api/orders/${orderId}`, { cache: "no-store" }),
-    fetch(`${origin}/api/products`, { cache: "no-store" })
+    serverFetch(`/api/orders/${orderId}`),
+    serverFetch("/api/products")
   ]);
 
   if (!orderResponse.ok) {
