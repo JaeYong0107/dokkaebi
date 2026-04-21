@@ -146,27 +146,40 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ---
 
-## 5. 관리자 CRUD 화면
+## 5. 관리자 CRUD 화면 ✅
 
-**진행 (2026-04-21)**
+**완료 (2026-04-21)**
 
-- [x] `/admin/users` 완료
+- [x] `/admin/users`
   - GET `/api/admin/users` / PATCH `/api/admin/users/[id]`
   - 사용자 유형/승인 상태/검색어 필터
   - 사업자 승인 토글 + 관리자 권한 부여·회수
   - 본인 role 내리기 차단, 사업자 아닌 사용자에 businessApproved 차단
-- [x] `/admin/products` 완료
-  - GET `/api/admin/products`, POST / PATCH
+- [x] `/admin/products`
+  - GET `/api/admin/products`, POST / PATCH `/api/admin/products/[id]`
   - 판매 상태 · 카테고리 · 키워드 검색 필터
   - 모달 폼(신규/편집) — 뱃지 CSV, 할인율, 재고, 이모지, 배경 모두 편집
   - 판매 중지 토글, 비활성 상품은 리스트에서 isActive=false 로 내려감
   - zod 검증(카테고리 존재/중복 ID/0 이하 가격 등) 서버 측 처리
-- [ ] `/admin/policy` — Policy DB 이전 + 편집 UI (마지막 커밋)
+- [x] `/admin/policy`
+  - prisma Policy 모델 신규 (key/value/updatedAt) + 마이그레이션
+    `20260421133500_add_policy_model`
+  - `src/features/policy/policy-service.ts` — getPolicyValues / upsertPolicyValues
+    (DB 우선, 없으면 env fallback, 그것도 없으면 하드코딩 DEFAULTS)
+  - payment-service 를 DB 정책값 기반으로 교체 → 관리자 변경이 결제 검증에
+    즉시 반영됨을 E2E 로 확인(최소주문 80,000 설정 시 57,720원 주문 409)
+  - GET/PUT `/api/admin/policy` (ADMIN 전용)
+  - /admin/policy 페이지 + AdminPolicyForm (현재값·입력·저장/되돌리기·성공 배너)
 
 **같이 수정**
 - admin layout 과 `/admin`, `/admin/orders` 의 `fetch()` 가 쿠키 forward 하지
   않아 서버 사이드에서 401/403 이 나고 응답 파싱 실패로 500 이 나던 문제 동시 해결
   (`headers()` 로 cookie 전달 + fallback profile)
+
+**남은 후속 작업**
+- `src/shared/lib/config.ts` 의 `getPolicyConfig` 는 아직 env 기반 (동기 호출 필요)
+  → 장바구니 요약 UI 표시만 관여하고 실제 결제 검증은 DB 정책값을 쓴다.
+  이 레이어까지 DB 연결은 서버 컴포넌트로 cart summary 이전 때 함께 처리 예정.
 
 ---
 

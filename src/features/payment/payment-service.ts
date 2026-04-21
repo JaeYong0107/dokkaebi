@@ -1,5 +1,6 @@
 import type { CustomerType } from "@/features/pricing/types";
 import { prisma } from "@/lib/prisma";
+import { getPolicyValues } from "@/features/policy/policy-service";
 import { getPaymentProvider } from "./provider";
 import type { CheckoutRequest } from "./types";
 import { PaymentError } from "./types";
@@ -31,24 +32,13 @@ function generateOrderNumber(now: Date): string {
   return `DK-${stamp}-${rand}`;
 }
 
-function getPolicy() {
-  const defaultShippingFee = Number(process.env.DEFAULT_SHIPPING_FEE ?? 3000);
-  const freeShippingThreshold = Number(
-    process.env.FREE_SHIPPING_THRESHOLD ?? 50000
-  );
-  const minOrderNormal = Number(process.env.MIN_ORDER_NORMAL ?? 10000);
-  const minOrderBusiness = Number(process.env.MIN_ORDER_BUSINESS ?? 50000);
-  return {
-    defaultShippingFee,
-    freeShippingThreshold,
-    minOrderNormal,
-    minOrderBusiness
-  };
-}
-
-function getMinimum(customerType: CustomerType) {
-  const { minOrderNormal, minOrderBusiness } = getPolicy();
-  return customerType === "BUSINESS" ? minOrderBusiness : minOrderNormal;
+function getMinimum(
+  customerType: CustomerType,
+  policy: Awaited<ReturnType<typeof getPolicyValues>>
+) {
+  return customerType === "BUSINESS"
+    ? policy.minOrderBusiness
+    : policy.minOrderNormal;
 }
 
 export async function checkoutAndPay(
@@ -95,14 +85,14 @@ export async function checkoutAndPay(
   });
 
   const subtotal = lineItems.reduce((sum, l) => sum + l.lineTotal, 0);
-  const { defaultShippingFee, freeShippingThreshold } = getPolicy();
+  const policy = await getPolicyValues();
   const shippingFee =
-    request.customerType === "BUSINESS" || subtotal >= freeShippingThreshold
+    request.customerType === "BUSINESS" || subtotal >= policy.freeShippingThreshold
       ? 0
-      : defaultShippingFee;
+      : policy.defaultShippingFee;
   const totalAmount = subtotal + shippingFee;
 
-  const minimum = getMinimum(request.customerType);
+  const minimum = getMinimum(request.customerType, policy);
   if (subtotal < minimum) {
     throw new PaymentError(
       `최소 주문 금액 미달 (필요: ${minimum.toLocaleString("ko-KR")}원)`,

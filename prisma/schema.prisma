@@ -145,6 +145,12 @@ model OrderItem {
   product             Product  @relation(fields: [productId], references: [id])
 }
 
+model Policy {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 model Delivery {
   id             String      @id @default(cuid())
   orderId        String      @unique
