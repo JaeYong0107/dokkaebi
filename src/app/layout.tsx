@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import { AuthProvider } from "@/providers/AuthProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import "./globals.css";
 
@@ -39,7 +40,9 @@ export default function RootLayout({
       className={`${inter.variable} ${manrope.variable} ${jakarta.variable}`}
     >
       <body className="bg-surface text-on-surface font-sans">
-        <QueryProvider>{children}</QueryProvider>
+        <AuthProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

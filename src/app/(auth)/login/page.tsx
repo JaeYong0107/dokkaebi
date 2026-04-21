@@ -1,7 +1,39 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
 import { Icon } from "@/shared/ui/Icon";
+import type { LoginInput } from "@/features/auth/schemas";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const params = useSearchParams();
+  const callbackUrl = params.get("callbackUrl") || "/";
+  const [formError, setFormError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<LoginInput>({ defaultValues: { email: "", password: "" } });
+
+  const onSubmit = handleSubmit(async (values) => {
+    setFormError(null);
+    const result = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false
+    });
+    if (!result || result.error) {
+      setFormError("이메일 또는 비밀번호가 올바르지 않습니다");
+      return;
+    }
+    router.push(callbackUrl);
+    router.refresh();
+  });
+
   return (
     <>
       <header className="text-center">
@@ -13,9 +45,31 @@ export default function LoginPage() {
         </p>
       </header>
 
-      <form className="space-y-4 rounded-3xl bg-surface-container-lowest p-6 shadow-lift">
-        <Field label="이메일" type="email" placeholder="you@dokkaebi.kr" />
-        <Field label="비밀번호" type="password" placeholder="••••••••" />
+      <form
+        onSubmit={onSubmit}
+        className="space-y-4 rounded-3xl bg-surface-container-lowest p-6 shadow-lift"
+      >
+        <Field
+          label="이메일"
+          type="email"
+          placeholder="you@dokkaebi.kr"
+          error={errors.email?.message}
+          {...register("email", { required: "이메일을 입력하세요" })}
+        />
+        <Field
+          label="비밀번호"
+          type="password"
+          placeholder="••••••••"
+          error={errors.password?.message}
+          {...register("password", { required: "비밀번호를 입력하세요" })}
+        />
+
+        {formError && (
+          <p className="rounded-xl bg-error/10 px-4 py-3 text-xs font-semibold text-error">
+            {formError}
+          </p>
+        )}
+
         <div className="flex items-center justify-between text-sm">
           <label className="flex cursor-pointer items-center gap-2 text-on-surface-variant">
             <input
@@ -30,19 +84,20 @@ export default function LoginPage() {
         </div>
         <button
           type="submit"
-          className="w-full rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-white shadow-lg hover:opacity-90"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-gradient-to-br from-primary to-primary-container py-4 font-bold text-white shadow-lg transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          로그인
+          {isSubmitting ? "로그인 중..." : "로그인"}
         </button>
       </form>
 
       <div className="flex items-center gap-3 text-xs text-on-surface-variant">
         <span className="h-px flex-1 bg-surface-container-highest" />
-        간편 로그인
+        간편 로그인 (준비 중)
         <span className="h-px flex-1 bg-surface-container-highest" />
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 opacity-50">
         <SocialBtn label="카카오" icon="chat_bubble" tone="bg-yellow-300 text-stone-800" />
         <SocialBtn label="네이버" icon="circle" tone="bg-green-500 text-white" />
         <SocialBtn label="Google" icon="public" tone="bg-white border border-outline-variant" />
@@ -58,28 +113,30 @@ export default function LoginPage() {
   );
 }
 
-function Field({
-  label,
-  type,
-  placeholder
-}: {
+type FieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  type: string;
-  placeholder: string;
-}) {
+  error?: string;
+};
+
+const Field = function Field(props: FieldProps) {
+  const { label, error, ...rest } = props;
   return (
     <label className="block">
       <span className="mb-1.5 block text-xs font-bold text-on-surface-variant">
         {label}
       </span>
       <input
-        type={type}
-        placeholder={placeholder}
+        {...rest}
         className="w-full rounded-xl bg-surface-container-highest px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
       />
+      {error && (
+        <span className="mt-1 block text-[11px] font-semibold text-error">
+          {error}
+        </span>
+      )}
     </label>
   );
-}
+};
 
 function SocialBtn({
   label,
@@ -92,7 +149,9 @@ function SocialBtn({
 }) {
   return (
     <button
-      className={`flex flex-col items-center gap-1 rounded-2xl py-3 text-xs font-semibold transition-transform hover:-translate-y-0.5 ${tone}`}
+      type="button"
+      disabled
+      className={`flex cursor-not-allowed flex-col items-center gap-1 rounded-2xl py-3 text-xs font-semibold ${tone}`}
     >
       <Icon name={icon} />
       {label}

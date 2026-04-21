@@ -1,8 +1,38 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const prisma = new PrismaClient();
+
+const DEV_USERS = [
+  {
+    email: "admin@dokkaebi.kr",
+    password: "admin1234",
+    name: "도깨비 관리자",
+    role: "ADMIN" as const,
+    customerType: "NORMAL" as const,
+    businessApproved: false
+  },
+  {
+    email: "user@dokkaebi.kr",
+    password: "user1234",
+    name: "김소비자",
+    role: "CUSTOMER" as const,
+    customerType: "NORMAL" as const,
+    businessApproved: false
+  },
+  {
+    email: "biz@dokkaebi.kr",
+    password: "biz12345",
+    name: "두두 한식당",
+    role: "CUSTOMER" as const,
+    customerType: "BUSINESS" as const,
+    businessName: "두두 한식당",
+    businessNumber: "123-45-67890",
+    businessApproved: true
+  }
+];
 
 type CategorySeed = {
   id: string;
@@ -121,6 +151,34 @@ async function seedProducts(
   }
 }
 
+async function seedDevUsers() {
+  for (const devUser of DEV_USERS) {
+    const passwordHash = await bcrypt.hash(devUser.password, 10);
+    await prisma.user.upsert({
+      where: { email: devUser.email },
+      update: {
+        name: devUser.name,
+        role: devUser.role,
+        customerType: devUser.customerType,
+        businessName: devUser.businessName ?? null,
+        businessNumber: devUser.businessNumber ?? null,
+        businessApproved: devUser.businessApproved,
+        passwordHash
+      },
+      create: {
+        email: devUser.email,
+        name: devUser.name,
+        role: devUser.role,
+        customerType: devUser.customerType,
+        businessName: devUser.businessName ?? null,
+        businessNumber: devUser.businessNumber ?? null,
+        businessApproved: devUser.businessApproved,
+        passwordHash
+      }
+    });
+  }
+}
+
 async function main() {
   const categories = loadJson<CategorySeed[]>("data/categories.json");
   const products = loadJson<ProductSeed[]>("data/products.json");
@@ -128,14 +186,17 @@ async function main() {
   const real = await seedCategories(categories);
   const labelMap = buildCategoryLabelMap(real);
   await seedProducts(products, labelMap);
+  await seedDevUsers();
 
-  const [categoryCount, productCount] = await Promise.all([
+  const [categoryCount, productCount, userCount] = await Promise.all([
     prisma.category.count(),
-    prisma.product.count()
+    prisma.product.count(),
+    prisma.user.count()
   ]);
 
   console.log(`✓ Category 시드 완료: ${categoryCount}건`);
   console.log(`✓ Product 시드 완료: ${productCount}건`);
+  console.log(`✓ User 시드 완료: ${userCount}건 (admin/user/biz 테스트 계정)`);
 }
 
 main()
