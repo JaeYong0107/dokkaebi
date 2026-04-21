@@ -1,0 +1,45 @@
+export const siteContent = {
+  home: {
+    hero: {
+      eyebrow: "B2B EXCLUSIVE",
+      title: "새벽에 수확한\n신선함을 식탁까지.",
+      ctaLabel: "지금 쇼핑하기",
+      imageUrl:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuBMD8lMaQWMvoc_tkSG9OmmV9AK0ZbxlkhmSUOkiz_nWfPt3ed9x_PdDqL9ygAuUuSHrJFynVU6hpFecCUjdWIjcJxnjIyPtaryFDlH3iuftnSTJ0WU9fOgCYjNR_XAZ2-A3n08eT6I5dsYwNV55oc8rKpXS1gphRxLqXRsGhgSAKVxUak5FFQgfOgUTkR1iKmRcmoNnLsEthJ1MZYpj6YHWS8GWmBaW40ISZqdaNQM8vzO6oXA-Dt81VhB0xy7sYqFzLBgEpO6kzc"
+    },
+    quickReorder: {
+      title: "최근 주문 다시 보기",
+      ctaLabel: "전체 다시 담기"
+    },
+    popularSection: {
+      title: "실시간 인기 상품",
+      description: "지금 가장 많이 주문되고 있는 품목입니다."
+    },
+    categorySection: {
+      title: "카테고리별 쇼핑"
+    },
+    businessCta: {
+      title: "대량 주문 및 정기 배송 안내",
+      description:
+        "사업자 회원님을 위한 최저가 제안과 전담 매니저 매칭 서비스를 받아보세요. 깐깐하게 검수된 최상급 식재료만 약속합니다.",
+      primaryActionLabel: "상담 신청하기",
+      secondaryActionLabel: "단가표 다운로드"
+    }
+  },
+  catalog: {
+    title: "프리미엄 식자재 모음",
+    description: "사장님들을 위한 최상급 퀄리티의 식자재를 한 번에 확인하세요.",
+    categorySectionTitle: "카테고리",
+    priceFilterTitle: "가격대 필터",
+    highlightOnlyLabel: "사업자 전용 할인 상품",
+    freeShippingLabel: "무료 배송",
+    sidebarBanner: {
+      eyebrow: "Direct Harvest",
+      title: "산지 직송 채소\n새벽 배송 오픈",
+      imageUrl:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuARh0b5XDO01H4f1gv5udeCuvCWKqyunxc-siduPyhGK3qGhe9PVtgWDH7C6lFAmdItMqrJ9ByF1yGMteyOBj5b48INviaVXUJpy1U8qJFCP0OCLJfDKHxpR-xQyhlSR2J7S_fDG07RbBxRYnpRRSK-V2iSzV0k5FztVttD6OML2rswKwm50I61sVJuAE_bJ-9gJuFjh4V5eLnvYqDSQH_2kkxptHyQG-AdtmxoGSEERth5FSCnlMAe89V1vysF0Rp54dkUdy2pTMs"
+    },
+    sortOptions: ["인기순", "낮은 가격순", "신선도순"],
+    loadMoreLabel: "상품 더보기"
+  }
+} as const;

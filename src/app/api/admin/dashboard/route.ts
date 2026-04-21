@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
-import { adminDashboard } from "@/shared/lib/data/admin-dashboard";
+import { adminDashboardContent as adminDashboard } from "@/server/content/admin-dashboard-content";
 import { ORDER_INCLUDE, toOrderRecord } from "@/server/mappers/order";
 import { toProduct } from "@/server/mappers/product";
 

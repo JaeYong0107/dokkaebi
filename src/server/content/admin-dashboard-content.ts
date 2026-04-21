@@ -1,36 +1,36 @@
-{
-  "signupAvatars": [
+export const adminDashboardContent = {
+  signupAvatars: [
     "https://lh3.googleusercontent.com/aida-public/AB6AXuDBa6Ct7jwVNvUAYr6kgmgth1swdtFB0uEw5VinC_sQttLFZpfhUovPYQCIQ0Y5jmdAqHx7x3eIO-ZJZDl1txAPPJPc-WcxJyhPU70-6lO9fM7OXYxzTe7jk3e01wIhGDsnRSEG-rdFt-Ms3EMv5nuBA2OGk0Lj0nTufhhpuWQ9DORURHhgk5x9ORjPUQMCoSxaTDolGUzA6o61-Mp8HgN_s52WwQ_2p7hq5Sz_J9B8wPG7YolZf_lmj_7Mo3e9x80iNvn7kJrcOkg",
     "https://lh3.googleusercontent.com/aida-public/AB6AXuCrwJuVnYCCRlHLiyCeoyGuXUY769ICdQPbILYdBdeyTy-yp5A8I2HNxjYEyQkUqIaRZ2Z5rl5sgRDXeXTvMmSHwP9M4n2eMXCryyNkPFqif4ABd_1IH02NhJ9WQHT8r7jk0JRhcE4mixu1llHJ8m7pMQ-10JhY2GqWtnVUh1GofFh9mfFnPul1os8p_prNjWMGVvGuRziugc9yTZ5Zmg_jMXFuTIcL8sgQunImxAusmrFBnlMxvlAxmCw6Z6zXQ83V-7kiDxdlN2o",
     "https://lh3.googleusercontent.com/aida-public/AB6AXuDy_TWQhculgeqTodzEGnSp-1QU-ExByvEnu99f6gHvK0qsQtJYgcFfuyfOSLRB01R3pCuLl3kNSKdGJRAcxXi49DwUW-lsP5gs0QlOX6F5UCx5fzEy-lENeKsoLdCSjm4dn1w5wUUhEMYDpHhujGGD1cz7xhoiaYoESTZODK6zg1VBcfs5Y-W2p8Q6LNXOws3kcij18xDM8Y_XoxGdmstv73jZMobXKWiU3_fDgRTbrTjMhJwspahZuv8i9KuV8e6-037NM0ZY5Tg"
   ],
-  "newSignupCount": 28,
-  "salesGrowthRate": 12.4,
-  "adminProfile": {
-    "email": "admin@dokkaebi",
-    "initial": "A",
-    "subtitle": "dokkaebi 관리자",
-    "description": "운영팀 전용 콘솔입니다."
+  newSignupCount: 28,
+  salesGrowthRate: 12.4,
+  adminProfile: {
+    email: "admin@dokkaebi",
+    initial: "A",
+    subtitle: "dokkaebi 관리자",
+    description: "운영팀 전용 콘솔입니다."
   },
-  "inquiries": [
+  inquiries: [
     {
-      "title": "배송 지연 문의",
-      "body": "송장 번호가 조회가 안 돼요. 확인 부탁드려요...",
-      "meta": "10분 전 · 정우성",
-      "tone": "bg-secondary"
+      title: "배송 지연 문의",
+      body: "송장 번호가 조회가 안 돼요. 확인 부탁드려요...",
+      meta: "10분 전 · 정우성",
+      tone: "bg-secondary"
     },
     {
-      "title": "반품/교환 신청",
-      "body": "제품 일부가 파손되어 배송되었습니다...",
-      "meta": "2시간 전 · 이미연",
-      "tone": "bg-outline-variant"
+      title: "반품/교환 신청",
+      body: "제품 일부가 파손되어 배송되었습니다...",
+      meta: "2시간 전 · 이미연",
+      tone: "bg-outline-variant"
     }
   ],
-  "footer": {
-    "title": "스마트 자동 발주 시스템",
-    "description": "현재 데이터 기반 최적의 재고 수준을 유지하고 있습니다.",
-    "secondaryActionLabel": "리포트 다운로드",
-    "primaryActionLabel": "재고 관리 대장"
+  footer: {
+    title: "스마트 자동 발주 시스템",
+    description: "현재 데이터 기반 최적의 재고 수준을 유지하고 있습니다.",
+    secondaryActionLabel: "리포트 다운로드",
+    primaryActionLabel: "재고 관리 대장"
   },
-  "floatingActionLabel": "새 주문 등록"
-}
+  floatingActionLabel: "새 주문 등록"
+} as const;

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { productDetailContent } from "@/shared/lib/data/product-detail-content";
+import { productDetailContent } from "@/server/content/product-detail-content";
 
 type RouteContext = {
   params: Promise<{

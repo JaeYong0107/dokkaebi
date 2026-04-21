@@ -1,7 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import {
+  seedCategoriesData,
+  seedProductsData,
+  type CategorySeed,
+  type ProductSeed
+} from "./seed-data";
 
 const prisma = new PrismaClient();
 
@@ -33,38 +37,6 @@ const DEV_USERS = [
     businessApproved: true
   }
 ];
-
-type CategorySeed = {
-  id: string;
-  name: string;
-  icon: string;
-  productCategories?: string[];
-  featured?: boolean;
-};
-
-type ProductSeed = {
-  id: string;
-  sku?: string;
-  name: string;
-  description: string;
-  category: string;
-  unit: string;
-  basePrice: number;
-  normalDiscountRate: number;
-  businessDiscountRate: number;
-  origin: string;
-  imageUrl?: string;
-  imageEmoji?: string;
-  imageBg?: string;
-  badges?: string[];
-  isActive: boolean;
-  stockQuantity?: number;
-};
-
-function loadJson<T>(relativePath: string): T {
-  const fullPath = join(process.cwd(), relativePath);
-  return JSON.parse(readFileSync(fullPath, "utf8")) as T;
-}
 
 async function seedCategories(categories: CategorySeed[]) {
   const real = categories.filter((c) => c.id !== "all");
@@ -292,8 +264,8 @@ async function seedSampleOrders() {
 }
 
 async function main() {
-  const categories = loadJson<CategorySeed[]>("data/categories.json");
-  const products = loadJson<ProductSeed[]>("data/products.json");
+  const categories = seedCategoriesData;
+  const products = seedProductsData;
 
   const real = await seedCategories(categories);
   const labelMap = buildCategoryLabelMap(real);

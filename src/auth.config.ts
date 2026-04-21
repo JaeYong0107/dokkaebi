@@ -13,6 +13,7 @@ export const authConfig = {
         token.role = user.role;
         token.customerType = user.customerType;
         token.businessApproved = user.businessApproved;
+        token.businessName = user.businessName ?? null;
       }
       return token;
     },
@@ -22,6 +23,7 @@ export const authConfig = {
         session.user.role = token.role as "CUSTOMER" | "ADMIN";
         session.user.customerType = token.customerType as "NORMAL" | "BUSINESS";
         session.user.businessApproved = token.businessApproved as boolean;
+        session.user.businessName = (token.businessName as string | null) ?? null;
       }
       return session;
     }

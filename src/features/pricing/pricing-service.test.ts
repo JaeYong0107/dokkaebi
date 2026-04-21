@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sampleProducts } from "@/shared/lib/data/products";
+import type { Product } from "@/features/product/types";
 import {
   calculateShippingFee,
   getDiscountRate,
@@ -7,19 +7,36 @@ import {
   validateMinimumOrder
 } from "./pricing-service";
 
+const testProduct: Product = {
+  id: "prod-test-lettuce",
+  sku: "TEST-001",
+  name: "테스트 레터스",
+  description: "단위 테스트 전용 고정 상품",
+  category: "채소",
+  unit: "1kg / 봉",
+  basePrice: 18500,
+  normalDiscountRate: 0,
+  businessDiscountRate: 22,
+  origin: "테스트 산지",
+  imageEmoji: "🥬",
+  imageBg: "from-emerald-200 to-emerald-400",
+  isActive: true,
+  stockQuantity: 42
+};
+
 describe("pricing-service", () => {
   it("returns a discount-applied business price for business customers", () => {
-    const price = getUnitPrice(sampleProducts[0], "BUSINESS");
+    const price = getUnitPrice(testProduct, "BUSINESS");
 
     expect(price).toBe(14430);
   });
 
   it("returns the configured discount rate by customer type", () => {
-    expect(getDiscountRate(sampleProducts[0], "NORMAL")).toBe(
-      sampleProducts[0].normalDiscountRate
+    expect(getDiscountRate(testProduct, "NORMAL")).toBe(
+      testProduct.normalDiscountRate
     );
-    expect(getDiscountRate(sampleProducts[0], "BUSINESS")).toBe(
-      sampleProducts[0].businessDiscountRate
+    expect(getDiscountRate(testProduct, "BUSINESS")).toBe(
+      testProduct.businessDiscountRate
     );
   });
 

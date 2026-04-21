@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { account } from "@/shared/lib/data/account";
+import { accountContent as account } from "@/server/content/account-content";
 import { ORDER_INCLUDE, toOrderRecord } from "@/server/mappers/order";
 import { toProduct } from "@/server/mappers/product";
 
@@ -80,8 +80,26 @@ export async function GET() {
     ["PAID", "PREPARING", "SHIPPING"].includes(order.orderStatus)
   ).length;
 
+  const user = session.user;
+  const nickname = user.businessName ?? user.name ?? account.profile.nickname;
+  const gradeLabel =
+    user.customerType === "BUSINESS"
+      ? user.businessApproved
+        ? "사업자 회원 (승인 완료)"
+        : "사업자 승인 대기"
+      : account.profile.gradeLabel;
+
   return NextResponse.json({
     ...account,
+    profile: {
+      ...account.profile,
+      nickname,
+      gradeLabel
+    },
+    viewer: {
+      customerType: user.customerType,
+      businessApproved: user.businessApproved
+    },
     recentOrders,
     frequentlyBought,
     quickReorder,

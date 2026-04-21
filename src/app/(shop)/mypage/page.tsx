@@ -59,6 +59,10 @@ type MyPageResponse = {
     productId: string;
     name: string;
   }>;
+  viewer?: {
+    customerType: "NORMAL" | "BUSINESS";
+    businessApproved: boolean;
+  };
 };
 
 export default async function MyPage() {
@@ -121,26 +125,70 @@ export default async function MyPage() {
         </div>
       </section>
 
-      <section className="relative flex flex-col items-center justify-between overflow-hidden rounded-xl bg-on-surface p-8 text-white md:flex-row">
-        <div className="z-10 flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-primary-fixed">
-            <Icon name="business_center" />
-            <span className="text-xs font-bold uppercase tracking-widest">
-              {data.businessBanner.eyebrow}
-            </span>
+      {data.viewer?.customerType === "BUSINESS" && data.viewer.businessApproved ? (
+        <section className="relative flex flex-col items-center justify-between overflow-hidden rounded-xl bg-primary-container p-8 text-on-primary-container md:flex-row">
+          <div className="z-10 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-primary">
+              <Icon name="verified" />
+              <span className="text-xs font-bold uppercase tracking-widest">
+                B2B Membership · 활성
+              </span>
+            </div>
+            <h2 className="font-headline text-2xl font-bold">
+              사업자 전용 혜택이 적용되어 있습니다
+            </h2>
+            <p className="text-sm opacity-80">
+              도매가 자동 적용, 무료 배송, 세금계산서 발행 등 모든 혜택이 활성화 상태입니다.
+            </p>
           </div>
-          <h2 className="font-headline text-2xl font-bold">
-            {data.businessBanner.title}
-          </h2>
-          <p className="text-sm opacity-80">{data.businessBanner.description}</p>
-        </div>
-        <div className="z-10 mt-6 md:mt-0">
-          <button className="rounded-full bg-primary px-8 py-3 font-bold text-white transition-all hover:bg-primary-container active:scale-95">
-            {data.businessBanner.ctaLabel}
-          </button>
-        </div>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-primary/20" />
-      </section>
+          <div className="z-10 mt-6 md:mt-0">
+            <Link
+              href="/products"
+              className="rounded-full bg-primary px-8 py-3 font-bold text-on-primary transition-all hover:opacity-90 active:scale-95"
+            >
+              도매가로 쇼핑하기
+            </Link>
+          </div>
+        </section>
+      ) : data.viewer?.customerType === "BUSINESS" ? (
+        <section className="relative flex flex-col items-center justify-between overflow-hidden rounded-xl bg-tertiary-container p-8 text-on-tertiary-container md:flex-row">
+          <div className="z-10 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-tertiary">
+              <Icon name="pending" />
+              <span className="text-xs font-bold uppercase tracking-widest">
+                사업자 승인 대기
+              </span>
+            </div>
+            <h2 className="font-headline text-2xl font-bold">
+              관리자 승인 후 도매가가 적용됩니다
+            </h2>
+            <p className="text-sm opacity-80">
+              사업자 정보 확인이 완료되면 알림으로 안내드립니다. 평일 영업 시간 기준 1일 이내 처리.
+            </p>
+          </div>
+        </section>
+      ) : (
+        <section className="relative flex flex-col items-center justify-between overflow-hidden rounded-xl bg-on-surface p-8 text-white md:flex-row">
+          <div className="z-10 flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-primary-fixed">
+              <Icon name="business_center" />
+              <span className="text-xs font-bold uppercase tracking-widest">
+                {data.businessBanner.eyebrow}
+              </span>
+            </div>
+            <h2 className="font-headline text-2xl font-bold">
+              {data.businessBanner.title}
+            </h2>
+            <p className="text-sm opacity-80">{data.businessBanner.description}</p>
+          </div>
+          <div className="z-10 mt-6 md:mt-0">
+            <button className="rounded-full bg-primary px-8 py-3 font-bold text-white transition-all hover:bg-primary-container active:scale-95">
+              {data.businessBanner.ctaLabel}
+            </button>
+          </div>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-primary/20" />
+        </section>
+      )}
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="flex flex-col gap-10 lg:col-span-2">
