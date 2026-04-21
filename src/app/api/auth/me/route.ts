@@ -22,7 +22,8 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const { name, phone, currentPassword, newPassword } = parsed.data;
+  const { name, phone, currentPassword, newPassword, applyBusiness } =
+    parsed.data;
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id }
@@ -38,10 +39,27 @@ export async function PATCH(request: Request) {
     name?: string;
     phone?: string | null;
     passwordHash?: string;
+    customerType?: "NORMAL" | "BUSINESS";
+    businessName?: string | null;
+    businessNumber?: string | null;
+    businessApproved?: boolean;
   } = {};
 
   if (name !== undefined) updates.name = name;
   if (phone !== undefined) updates.phone = phone || null;
+
+  if (applyBusiness) {
+    if (user.customerType === "BUSINESS") {
+      return NextResponse.json(
+        { message: "이미 사업자 회원입니다" },
+        { status: 409 }
+      );
+    }
+    updates.customerType = "BUSINESS";
+    updates.businessName = applyBusiness.businessName;
+    updates.businessNumber = applyBusiness.businessNumber;
+    updates.businessApproved = false;
+  }
 
   if (newPassword) {
     if (!currentPassword) {

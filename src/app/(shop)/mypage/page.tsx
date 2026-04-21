@@ -2,6 +2,7 @@ import Link from "next/link";
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+import { BusinessApplyButton } from "@/widgets/mypage-profile/BusinessApplyButton";
 import { EditProfileButton } from "@/widgets/mypage-profile/EditProfileButton";
 
 type MyPageResponse = {
@@ -180,9 +181,7 @@ export default async function MyPage() {
             <p className="text-sm opacity-80">{data.businessBanner.description}</p>
           </div>
           <div className="z-10 mt-6 md:mt-0">
-            <button className="rounded-full bg-primary px-8 py-3 font-bold text-white transition-all hover:bg-primary-container active:scale-95">
-              {data.businessBanner.ctaLabel}
-            </button>
+            <BusinessApplyButton label={data.businessBanner.ctaLabel} />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-primary/20" />
         </section>

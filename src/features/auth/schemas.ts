@@ -46,7 +46,16 @@ export const updateProfileSchema = z
       .optional()
       .nullable(),
     currentPassword: z.string().optional(),
-    newPassword: z.string().min(8, "새 비밀번호는 8자 이상").optional()
+    newPassword: z.string().min(8, "새 비밀번호는 8자 이상").optional(),
+    applyBusiness: z
+      .object({
+        businessName: z.string().min(1, "상호를 입력하세요").max(100),
+        businessNumber: z
+          .string()
+          .min(1, "사업자등록번호를 입력하세요")
+          .max(40)
+      })
+      .optional()
   })
   .refine(
     (data) =>
