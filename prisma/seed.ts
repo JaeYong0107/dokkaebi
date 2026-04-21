@@ -264,14 +264,21 @@ async function seedSampleOrders() {
 }
 
 async function main() {
+  // 개발 전용 더미 데이터(테스트 계정·샘플 주문)는 SEED_DEV_DATA=1 일 때만
+  // 주입. 프로덕션 시드에는 카테고리와 상품 카탈로그만 넣는다.
+  const includeDevData = process.env.SEED_DEV_DATA === "1";
+
   const categories = seedCategoriesData;
   const products = seedProductsData;
 
   const real = await seedCategories(categories);
   const labelMap = buildCategoryLabelMap(real);
   await seedProducts(products, labelMap);
-  await seedDevUsers();
-  await seedSampleOrders();
+
+  if (includeDevData) {
+    await seedDevUsers();
+    await seedSampleOrders();
+  }
 
   const [categoryCount, productCount, userCount, orderCount] = await Promise.all([
     prisma.category.count(),
@@ -282,8 +289,14 @@ async function main() {
 
   console.log(`✓ Category 시드 완료: ${categoryCount}건`);
   console.log(`✓ Product 시드 완료: ${productCount}건`);
-  console.log(`✓ User 시드 완료: ${userCount}건 (admin/user/biz 테스트 계정)`);
-  console.log(`✓ Order 시드 완료: ${orderCount}건 (biz 계정 샘플 주문)`);
+  if (includeDevData) {
+    console.log(`✓ User 시드 완료: ${userCount}건 (admin/user/biz 테스트 계정)`);
+    console.log(`✓ Order 시드 완료: ${orderCount}건 (biz 계정 샘플 주문)`);
+  } else {
+    console.log(
+      `ℹ SEED_DEV_DATA 미설정 — 테스트 계정·샘플 주문은 건너뜀 (User=${userCount}, Order=${orderCount})`
+    );
+  }
 }
 
 main()

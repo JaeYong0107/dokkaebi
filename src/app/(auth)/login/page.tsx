@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { PasswordField } from "@/components/shell/PasswordField";
 import { Icon } from "@/shared/ui/Icon";
 import type { LoginInput } from "@/features/auth/schemas";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") || "/";
@@ -110,6 +110,20 @@ export default function LoginPage() {
         </Link>
       </p>
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="rounded-3xl bg-surface-container-lowest p-6 text-center text-sm text-on-surface-variant shadow-lift">
+          로그인 화면을 불러오는 중...
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
 
