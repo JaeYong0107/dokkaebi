@@ -139,6 +139,8 @@ MIN_ORDER_BUSINESS=
 
 ## 다음 단계 (참고)
 
+현 시점 미구현 항목은 [planning/TODO.md](planning/TODO.md) 에 상세 정리.
+
 1. Prisma 마이그레이션 + Supabase/Neon 연결
 2. NextAuth 인증 + 사업자 인증 플로우
 3. 상품/장바구니/주문 API 를 mock 에서 Prisma 기반으로 전환

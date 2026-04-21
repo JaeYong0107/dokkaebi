@@ -1,5 +1,19 @@
 # 내부 상태 관리 연계 누락 정리
 
+> **✅ 2026-04-21 기준 대부분 해결됨 — 아카이브 문서**
+>
+> 이 리포트가 지적한 P0/P1 항목은 현재 대부분 반영되어 있다.
+>
+> - cart store: [src/store/cart-store.ts](../../src/store/cart-store.ts) 도입 완료
+> - checkout draft store: [src/store/checkout-store.ts](../../src/store/checkout-store.ts) 도입 완료
+> - 재주문 수정 가능 state: [src/app/(shop)/reorder/ReorderView.tsx](../../src/app/(shop)/reorder/ReorderView.tsx) 반영
+> - 장바구니/결제 페이지의 `CART_ITEMS`, `ORDER_ITEMS` 상수 제거 → store 구독
+> - products query/필터: [src/shared/hooks/use-products-query.ts](../../src/shared/hooks/use-products-query.ts) + `QueryProvider`
+> - 관리자 검색/필터/선택: [src/widgets/admin-orders/](../../src/widgets/admin-orders/)
+>
+> **현 시점의 유효한 TODO는 [planning/TODO.md](../../planning/TODO.md) 를 참고한다.**
+> 아래 본문은 당시 갭 분석 과정을 남겨두기 위한 원문이다.
+
 작성일: 2026-04-18
 
 ## 목적
