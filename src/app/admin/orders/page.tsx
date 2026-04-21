@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import type { OrderRecord, OrderStatus } from "@/features/order/types";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { Icon } from "@/shared/ui/Icon";
+import { AdminOrdersCsvButton } from "@/widgets/admin-orders/AdminOrdersCsvButton";
 import { AdminOrdersSearch } from "@/widgets/admin-orders/AdminOrdersSearch";
 import { AdminOrdersTable } from "@/widgets/admin-orders/AdminOrdersTable";
 
@@ -104,9 +105,7 @@ export default async function AdminOrdersPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1 rounded-xl border border-outline-variant bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant hover:border-primary">
-            <Icon name="download" className="text-base" /> CSV 다운로드
-          </button>
+          <AdminOrdersCsvButton orders={filteredOrders} />
           <button className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white">
             새 주문 만들기
           </button>

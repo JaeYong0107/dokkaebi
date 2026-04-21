@@ -75,7 +75,7 @@ export function TopAppBar() {
               홈
             </Link>
             <Link
-              href="/products"
+              href="/products?dealsOnly=1"
               className="font-headline tracking-tight text-stone-500 transition-colors hover:text-primary"
             >
               사업자 전용

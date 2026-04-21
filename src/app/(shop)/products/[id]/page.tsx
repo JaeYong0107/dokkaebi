@@ -11,6 +11,7 @@ import {
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+import { ProductDetailTabs } from "@/widgets/product-detail-tabs/ProductDetailTabs";
 
 type ProductDetailPageProps = {
   params: Promise<{
@@ -284,37 +285,10 @@ export default async function ProductDetailPage({
             </section>
           </div>
 
-          <div className="mt-20">
-            <div className="mb-8 flex border-b border-surface-container-highest">
-              {content.tabs.map((tab, index) => (
-                <button
-                  key={tab}
-                  type="button"
-                  className={
-                    index === 0
-                      ? "border-b-2 border-primary px-8 py-4 font-bold text-primary"
-                      : "px-8 py-4 text-on-surface-variant hover:text-on-surface"
-                  }
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <div className="space-y-8 rounded-3xl bg-white p-10 text-on-surface-variant">
-              {content.policySections.map((section) => (
-                <div key={section.title}>
-                  <h4 className="mb-4 font-bold text-on-surface">
-                    {section.title}
-                  </h4>
-                  <ul className="list-disc space-y-2 pl-5 text-sm">
-                    {section.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ProductDetailTabs
+            tabs={content.tabs}
+            policySections={content.policySections}
+          />
         </div>
 
         <aside className="col-span-12 lg:col-span-4">

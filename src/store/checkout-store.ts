@@ -15,12 +15,20 @@ export type PaymentMethod =
 
 export type CheckoutSource = "cart" | "buy-now" | "reorder";
 
+export type ShippingAddress = {
+  recipient: string;
+  recipientPhone: string;
+  address: string;
+  addressDetail: string;
+};
+
 type CheckoutState = {
   source: CheckoutSource | null;
   draftItems: CartInputItem[];
   customerType: CustomerType;
   paymentMethod: PaymentMethod;
   shippingMemo: string;
+  shippingAddress: ShippingAddress;
   taxInvoiceRequested: boolean;
   agreedToOrder: boolean;
   agreedToPrivacy: boolean;
@@ -38,6 +46,7 @@ type CheckoutActions = {
   ) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
   setShippingMemo: (memo: string) => void;
+  setShippingAddress: (address: ShippingAddress) => void;
   setTaxInvoiceRequested: (requested: boolean) => void;
   setAgreedToOrder: (agreed: boolean) => void;
   setAgreedToPrivacy: (agreed: boolean) => void;
@@ -50,6 +59,12 @@ const INITIAL_STATE: CheckoutState = {
   customerType: "BUSINESS",
   paymentMethod: "easy",
   shippingMemo: "",
+  shippingAddress: {
+    recipient: "",
+    recipientPhone: "",
+    address: "",
+    addressDetail: ""
+  },
   taxInvoiceRequested: false,
   agreedToOrder: false,
   agreedToPrivacy: false
@@ -83,6 +98,7 @@ export const useCheckoutStore = create<CheckoutState & CheckoutActions>()(
 
       setPaymentMethod: (method) => set({ paymentMethod: method }),
       setShippingMemo: (memo) => set({ shippingMemo: memo }),
+      setShippingAddress: (address) => set({ shippingAddress: address }),
       setTaxInvoiceRequested: (requested) =>
         set({ taxInvoiceRequested: requested }),
       setAgreedToOrder: (agreed) => set({ agreedToOrder: agreed }),
@@ -99,6 +115,7 @@ export const useCheckoutStore = create<CheckoutState & CheckoutActions>()(
         customerType: state.customerType,
         paymentMethod: state.paymentMethod,
         shippingMemo: state.shippingMemo,
+        shippingAddress: state.shippingAddress,
         taxInvoiceRequested: state.taxInvoiceRequested
       })
     }

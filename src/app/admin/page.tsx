@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/shared/ui/Icon";
 import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
@@ -133,9 +134,12 @@ export default async function AdminDashboardPage() {
             <h2 className="text-xl font-extrabold text-on-surface">
               최근 주문 요약
             </h2>
-            <button className="text-sm font-bold text-primary hover:underline">
+            <Link
+              href="/admin/orders"
+              className="text-sm font-bold text-primary hover:underline"
+            >
               전체보기
-            </button>
+            </Link>
           </div>
           <div className="overflow-hidden rounded-3xl bg-surface-container-low">
             <table className="w-full text-left">
