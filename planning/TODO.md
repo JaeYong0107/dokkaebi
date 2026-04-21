@@ -183,14 +183,86 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ---
 
-## 6. 홈 페이지 기능 미적용 버튼
+## 6. 페이지별 기능 미적용 버튼
 
-**현재 상태** (2026-04-21 점검)
+전체 페이지에서 **클릭 핸들러 없이 시각적으로만 존재하는 요소**를 한 번에
+정리. 구현 순서는 UX 영향도 기준(체크아웃·주문 조회 > 관리자 집계 > 마이페이지
+보조 기능 > 장식성 툴팁) 을 권장.
 
-홈 페이지([src/app/(shop)/page.tsx](../src/app/(shop)/page.tsx)) 의 버튼 중 아직
-클릭 핸들러가 없고 시각적으로만 존재하는 항목들.
+### 고객 영역 (shop)
 
-**미구현**
+**`/products` — 상품 목록**
+- [ ] "더보기" 버튼 ([src/app/(shop)/products/page.tsx:324](../src/app/(shop)/products/page.tsx))
+  - 현재 UI만 존재. 페이지네이션 / 무한 스크롤 미구현
+  - 서버 컴포넌트라 page query 또는 Server Action 필요
+
+**`/products/[id]` — 상품 상세**
+- [ ] 탭 버튼 "배송/교환/환불 정보, 상품 문의, 구매 리뷰"
+      ([src/app/(shop)/products/[id]/page.tsx:290](../src/app/(shop)/products/[id]/page.tsx))
+  - 3개 탭이 모두 항상 표시된 상태. 활성 탭 state + 내용 전환 필요
+  - 클라이언트 컴포넌트 분리 필요 (현재 서버 컴포넌트)
+
+**`/checkout` — 결제**
+- [ ] "배송지 변경" 버튼 ([src/app/(shop)/checkout/page.tsx:284](../src/app/(shop)/checkout/page.tsx))
+  - User 테이블에 다중 배송지 저장 구조 아직 없음
+  - 1차: 간단한 모달에서 바로 입력 → Order.shippingAddress 로 전달
+  - 2차: Address 모델 신설 → 기본 배송지 / 추가 배송지 관리
+
+**`/orders/[id]/tracking` — 배송 조회**
+- [ ] "영수증 출력" 버튼 ([src/app/(shop)/orders/[id]/tracking/page.tsx:97](../src/app/(shop)/orders/[id]/tracking/page.tsx))
+  - PDF 생성 or `window.print()` + 전용 인쇄 스타일
+- [ ] "고객센터 문의" 버튼 (같은 파일 104줄)
+  - 주문 컨텍스트 포함 Inquiry 생성 or mailto 링크
+- [ ] "배송지 변경" 버튼 (같은 파일 205줄)
+  - 배송중 상태에서 변경 가능한지 정책 확인 먼저
+
+**`/mypage` — 마이페이지**
+- [ ] "회원정보 수정" 버튼 ([src/app/(shop)/mypage/page.tsx:90](../src/app/(shop)/mypage/page.tsx))
+  - 이름 / 전화 / 비밀번호 변경 폼 필요
+  - PATCH `/api/auth/me` 추가 필요
+- [ ] "1:1 문의" 버튼 (120줄)
+- [ ] "사업자 인증하기" 버튼 (185줄, 일반→사업자 전환 CTA)
+  - PATCH `/api/auth/me { customerType: "BUSINESS", businessName, businessNumber }`
+  - 제출 시 businessApproved=false → 관리자 대기열로
+- [ ] "고객센터 문의" 버튼 (370줄)
+
+### 관리자 영역 (admin)
+
+**`/admin` — 대시보드**
+- [ ] "전체보기" 링크 ([src/app/admin/page.tsx:136](../src/app/admin/page.tsx))
+  - 주문 목록 → `/admin/orders` 로 연결만 하면 해결
+- [ ] "재고 추가" 버튼 (226줄)
+  - 저재고 상품 인라인 + / stock 수정 → PATCH `/api/admin/products/[id]`
+- [ ] "모두보기" 버튼 (240줄)
+  - 재고 전체 목록 → `/admin/products?active=ACTIVE` 필터로 연결
+- [ ] "문의 응대 시작" 버튼 (264줄)
+  - Inquiry 모델 + `/admin/inquiries` 생성 후 연결
+- [ ] "보조 액션" 버튼 (286줄)
+  - 대시보드 푸터 영역. 현재 라벨만 있음, 목적 재정의 필요
+- [ ] 플로팅 "+" 버튼 (295줄)
+  - adminDashboardContent.floatingActionLabel "새 주문 등록"
+  - 관리자가 전화 주문 등을 수동 입력하는 플로우 필요 시 구현
+
+**`/admin/orders` — 주문 관리**
+- [ ] "CSV 다운로드" 버튼 ([src/app/admin/orders/page.tsx:107](../src/app/admin/orders/page.tsx))
+  - 현재 필터 적용된 주문 리스트를 CSV 로 내보내기
+  - papaparse or 수제 CSV 직렬화 + Blob download
+- [ ] "새 주문 만들기" 버튼 (110줄)
+  - 관리자 수동 주문 생성. 위 "+" 와 연동 가능
+
+### 공통 (shell)
+
+- [ ] 관리자 헤더 **알림 아이콘** ([src/app/admin/layout.tsx:87](../src/app/admin/layout.tsx))
+  - 승인 대기 사업자 / 신규 문의 / 저재고 등 이벤트 카운트 뱃지
+  - 클릭 시 드롭다운 목록 + 해당 페이지 이동
+- [ ] TopAppBar **"사업자 전용" 탭** ([src/widgets/top-app-bar/TopAppBar.tsx](../src/widgets/top-app-bar/TopAppBar.tsx))
+  - 현재 단순히 `/products` 로 이동
+  - 개선: `/products?audience=business` 같은 필터 쿼리 + BUSINESS 할인율 적용
+    상품만 노출 (businessDiscountRate > 0 필터)
+  - 비로그인 / NORMAL 접근 시 혜택 안내 오버레이 고려
+
+### 홈 페이지 (`/`)
+
 - [ ] **"상담 신청하기"** ([src/app/(shop)/page.tsx:326](../src/app/(shop)/page.tsx))
   - `businessCta.primaryActionLabel`
   - 예상 기능: 상담 신청 모달(이름/연락처/문의 내용) 또는 외부 폼 링크
@@ -200,20 +272,6 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 예상 기능: 사업자 회원 전용 정적 PDF 다운로드 or
     동적 생성 (현재 상품 정가·사업자가 기반)
   - 로그인·BUSINESS 승인 게이팅 필요
-
-**동작 확인된 요소 (참고, 추가 작업 불필요)**
-- Hero "지금 쇼핑하기" → `/products`
-- Quick Reorder "전체 다시 담기" → `/reorder`
-- Popular Section "전체보기" → `/products`
-- 상품 카드 → `/products/[id]`, AddToCartButton → cart store
-- 카테고리 쇼트컷 → `/products?category=[id]`
-
-**홈은 아니지만 같이 뜨는 TopAppBar**
-- [ ] **"사업자 전용" 탭** ([src/widgets/top-app-bar/TopAppBar.tsx](../src/widgets/top-app-bar/TopAppBar.tsx))
-  - 현재 단순히 `/products` 로 이동
-  - 개선: `/products?audience=business` 같은 필터 쿼리 + BUSINESS 할인율 적용
-    상품만 노출 (sampleProducts 의 businessDiscountRate > 0 필터)
-  - 비로그인 / NORMAL 접근 시 혜택 안내 오버레이 고려
 
 ---
 
