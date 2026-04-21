@@ -17,6 +17,8 @@ import {
   useCheckoutStore,
   type PaymentMethod
 } from "@/store/checkout-store";
+import { ShippingAddressModal } from "@/widgets/checkout-address/ShippingAddressModal";
+import { useSession } from "next-auth/react";
 
 const PAYMENT_METHODS: ReadonlyArray<{
   key: PaymentMethod;
@@ -75,7 +77,25 @@ export default function CheckoutPage() {
     (state) => state.setAgreedToPrivacy
   );
   const clearCheckout = useCheckoutStore((state) => state.clear);
+  const shippingAddress = useCheckoutStore((state) => state.shippingAddress);
+  const setShippingAddress = useCheckoutStore((state) => state.setShippingAddress);
+  const shippingMemo = useCheckoutStore((state) => state.shippingMemo);
+  const setShippingMemo = useCheckoutStore((state) => state.setShippingMemo);
   const { products, isLoading: productsLoading } = useProductsQuery();
+  const { data: session } = useSession();
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+
+  // 세션 user 기반으로 배송지 초기값 (한 번만)
+  useEffect(() => {
+    if (!session?.user) return;
+    if (shippingAddress.recipient || shippingAddress.address) return;
+    setShippingAddress({
+      recipient: session.user.businessName ?? session.user.name ?? "",
+      recipientPhone: "",
+      address: "",
+      addressDetail: ""
+    });
+  }, [session, shippingAddress, setShippingAddress]);
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
@@ -163,6 +183,15 @@ export default function CheckoutPage() {
     setSubmitError(null);
 
     try {
+      const fullAddress = [shippingAddress.address, shippingAddress.addressDetail]
+        .filter((part) => part.trim().length > 0)
+        .join(" ");
+
+      if (!shippingAddress.recipient.trim() || !fullAddress) {
+        setSubmitError("배송지 정보를 먼저 입력해 주세요");
+        return;
+      }
+
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -173,11 +202,10 @@ export default function CheckoutPage() {
           })),
           customerType,
           paymentMethod,
-          recipient: customerType === "BUSINESS" ? "이사장" : "이재용",
-          shippingAddress:
-            customerType === "BUSINESS"
-              ? "서울특별시 마포구 양화로 45 두두빌딩 2F"
-              : "서울특별시 송파구 올림픽로 300",
+          recipient: shippingAddress.recipient,
+          recipientPhone: shippingAddress.recipientPhone || undefined,
+          shippingAddress: fullAddress,
+          shippingMemo: shippingMemo || undefined,
           taxInvoiceRequested
         })
       });
@@ -281,30 +309,55 @@ export default function CheckoutPage() {
               <h2 className="text-2xl font-bold tracking-tight text-on-surface">
                 배송지 정보
               </h2>
-              <button className="text-sm font-bold text-primary hover:underline">
+              <button
+                type="button"
+                onClick={() => setAddressModalOpen(true)}
+                className="text-sm font-bold text-primary hover:underline"
+              >
                 배송지 변경
               </button>
             </div>
             <div className="space-y-3 rounded-xl bg-surface-container-lowest p-6">
-              <div className="flex items-center gap-2">
-                <span className="rounded bg-primary px-2 py-0.5 text-[10px] font-bold text-on-primary">
-                  기본배송지
-                </span>
-                <span className="text-lg font-bold">김도깨비</span>
-              </div>
-              <p className="leading-relaxed text-on-surface-variant">
-                [06234] 서울특별시 강남구 테헤란로 427
-                <br />
-                위워크 타워 15층
-              </p>
-              <p className="text-sm text-on-surface-variant">010-1234-5678</p>
+              {shippingAddress.recipient || shippingAddress.address ? (
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-primary px-2 py-0.5 text-[10px] font-bold text-on-primary">
+                      기본배송지
+                    </span>
+                    <span className="text-lg font-bold">
+                      {shippingAddress.recipient || "수취인 미입력"}
+                    </span>
+                  </div>
+                  <p className="leading-relaxed text-on-surface-variant">
+                    {shippingAddress.address || "주소를 입력해 주세요"}
+                    {shippingAddress.addressDetail && (
+                      <>
+                        <br />
+                        {shippingAddress.addressDetail}
+                      </>
+                    )}
+                  </p>
+                  {shippingAddress.recipientPhone && (
+                    <p className="text-sm text-on-surface-variant">
+                      {shippingAddress.recipientPhone}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <div className="rounded-lg border border-dashed border-outline-variant/40 p-6 text-center text-sm text-on-surface-variant">
+                  배송지 정보가 없습니다. &quot;배송지 변경&quot; 을 눌러 입력해 주세요.
+                </div>
+              )}
               <div className="border-t border-outline-variant/15 pt-4">
-                <select className="w-full rounded-lg border-none bg-surface-container-high px-4 py-3 text-sm transition-all focus:ring-2 focus:ring-primary">
-                  <option>배송 요청사항을 선택해주세요</option>
-                  <option>문 앞에 놓아주세요</option>
-                  <option>경비실에 맡겨주세요</option>
-                  <option>배송 전 연락 부탁드립니다</option>
-                  <option>직접 입력</option>
+                <select
+                  value={shippingMemo}
+                  onChange={(event) => setShippingMemo(event.target.value)}
+                  className="w-full rounded-lg border-none bg-surface-container-high px-4 py-3 text-sm transition-all focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">배송 요청사항을 선택해주세요</option>
+                  <option value="문 앞에 놓아주세요">문 앞에 놓아주세요</option>
+                  <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+                  <option value="배송 전 연락 부탁드립니다">배송 전 연락 부탁드립니다</option>
                 </select>
               </div>
             </div>
@@ -517,6 +570,17 @@ export default function CheckoutPage() {
           </div>
         </aside>
       </div>
+
+      {addressModalOpen && (
+        <ShippingAddressModal
+          initial={shippingAddress}
+          onClose={() => setAddressModalOpen(false)}
+          onSave={(next) => {
+            setShippingAddress(next);
+            setAddressModalOpen(false);
+          }}
+        />
+      )}
     </main>
   );
 }
