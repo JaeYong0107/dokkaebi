@@ -153,57 +153,53 @@ export default function CheckoutPage() {
     items.length > 0 &&
     summary.minimumOrder.isSatisfied;
 
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const handleSubmit = async () => {
-    if (!canSubmit) return;
+    if (!canSubmit || submitting) return;
 
-    const response = await fetch("/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        customerType,
-        customerName: customerType === "BUSINESS" ? "두두 한식당" : "이재용",
-        recipient: customerType === "BUSINESS" ? "이사장" : "이재용",
-        shippingAddress:
-          customerType === "BUSINESS"
-            ? "서울특별시 마포구 양화로 45 두두빌딩 2F"
-            : "서울특별시 송파구 올림픽로 300",
-        items: summary.items.flatMap((line) => {
-          const product = productById[line.productId];
-          if (!product) {
-            return [];
-          }
+    setSubmitting(true);
+    setSubmitError(null);
 
-          return [
-            {
-              productId: product.id,
-              productName: product.name,
-              quantity: line.quantity,
-              unitPrice: line.unitPrice,
-              lineTotal: line.lineTotal,
-              imageEmoji: product.imageEmoji,
-              imageBg: product.imageBg
-            }
-          ];
-        }),
-        subtotal: summary.subtotal,
-        shippingFee: summary.shippingFee,
-        total: summary.totalAmount
-      })
-    });
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: summary.items.map((line) => ({
+            productId: line.productId,
+            quantity: line.quantity
+          })),
+          customerType,
+          paymentMethod,
+          recipient: customerType === "BUSINESS" ? "이사장" : "이재용",
+          shippingAddress:
+            customerType === "BUSINESS"
+              ? "서울특별시 마포구 양화로 45 두두빌딩 2F"
+              : "서울특별시 송파구 올림픽로 300",
+          taxInvoiceRequested
+        })
+      });
 
-    if (!response.ok) {
-      return;
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        setSubmitError(
+          body?.error?.message ?? "결제 처리 중 오류가 발생했습니다"
+        );
+        return;
+      }
+
+      const createdOrder = (await response.json()) as { id: string };
+
+      if (effectiveSource === "cart") {
+        clearCart();
+      }
+      clearCheckout();
+      router.push(`/orders/complete?orderId=${createdOrder.id}`);
+    } finally {
+      setSubmitting(false);
     }
-
-    const createdOrder = (await response.json()) as { id: string };
-
-    if (effectiveSource === "cart") {
-      clearCart();
-    }
-    clearCheckout();
-    router.push(`/orders/complete?orderId=${createdOrder.id}`);
   };
 
   if (!hydrated) {
@@ -489,21 +485,28 @@ export default function CheckoutPage() {
                 </span>
               </label>
             </div>
+            {submitError && (
+              <p className="mb-4 rounded-xl bg-error/10 px-4 py-3 text-xs font-semibold text-error">
+                {submitError}
+              </p>
+            )}
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!canSubmit}
+              disabled={!canSubmit || submitting}
               className={
-                canSubmit
+                canSubmit && !submitting
                   ? "block w-full rounded-xl bg-secondary-container py-5 text-center text-xl font-black text-on-secondary-container shadow-lg shadow-secondary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
                   : "block w-full cursor-not-allowed rounded-xl bg-surface-container-high py-5 text-center text-xl font-black text-on-surface-variant"
               }
             >
-              {submitButtonLabel({
-                canSubmit,
-                minimumSatisfied: summary.minimumOrder.isSatisfied,
-                total: summary.totalAmount
-              })}
+              {submitting
+                ? "결제 진행 중..."
+                : submitButtonLabel({
+                    canSubmit,
+                    minimumSatisfied: summary.minimumOrder.isSatisfied,
+                    total: summary.totalAmount
+                  })}
             </button>
             <div className="mt-6 flex items-center justify-center gap-2 text-on-surface-variant/60">
               <Icon name="shield" className="text-sm" />

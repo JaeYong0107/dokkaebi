@@ -117,6 +117,14 @@ model Order {
   totalAmount          Int
   paymentStatus        PaymentStatus @default(PENDING)
   orderStatus          OrderStatus   @default(PENDING)
+  paymentMethod        String?
+  paymentProvider      String?
+  paymentTxId          String?
+  shippingAddress      String        @default("")
+  recipient            String        @default("")
+  recipientPhone       String?
+  shippingMemo         String?
+  taxInvoiceRequested  Boolean       @default(false)
   user                 User          @relation(fields: [userId], references: [id])
   items                OrderItem[]
   delivery             Delivery?

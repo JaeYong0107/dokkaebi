@@ -36,8 +36,8 @@ export function toOrderRecord(db: DbOrderWithIncludes): OrderRecord {
     total: db.totalAmount,
     orderStatus: db.orderStatus,
     paymentStatus: db.paymentStatus,
-    shippingAddress: "",
-    recipient: db.user.name,
+    shippingAddress: db.shippingAddress,
+    recipient: db.recipient || db.user.name,
     trackingNumber: db.delivery?.trackingNumber ?? undefined,
     courierName: db.delivery?.courierName ?? undefined
   };
