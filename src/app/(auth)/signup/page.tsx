@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { PasswordField } from "@/components/shell/PasswordField";
 
 type FormValues = {
   email: string;
@@ -167,9 +168,8 @@ export default function SignupPage() {
           placeholder="010-1234-5678"
           {...register("phone")}
         />
-        <Field
+        <PasswordField
           label="비밀번호"
-          type="password"
           placeholder="8자 이상"
           error={errors.password?.message}
           {...register("password", {
@@ -177,9 +177,8 @@ export default function SignupPage() {
             minLength: { value: 8, message: "비밀번호는 8자 이상이어야 합니다" }
           })}
         />
-        <Field
+        <PasswordField
           label="비밀번호 확인"
-          type="password"
           placeholder="다시 한 번 입력"
           error={errors.confirmPassword?.message}
           {...register("confirmPassword", {

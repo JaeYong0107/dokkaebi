@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { PasswordField } from "@/components/shell/PasswordField";
 import { Icon } from "@/shared/ui/Icon";
 import type { LoginInput } from "@/features/auth/schemas";
 
@@ -56,9 +57,8 @@ export default function LoginPage() {
           error={errors.email?.message}
           {...register("email", { required: "이메일을 입력하세요" })}
         />
-        <Field
+        <PasswordField
           label="비밀번호"
-          type="password"
           placeholder="••••••••"
           error={errors.password?.message}
           {...register("password", { required: "비밀번호를 입력하세요" })}
