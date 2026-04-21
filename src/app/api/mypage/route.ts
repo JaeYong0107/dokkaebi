@@ -1,13 +1,31 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { account } from "@/shared/lib/data/account";
-import { sampleProducts } from "@/shared/lib/data/products";
-import { listLocalOrders } from "@/server/local-orders";
+import { ORDER_INCLUDE, toOrderRecord } from "@/server/mappers/order";
+import { toProduct } from "@/server/mappers/product";
 
 export async function GET() {
-  const orders = await listLocalOrders();
-  const productsById = Object.fromEntries(
-    sampleProducts.map((product) => [product.id, product])
-  );
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json(
+      { message: "로그인이 필요합니다" },
+      { status: 401 }
+    );
+  }
+
+  const [orderRows, productRows] = await Promise.all([
+    prisma.order.findMany({
+      where: { userId: session.user.id },
+      include: ORDER_INCLUDE,
+      orderBy: { orderedAt: "desc" }
+    }),
+    prisma.product.findMany({ include: { category: true } })
+  ]);
+
+  const orders = orderRows.map(toOrderRecord);
+  const products = productRows.map(toProduct);
+  const productsById = Object.fromEntries(products.map((p) => [p.id, p]));
 
   const recentOrders = orders.slice(0, 2).map((order, index) => ({
     id: order.id,
@@ -21,17 +39,20 @@ export async function GET() {
       order.orderStatus === "DELIVERED"
         ? `배송완료 · ${order.total.toLocaleString("ko-KR")}원`
         : `${order.orderStatus} · ${order.total.toLocaleString("ko-KR")}원`,
-    imageUrl: productsById[order.items[0]?.productId]?.imageUrl,
+    imageUrl: productsById[order.items[0]?.productId ?? ""]?.imageUrl,
     extras: Math.max(0, order.items.length - 1),
     primary: index === 0
   }));
 
-  const productCountById = orders.reduce<Record<string, number>>((acc, order) => {
-    order.items.forEach((item) => {
-      acc[item.productId] = (acc[item.productId] ?? 0) + item.quantity;
-    });
-    return acc;
-  }, {});
+  const productCountById = orders.reduce<Record<string, number>>(
+    (acc, order) => {
+      order.items.forEach((item) => {
+        acc[item.productId] = (acc[item.productId] ?? 0) + item.quantity;
+      });
+      return acc;
+    },
+    {}
+  );
 
   const frequentlyBought = Object.entries(productCountById)
     .sort((a, b) => b[1] - a[1])
@@ -49,10 +70,11 @@ export async function GET() {
       imageUrl: product.imageUrl
     }));
 
-  const quickReorder = orders[0]?.items.slice(0, 3).map((item) => ({
-    productId: item.productId,
-    name: productsById[item.productId]?.name ?? item.productName
-  })) ?? [];
+  const quickReorder =
+    orders[0]?.items.slice(0, 3).map((item) => ({
+      productId: item.productId,
+      name: productsById[item.productId]?.name ?? item.productName
+    })) ?? [];
 
   const progressingOrders = orders.filter((order) =>
     ["PAID", "PREPARING", "SHIPPING"].includes(order.orderStatus)

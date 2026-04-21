@@ -56,13 +56,17 @@ function getBadgeTone(label: string) {
 
 export default async function HomePage() {
   const origin = await getServerOrigin();
-  const [productsResponse, ordersResponse, categoriesResponse, contentResponse] =
-    await Promise.all([
-      fetch(`${origin}/api/products`, { cache: "no-store" }),
-      fetch(`${origin}/api/orders`, { cache: "no-store" }),
-      fetch(`${origin}/api/categories`, { cache: "no-store" }),
-      fetch(`${origin}/api/site-content`, { cache: "no-store" })
-    ]);
+  const [
+    productsResponse,
+    ordersResponse,
+    categoriesResponse,
+    contentResponse,
+  ] = await Promise.all([
+    fetch(`${origin}/api/products`, { cache: "no-store" }),
+    fetch(`${origin}/api/orders`, { cache: "no-store" }),
+    fetch(`${origin}/api/categories`, { cache: "no-store" }),
+    fetch(`${origin}/api/site-content`, { cache: "no-store" }),
+  ]);
 
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const ordersData = (await ordersResponse.json()) as { items: OrderRecord[] };
@@ -72,22 +76,26 @@ export default async function HomePage() {
   const content = (await contentResponse.json()) as SiteContentResponse;
 
   const productsById = Object.fromEntries(
-    productsData.items.map((product) => [product.id, product])
+    productsData.items.map((product) => [product.id, product]),
   );
-  const activeProducts = productsData.items.filter((product) => product.isActive);
-  const orderCountByProductId = ordersData.items.reduce<Record<string, number>>(
-    (acc, order) => {
-      order.items.forEach((item) => {
-        acc[item.productId] = (acc[item.productId] ?? 0) + item.quantity;
-      });
-      return acc;
-    },
-    {}
+  const activeProducts = productsData.items.filter(
+    (product) => product.isActive,
   );
+  const orderCountByProductId = ordersData.items?.reduce<
+    Record<string, number>
+  >((acc, order) => {
+    order.items.forEach((item) => {
+      acc[item.productId] = (acc[item.productId] ?? 0) + item.quantity;
+    });
+    return acc;
+  }, {});
   const rankedProducts = [...activeProducts].sort(
-    (a, b) => (orderCountByProductId[b.id] ?? 0) - (orderCountByProductId[a.id] ?? 0)
+    (a, b) =>
+      (orderCountByProductId[b.id] ?? 0) - (orderCountByProductId[a.id] ?? 0),
   );
-  const popularProducts = (rankedProducts.length > 0 ? rankedProducts : activeProducts)
+  const popularProducts = (
+    rankedProducts.length > 0 ? rankedProducts : activeProducts
+  )
     .slice(0, 5)
     .map((product) => ({
       ...product,
@@ -96,7 +104,7 @@ export default async function HomePage() {
       secondaryBadge:
         product.businessDiscountRate > 0
           ? `사업자 ${product.businessDiscountRate}% 할인`
-          : null
+          : null,
     }));
 
   const latestOrder = ordersData.items[0];
@@ -109,12 +117,12 @@ export default async function HomePage() {
         meta: `${formatCurrency(item.unitPrice)} · ${item.quantity}개`,
         imageUrl: product?.imageUrl,
         imageEmoji: product?.imageEmoji ?? item.imageEmoji,
-        imageBg: product?.imageBg ?? item.imageBg
+        imageBg: product?.imageBg ?? item.imageBg,
       };
     }) ?? [];
 
   const featuredCategories = categoriesData.items.filter(
-    (category) => category.featured
+    (category) => category.featured,
   );
   const heroTitleLines = content.home.hero.title.split("\n");
 
@@ -264,9 +272,7 @@ export default async function HomePage() {
                   {formatCurrency(product.price)}
                 </span>
                 {product.secondaryBadge && (
-                  <div
-                    className="rounded bg-tertiary-fixed px-1.5 py-0.5 text-[10px] font-bold text-on-tertiary-fixed-variant"
-                  >
+                  <div className="rounded bg-tertiary-fixed px-1.5 py-0.5 text-[10px] font-bold text-on-tertiary-fixed-variant">
                     {product.secondaryBadge}
                   </div>
                 )}
@@ -291,7 +297,11 @@ export default async function HomePage() {
           {featuredCategories.map((category) => (
             <Link
               key={category.id}
-              href={category.id === "all" ? "/products" : `/products?category=${category.id}`}
+              href={
+                category.id === "all"
+                  ? "/products"
+                  : `/products?category=${category.id}`
+              }
               className="group flex cursor-pointer flex-col items-center gap-3"
             >
               <div className="flex aspect-square w-full items-center justify-center rounded-[1.5rem] bg-stone-100 transition-all group-hover:bg-primary-container group-hover:text-on-primary-container">

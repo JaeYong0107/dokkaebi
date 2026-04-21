@@ -179,6 +179,118 @@ async function seedDevUsers() {
   }
 }
 
+async function seedSampleOrders() {
+  const biz = await prisma.user.findUnique({
+    where: { email: "biz@dokkaebi.kr" }
+  });
+  if (!biz) return;
+
+  const picks = await prisma.product.findMany({
+    where: {
+      id: { in: ["prod-carrot-001", "prod-onion-001", "prod-lettuce-001"] }
+    }
+  });
+  const byId = new Map(picks.map((p) => [p.id, p]));
+  const carrot = byId.get("prod-carrot-001");
+  const onion = byId.get("prod-onion-001");
+  const lettuce = byId.get("prod-lettuce-001");
+  if (!carrot || !onion || !lettuce) return;
+
+  function bizPrice(p: { basePrice: number; businessDiscountRate: number }) {
+    return Math.round(p.basePrice * ((100 - p.businessDiscountRate) / 100));
+  }
+
+  const shippingOrderNumber = "DK-SEED-SHIPPING-0001";
+  const deliveredOrderNumber = "DK-SEED-DELIVERED-0001";
+
+  await prisma.order.deleteMany({
+    where: {
+      orderNumber: { in: [shippingOrderNumber, deliveredOrderNumber] }
+    }
+  });
+
+  const shippingItems = [
+    { product: carrot, qty: 2 },
+    { product: onion, qty: 3 }
+  ];
+  const shippingSubtotal = shippingItems.reduce(
+    (sum, x) => sum + bizPrice(x.product) * x.qty,
+    0
+  );
+
+  await prisma.order.create({
+    data: {
+      userId: biz.id,
+      orderNumber: shippingOrderNumber,
+      customerTypeSnapshot: "BUSINESS",
+      subtotalAmount: shippingSubtotal,
+      shippingFee: 0,
+      totalAmount: shippingSubtotal,
+      orderStatus: "SHIPPING",
+      paymentStatus: "PAID",
+      orderedAt: new Date("2026-04-17T09:32:00+09:00"),
+      items: {
+        create: shippingItems.map(({ product, qty }) => ({
+          productId: product.id,
+          productNameSnapshot: product.name,
+          unitPrice: bizPrice(product),
+          quantity: qty,
+          lineTotal: bizPrice(product) * qty
+        }))
+      },
+      delivery: {
+        create: {
+          courierName: "롯데택배",
+          trackingNumber: "657198432011",
+          deliveryStatus: "SHIPPING",
+          shippedAt: new Date("2026-04-18T08:00:00+09:00")
+        }
+      }
+    }
+  });
+
+  const deliveredItems = [
+    { product: lettuce, qty: 1 },
+    { product: onion, qty: 2 }
+  ];
+  const deliveredSubtotal = deliveredItems.reduce(
+    (sum, x) => sum + bizPrice(x.product) * x.qty,
+    0
+  );
+
+  await prisma.order.create({
+    data: {
+      userId: biz.id,
+      orderNumber: deliveredOrderNumber,
+      customerTypeSnapshot: "BUSINESS",
+      subtotalAmount: deliveredSubtotal,
+      shippingFee: 0,
+      totalAmount: deliveredSubtotal,
+      orderStatus: "DELIVERED",
+      paymentStatus: "PAID",
+      orderedAt: new Date("2026-04-09T14:18:00+09:00"),
+      items: {
+        create: deliveredItems.map(({ product, qty }) => ({
+          productId: product.id,
+          productNameSnapshot: product.name,
+          unitPrice: bizPrice(product),
+          quantity: qty,
+          lineTotal: bizPrice(product) * qty
+        }))
+      },
+      delivery: {
+        create: {
+          courierName: "롯데택배",
+          trackingNumber: "657198431287",
+          deliveryStatus: "DELIVERED",
+          shippedAt: new Date("2026-04-10T08:00:00+09:00"),
+          deliveredAt: new Date("2026-04-11T10:30:00+09:00")
+        }
+      }
+    }
+  });
+}
+
 async function main() {
   const categories = loadJson<CategorySeed[]>("data/categories.json");
   const products = loadJson<ProductSeed[]>("data/products.json");
@@ -187,16 +299,19 @@ async function main() {
   const labelMap = buildCategoryLabelMap(real);
   await seedProducts(products, labelMap);
   await seedDevUsers();
+  await seedSampleOrders();
 
-  const [categoryCount, productCount, userCount] = await Promise.all([
+  const [categoryCount, productCount, userCount, orderCount] = await Promise.all([
     prisma.category.count(),
     prisma.product.count(),
-    prisma.user.count()
+    prisma.user.count(),
+    prisma.order.count()
   ]);
 
   console.log(`✓ Category 시드 완료: ${categoryCount}건`);
   console.log(`✓ Product 시드 완료: ${productCount}건`);
   console.log(`✓ User 시드 완료: ${userCount}건 (admin/user/biz 테스트 계정)`);
+  console.log(`✓ Order 시드 완료: ${orderCount}건 (biz 계정 샘플 주문)`);
 }
 
 main()

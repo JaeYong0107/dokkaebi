@@ -1,38 +1,49 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
 import { adminDashboard } from "@/shared/lib/data/admin-dashboard";
-import { sampleProducts } from "@/shared/lib/data/products";
-import { listLocalOrders } from "@/server/local-orders";
+import { ORDER_INCLUDE, toOrderRecord } from "@/server/mappers/order";
+import { toProduct } from "@/server/mappers/product";
 
 function getStatusTone(status: string) {
-  if (status === "SHIPPING") {
-    return "bg-primary-fixed text-on-primary-fixed";
-  }
-
-  if (status === "PREPARING") {
-    return "bg-secondary-fixed text-on-secondary-fixed";
-  }
-
+  if (status === "SHIPPING") return "bg-primary-fixed text-on-primary-fixed";
+  if (status === "PREPARING") return "bg-secondary-fixed text-on-secondary-fixed";
   return "bg-surface-container-highest text-on-surface-variant";
 }
 
 export async function GET() {
-  const orders = await listLocalOrders();
-  const productsById = Object.fromEntries(
-    sampleProducts.map((product) => [product.id, product])
-  );
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return NextResponse.json(
+      { message: "관리자 권한이 필요합니다" },
+      { status: 403 }
+    );
+  }
+
+  const [orderRows, productRows] = await Promise.all([
+    prisma.order.findMany({
+      include: ORDER_INCLUDE,
+      orderBy: { orderedAt: "desc" }
+    }),
+    prisma.product.findMany({ include: { category: true } })
+  ]);
+
+  const orders = orderRows.map(toOrderRecord);
+  const products = productRows.map(toProduct);
 
   const totalSales = orders.reduce((sum, order) => sum + order.total, 0);
   const todayOrderCount = orders.length;
-  const lowInventory = sampleProducts
-    .filter((product) => product.isActive)
-    .filter((product) => (product.stockQuantity ?? 0) <= 10)
+
+  const lowInventory = products
+    .filter((p) => p.isActive)
+    .filter((p) => (p.stockQuantity ?? 0) <= 10)
     .slice(0, 3)
-    .map((product) => ({
-      productId: product.id,
-      name: product.name,
-      remain: `잔여: ${product.stockQuantity ?? 0}${product.unit.includes("kg") ? "kg" : "개"}`,
-      imageUrl: product.imageUrl
+    .map((p) => ({
+      productId: p.id,
+      name: p.name,
+      remain: `잔여: ${p.stockQuantity ?? 0}${p.unit.includes("kg") ? "kg" : "개"}`,
+      imageUrl: p.imageUrl
     }));
 
   const recentOrders = orders.slice(0, 4).map((order) => ({
@@ -49,10 +60,7 @@ export async function GET() {
 
   return NextResponse.json({
     ...adminDashboard,
-    metrics: {
-      totalSales,
-      todayOrderCount
-    },
+    metrics: { totalSales, todayOrderCount },
     recentOrders,
     inventory: lowInventory,
     inquiryCount: adminDashboard.inquiries.length,
