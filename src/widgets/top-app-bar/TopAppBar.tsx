@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUnitPrice } from "@/features/pricing/pricing-service";
+import { UserMenu } from "@/components/shell/UserMenu";
 import { useProductsQuery } from "@/shared/hooks/use-products-query";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
@@ -182,13 +183,7 @@ export function TopAppBar() {
           >
             <Icon name="shopping_cart" />
           </Link>
-          <Link
-            href="/mypage"
-            className="rounded-full p-2 text-stone-500 transition-colors hover:bg-stone-50 active:scale-95"
-            aria-label="마이페이지"
-          >
-            <Icon name="person" />
-          </Link>
+          <UserMenu />
         </div>
       </div>
     </header>

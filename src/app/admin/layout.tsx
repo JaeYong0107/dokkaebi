@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { UserMenu } from "@/components/shell/UserMenu";
 import { Logo } from "@/shared/ui/Logo";
 import { Icon } from "@/shared/ui/Icon";
 
@@ -86,14 +87,7 @@ export default async function AdminLayout({
             <button className="rounded-full p-2 hover:bg-surface-container-low">
               <Icon name="notifications" className="text-on-surface" />
             </button>
-            <div className="flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                {profile.initial}
-              </span>
-              <span className="text-sm font-semibold">
-                {profile.email}
-              </span>
-            </div>
+            <UserMenu variant="admin" />
           </div>
         </header>
         <main className="px-6 py-8 md:px-10">{children}</main>
