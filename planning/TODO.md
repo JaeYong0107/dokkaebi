@@ -148,19 +148,20 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ## 5. 관리자 CRUD 화면
 
-**현재 상태**
-- 현재 존재하는 admin 라우트: `/admin` (대시보드), `/admin/orders` (주문 관리)
-- **없는 라우트**:
-  - `/admin/products` — 상품 CRUD
-  - `/admin/users` — 사용자 CRUD, 사업자 승인
-  - `/admin/policy` — 정책값 관리 (배송비/최소주문/무료배송 기준선)
+**진행 (2026-04-21)**
 
-**해야 할 일**
-- [ ] `/admin/products` — 목록/검색/신규등록/수정/비활성화, 카테고리 할당
-- [ ] `/admin/users` — 일반/사업자 구분, 사업자 승인 토글, 역할 변경
-- [ ] `/admin/policy` — `src/lib/config.ts` `getPolicyConfig`가 읽는 값을 DB로 이전하고 폼으로 편집
-- [ ] 각 화면의 mutation API 라우트 추가 (`PATCH /api/admin/products/[id]` 등)
-- [ ] 관리자 권한 가드 (NextAuth 세션의 `role === "ADMIN"`)
+- [x] `/admin/users` 완료
+  - GET `/api/admin/users` / PATCH `/api/admin/users/[id]`
+  - 사용자 유형/승인 상태/검색어 필터
+  - 사업자 승인 토글 + 관리자 권한 부여·회수
+  - 본인 role 내리기 차단, 사업자 아닌 사용자에 businessApproved 차단
+- [ ] `/admin/products` — 상품 CRUD (다음 커밋)
+- [ ] `/admin/policy` — Policy DB 이전 + 편집 UI (마지막 커밋)
+
+**같이 수정**
+- admin layout 과 `/admin`, `/admin/orders` 의 `fetch()` 가 쿠키 forward 하지
+  않아 서버 사이드에서 401/403 이 나고 응답 파싱 실패로 500 이 나던 문제 동시 해결
+  (`headers()` 로 cookie 전달 + fallback profile)
 
 ---
 

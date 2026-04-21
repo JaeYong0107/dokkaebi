@@ -1,4 +1,5 @@
 import { Icon } from "@/shared/ui/Icon";
+import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
 
 type AdminDashboardResponse = {
@@ -43,8 +44,10 @@ type AdminDashboardResponse = {
 
 export default async function AdminDashboardPage() {
   const origin = await getServerOrigin();
+  const hdrs = await headers();
   const response = await fetch(`${origin}/api/admin/dashboard`, {
-    cache: "no-store"
+    cache: "no-store",
+    headers: { cookie: hdrs.get("cookie") ?? "" }
   });
   const data = (await response.json()) as AdminDashboardResponse;
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import type { OrderRecord, OrderStatus } from "@/features/order/types";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { Icon } from "@/shared/ui/Icon";
@@ -56,7 +57,11 @@ export default async function AdminOrdersPage({
   const keyword =
     typeof query.q === "string" ? query.q.trim().toLowerCase() : "";
 
-  const response = await fetch(`${origin}/api/orders`, { cache: "no-store" });
+  const hdrs = await headers();
+  const response = await fetch(`${origin}/api/orders`, {
+    cache: "no-store",
+    headers: { cookie: hdrs.get("cookie") ?? "" }
+  });
   const data = (await response.json()) as { items: OrderRecord[] };
   const allOrders = data.items;
 

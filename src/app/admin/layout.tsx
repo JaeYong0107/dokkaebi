@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { Logo } from "@/shared/ui/Logo";
 import { Icon } from "@/shared/ui/Icon";
@@ -21,16 +22,28 @@ type AdminProfileResponse = {
   };
 };
 
+const FALLBACK_PROFILE: AdminProfileResponse["adminProfile"] = {
+  email: "admin@dokkaebi.kr",
+  initial: "A",
+  subtitle: "관리자 콘솔",
+  description: "주문·상품·사용자·정책을 관리합니다"
+};
+
 export default async function AdminLayout({
   children
 }: {
   children: ReactNode;
 }) {
   const origin = await getServerOrigin();
+  const hdrs = await headers();
   const response = await fetch(`${origin}/api/admin/dashboard`, {
-    cache: "no-store"
+    cache: "no-store",
+    headers: { cookie: hdrs.get("cookie") ?? "" }
   });
-  const data = (await response.json()) as AdminProfileResponse;
+  const data = response.ok
+    ? ((await response.json()) as AdminProfileResponse)
+    : { adminProfile: FALLBACK_PROFILE };
+  const profile = data.adminProfile ?? FALLBACK_PROFILE;
 
   return (
     <div className="flex min-h-screen bg-surface-container-low">
@@ -51,10 +64,10 @@ export default async function AdminLayout({
         </nav>
         <div className="mt-12 rounded-2xl bg-primary/5 p-4">
           <p className="text-xs font-bold text-primary">
-            {data.adminProfile.subtitle}
+            {profile.subtitle}
           </p>
           <p className="mt-1 text-xs text-on-surface-variant">
-            {data.adminProfile.description}
+            {profile.description}
           </p>
         </div>
       </aside>
@@ -75,10 +88,10 @@ export default async function AdminLayout({
             </button>
             <div className="flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1.5">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                {data.adminProfile.initial}
+                {profile.initial}
               </span>
               <span className="text-sm font-semibold">
-                {data.adminProfile.email}
+                {profile.email}
               </span>
             </div>
           </div>
