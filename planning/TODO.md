@@ -183,6 +183,40 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ---
 
+## 6. 홈 페이지 기능 미적용 버튼
+
+**현재 상태** (2026-04-21 점검)
+
+홈 페이지([src/app/(shop)/page.tsx](../src/app/(shop)/page.tsx)) 의 버튼 중 아직
+클릭 핸들러가 없고 시각적으로만 존재하는 항목들.
+
+**미구현**
+- [ ] **"상담 신청하기"** ([src/app/(shop)/page.tsx:326](../src/app/(shop)/page.tsx))
+  - `businessCta.primaryActionLabel`
+  - 예상 기능: 상담 신청 모달(이름/연락처/문의 내용) 또는 외부 폼 링크
+  - 저장 위치: 별도 `Inquiry` 모델 or 관리자 `/admin/inquiries` 연동
+- [ ] **"단가표 다운로드"** ([src/app/(shop)/page.tsx:329](../src/app/(shop)/page.tsx))
+  - `businessCta.secondaryActionLabel`
+  - 예상 기능: 사업자 회원 전용 정적 PDF 다운로드 or
+    동적 생성 (현재 상품 정가·사업자가 기반)
+  - 로그인·BUSINESS 승인 게이팅 필요
+
+**동작 확인된 요소 (참고, 추가 작업 불필요)**
+- Hero "지금 쇼핑하기" → `/products`
+- Quick Reorder "전체 다시 담기" → `/reorder`
+- Popular Section "전체보기" → `/products`
+- 상품 카드 → `/products/[id]`, AddToCartButton → cart store
+- 카테고리 쇼트컷 → `/products?category=[id]`
+
+**홈은 아니지만 같이 뜨는 TopAppBar**
+- [ ] **"사업자 전용" 탭** ([src/widgets/top-app-bar/TopAppBar.tsx](../src/widgets/top-app-bar/TopAppBar.tsx))
+  - 현재 단순히 `/products` 로 이동
+  - 개선: `/products?audience=business` 같은 필터 쿼리 + BUSINESS 할인율 적용
+    상품만 노출 (sampleProducts 의 businessDiscountRate > 0 필터)
+  - 비로그인 / NORMAL 접근 시 혜택 안내 오버레이 고려
+
+---
+
 ## 참고
 
 - 완료된 상태 관리 갭 리포트: [docs/agent-reports/state-management-gap-report.md](../docs/agent-reports/state-management-gap-report.md)
