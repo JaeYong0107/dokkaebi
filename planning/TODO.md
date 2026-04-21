@@ -155,7 +155,12 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 사용자 유형/승인 상태/검색어 필터
   - 사업자 승인 토글 + 관리자 권한 부여·회수
   - 본인 role 내리기 차단, 사업자 아닌 사용자에 businessApproved 차단
-- [ ] `/admin/products` — 상품 CRUD (다음 커밋)
+- [x] `/admin/products` 완료
+  - GET `/api/admin/products`, POST / PATCH
+  - 판매 상태 · 카테고리 · 키워드 검색 필터
+  - 모달 폼(신규/편집) — 뱃지 CSV, 할인율, 재고, 이모지, 배경 모두 편집
+  - 판매 중지 토글, 비활성 상품은 리스트에서 isActive=false 로 내려감
+  - zod 검증(카테고리 존재/중복 ID/0 이하 가격 등) 서버 측 처리
 - [ ] `/admin/policy` — Policy DB 이전 + 편집 UI (마지막 커밋)
 
 **같이 수정**
