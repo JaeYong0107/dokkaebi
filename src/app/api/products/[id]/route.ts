@@ -1,22 +1,24 @@
 import { NextResponse } from "next/server";
-import { getProductById } from "@/shared/lib/data/products";
+import { prisma } from "@/lib/prisma";
+import { toProduct } from "@/server/mappers/product";
 
 type RouteContext = {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 };
 
 export async function GET(_: Request, { params }: RouteContext) {
   const { id } = await params;
-  const product = getProductById(id);
+  const row = await prisma.product.findUnique({
+    where: { id },
+    include: { category: true }
+  });
 
-  if (!product) {
+  if (!row) {
     return NextResponse.json(
       { message: "상품을 찾을 수 없습니다." },
       { status: 404 }
     );
   }
 
-  return NextResponse.json(product);
+  return NextResponse.json(toProduct(row));
 }

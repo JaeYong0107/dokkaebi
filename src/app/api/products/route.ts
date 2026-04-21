@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { sampleProducts } from "@/shared/lib/data/products";
+import { prisma } from "@/lib/prisma";
+import { toProduct } from "@/server/mappers/product";
 
 export async function GET() {
-  return NextResponse.json({
-    items: sampleProducts,
-    total: sampleProducts.length
+  const rows = await prisma.product.findMany({
+    include: { category: true },
+    orderBy: [{ isActive: "desc" }, { createdAt: "asc" }]
   });
+  const items = rows.map(toProduct);
+  return NextResponse.json({ items, total: items.length });
 }
