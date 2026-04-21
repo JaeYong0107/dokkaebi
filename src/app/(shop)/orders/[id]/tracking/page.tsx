@@ -96,13 +96,22 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
         </div>
         <div className="flex gap-3">
           <PrintReceiptButton />
-          <button
-            type="button"
+          <a
+            href={`mailto:support@dokkaebi.kr?subject=${encodeURIComponent(
+              `[주문문의] ${order.orderNumber}`
+            )}&body=${encodeURIComponent(
+              `안녕하세요. 아래 주문에 대해 문의드립니다.\n\n` +
+                `주문번호: ${order.orderNumber}\n` +
+                `주문일시: ${order.orderedAt}\n` +
+                `배송 상태: ${ORDER_STATUS_LABEL[order.orderStatus]}\n` +
+                `운송장: ${order.trackingNumber ?? "(없음)"}\n\n` +
+                `문의 내용:\n`
+            )}`}
             className="flex items-center gap-2 rounded-xl bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-transform hover:scale-105"
           >
             <Icon name="support_agent" className="text-[20px]" />
             고객센터 문의
-          </button>
+          </a>
         </div>
       </div>
 
