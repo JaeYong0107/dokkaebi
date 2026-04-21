@@ -2,6 +2,7 @@ import Link from "next/link";
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+import { EditProfileButton } from "@/widgets/mypage-profile/EditProfileButton";
 
 type MyPageResponse = {
   profile: {
@@ -87,10 +88,7 @@ export default async function MyPage() {
             </div>
           </div>
           <div className="mt-8">
-            <button className="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-              {data.labels.editProfile}
-              <Icon name="arrow_forward_ios" className="text-xs" />
-            </button>
+            <EditProfileButton label={data.labels.editProfile} />
           </div>
         </div>
 
