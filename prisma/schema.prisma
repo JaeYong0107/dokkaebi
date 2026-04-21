@@ -34,44 +34,53 @@ enum OrderStatus {
 }
 
 model User {
-  id             String         @id @default(cuid())
-  email          String         @unique
+  id             String       @id @default(cuid())
+  email          String       @unique
   passwordHash   String
   name           String
   phone          String?
-  role           Role           @default(CUSTOMER)
-  customerType   CustomerType   @default(NORMAL)
+  role           Role         @default(CUSTOMER)
+  customerType   CustomerType @default(NORMAL)
   businessName   String?
   businessNumber String?
   cart           Cart?
   orders         Order[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Category {
-  id        String    @id @default(cuid())
+  id        String    @id
   name      String
+  icon      String
   sortOrder Int       @default(0)
+  featured  Boolean   @default(false)
   products  Product[]
 }
 
 model Product {
-  id            String      @id @default(cuid())
-  name          String
-  description   String
-  priceNormal   Int
-  priceBusiness Int
-  minOrderQty   Int         @default(1)
-  stockQty      Int         @default(0)
-  imageUrl      String?
-  isActive      Boolean     @default(true)
-  categoryId    String
-  category      Category    @relation(fields: [categoryId], references: [id])
-  cartItems     CartItem[]
-  orderItems    OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id                    String      @id
+  sku                   String?     @unique
+  name                  String
+  description           String
+  unit                  String
+  basePrice             Int
+  normalDiscountRate    Float       @default(0)
+  businessDiscountRate  Float       @default(0)
+  origin                String
+  imageUrl              String?
+  imageEmoji            String?
+  imageBg               String?
+  badges                String[]    @default([])
+  minOrderQty           Int         @default(1)
+  stockQuantity         Int         @default(0)
+  isActive              Boolean     @default(true)
+  categoryId            String
+  category              Category    @relation(fields: [categoryId], references: [id])
+  cartItems             CartItem[]
+  orderItems            OrderItem[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
 }
 
 model Cart {
@@ -98,21 +107,21 @@ model CartItem {
 }
 
 model Order {
-  id                   String         @id @default(cuid())
+  id                   String        @id @default(cuid())
   userId               String
-  orderNumber          String         @unique
+  orderNumber          String        @unique
   customerTypeSnapshot CustomerType
   subtotalAmount       Int
   shippingFee          Int
   totalAmount          Int
-  paymentStatus        PaymentStatus  @default(PENDING)
-  orderStatus          OrderStatus    @default(PENDING)
-  user                 User           @relation(fields: [userId], references: [id])
+  paymentStatus        PaymentStatus @default(PENDING)
+  orderStatus          OrderStatus   @default(PENDING)
+  user                 User          @relation(fields: [userId], references: [id])
   items                OrderItem[]
   delivery             Delivery?
-  orderedAt            DateTime       @default(now())
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  orderedAt            DateTime      @default(now())
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
 }
 
 model OrderItem {
