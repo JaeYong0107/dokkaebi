@@ -247,6 +247,70 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ---
 
+## 7. 작업 중 발견한 추가 누락/개선 사항
+
+섹션 6 (기능 미적용 버튼) 진행하며 코드 전체를 훑다가 **원래 TODO 에 없던**
+미구현/약한 지점을 발견해 별도로 기록. 긴급도 낮지만 로드맵에 필요.
+
+### 7-1. Inquiry (문의) 도메인 전반
+
+- [ ] **Inquiry 모델 신설**
+  - 필드: id, userId(nullable), email, subject, body, category (GENERAL/ORDER/SALES),
+    status (PENDING/IN_PROGRESS/RESOLVED), relatedOrderId, adminNote
+  - POST `/api/inquiries` (고객용) — 현재 mailto 링크 대신 DB 저장
+  - GET `/api/admin/inquiries` + PATCH `/api/admin/inquiries/[id]` (status 전환)
+  - `/admin/inquiries` 페이지
+  - admin 대시보드 "문의 응대 시작" / "모두보기" / 알림 벨 문의 카운트 이 모델 기반으로 연결
+
+### 7-2. 관리자 "새 주문 만들기" (전화 주문 대응)
+
+- [ ] admin 플로팅 "+" / `/admin/orders` "새 주문 만들기"
+  - 필요 UI: 고객 검색 / 상품 검색+수량 / 배송지 / 결제수단 / 즉시 결제 완료 처리
+  - POST `/api/orders` 확장: ADMIN 은 body 에 `onBehalfOfUserId` 허용 → userId 대리 저장
+  - stockQuantity 차감·Cart 비우기는 현행 로직 그대로 재사용 가능
+
+### 7-3. admin 대시보드 "보조 액션" 버튼 (target=286)
+
+- [ ] 목적 재정의 필요 (현재 라벨 "보조 액션" 모호)
+  - 후보: 재고 일괄 업로드(CSV) / 매출 리포트 PDF / 정책값 바로가기
+
+### 7-4. 고객 측 알림·통지
+
+- [ ] 사업자 승인 완료 / 주문 상태 변경 / 배송 시작 등 **고객 대상 통지 수단 없음**
+  - 현재 시스템: 세션 로그인 후 새로고침해야 확인
+  - 최소 단계: 이메일 발송 (SendGrid/Resend 등) 또는 앱 내 알림 드롭다운
+
+### 7-5. Cart 동기화 자동화
+
+- [ ] `PUT /api/cart` 는 만들어져 있지만 **자동 호출 없음**
+  - 현재: Zustand localStorage 만 source of truth, 다른 기기·재로그인 시 동기화 안 됨
+  - 개선: 로그인 직후 GET/api/cart 로 병합, 변경 시 debounce PUT
+
+### 7-6. 관리자 주문 상태 변경
+
+- [ ] `/admin/orders` 목록에서 주문 **상태 전환 UI 없음**
+  - 지금은 DB 에서 수동으로 PREPARING → SHIPPING → DELIVERED 바꿔야 함
+  - 필요: 행별 상태 드롭다운 or "다음 단계" 버튼 + PATCH `/api/admin/orders/[id]/status`
+
+### 7-7. SKU 중복·빈문자열 허용 이슈
+
+- [ ] Prisma `Product.sku @unique` 인데 빈 문자열 여러 개 저장 가능 (Postgres NULL != NULL 원리)
+  - `/api/admin/products` POST·PATCH 에서 sku="" 면 null 로 변환 필요
+  - 현재 정상 시드된 16건은 모두 sku 값 있어 문제 없지만 신규 등록 시 위험
+
+### 7-8. 추천 상품 알고리즘
+
+- [ ] 상품 상세 "함께 사면 좋은 상품" 은 **단순 필터** (같은 카테고리 상위 N)
+  - Order·OrderItem 기반 공동구매 카운트로 교체 권장
+  - 사업자 등급별 추천 등도 고려
+
+### 7-9. BottomNav (모바일) / SiteFooter 링크 검증
+
+- [ ] 모바일 하단 네비와 푸터의 링크들이 실제 라우트와 일치하는지 전체 스캔 필요
+  - 특히 `/about`, `/help`, `/contact` 같은 가상 URL 이 있으면 404
+
+---
+
 ## 참고
 
 - 완료된 상태 관리 갭 리포트: [docs/agent-reports/state-management-gap-report.md](../docs/agent-reports/state-management-gap-report.md)
