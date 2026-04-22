@@ -315,12 +315,12 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 관리자 상품 폼에서 상품별로 기준 설정 가능 ("저재고 알림 기준" 필드)
   - 대시보드/알림 API 모두 `stockQuantity <= lowStockThreshold` 조건 적용
   - 대시보드 카드에 "(기준 N)" 함께 표시, 재고 적은 순 정렬
-- [ ] 대시보드 저재고 카드가 여전히 `slice(0, 3)` 상한
-  - 4건 이상 저재고 상태면 4번째부터 카드에서 숨겨짐
-  - 알림 벨은 전체 수를 보여주므로 인지 가능
-  - 개선안 A: "전체보기" 링크 → `/admin/products?sort=stock-asc&active=ACTIVE`
-    (상품 관리에 재고 오름차순 정렬 추가 필요)
-  - 개선안 B: 표시 수를 상수 6~10 으로 늘리기
+- [x] ~~저재고 카드 slice(0, 3) 상한으로 4건부터 숨겨지는 문제~~ →
+  - `/admin/products` 에 `?stock=low` 필터 + 재고 오름차순 자동 정렬 추가
+  - 대시보드 `lowInventoryCount` 가 전체 저재고 수(slice 전) 를 반환하게 수정
+  - 대시보드 카드 헤더에 "전체보기" 링크 (lowInventoryCount > inventory.length 일 때만)
+  - 알림 벨 저재고 링크도 `?active=ACTIVE&stock=low` 로 교체
+  - 필터 적용 중인 상품 목록 상단에 "저재고 N건" 안내 배너 + 해제 링크
 
 ### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템
 

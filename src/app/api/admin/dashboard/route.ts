@@ -35,10 +35,11 @@ export async function GET() {
   const totalSales = orders.reduce((sum, order) => sum + order.total, 0);
   const todayOrderCount = orders.length;
 
-  const lowInventory = products
+  const lowInventoryAll = products
     .filter((p) => p.isActive)
     .filter((p) => (p.stockQuantity ?? 0) <= (p.lowStockThreshold ?? 10))
-    .sort((a, b) => (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0))
+    .sort((a, b) => (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0));
+  const lowInventory = lowInventoryAll
     .slice(0, 3)
     .map((p) => {
       const threshold = p.lowStockThreshold ?? 10;
@@ -70,7 +71,7 @@ export async function GET() {
     recentOrders,
     inventory: lowInventory,
     inquiryCount: adminDashboard.inquiries.length,
-    lowInventoryCount: lowInventory.length,
+    lowInventoryCount: lowInventoryAll.length,
     signupAvatarOverflow: 15
   });
 }

@@ -203,9 +203,19 @@ export default async function AdminDashboardPage() {
                 <Icon name="warning" className="text-xl text-error" />
                 재고 부족 알림
               </h3>
-              <span className="rounded bg-error px-2 py-0.5 text-[10px] font-black text-white">
-                {data.lowInventoryCount}건
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-error px-2 py-0.5 text-[10px] font-black text-white">
+                  {data.lowInventoryCount}건
+                </span>
+                {data.lowInventoryCount > data.inventory.length && (
+                  <Link
+                    href="/admin/products?active=ACTIVE&stock=low"
+                    className="text-xs font-bold text-primary hover:underline"
+                  >
+                    전체보기
+                  </Link>
+                )}
+              </div>
             </div>
             <div className="space-y-3">
               {data.inventory.map((item) => (

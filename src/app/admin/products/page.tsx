@@ -50,6 +50,7 @@ export default async function AdminProductsPage({
     typeof query.category === "string" ? query.category : "";
   const keyword =
     typeof query.q === "string" ? query.q.trim().toLowerCase() : "";
+  const lowStockOnly = query.stock === "low";
 
   const [productsResponse, categoriesResponse] = await Promise.all([
     fetch(`${origin}/api/admin/products`, {
@@ -92,7 +93,18 @@ export default async function AdminProductsPage({
         (p.sku ?? "").toLowerCase().includes(keyword) ||
         p.origin.toLowerCase().includes(keyword)
       );
+    })
+    .filter((p) => {
+      if (!lowStockOnly) return true;
+      const threshold = p.lowStockThreshold ?? 10;
+      return (p.stockQuantity ?? 0) <= threshold;
     });
+
+  const sortedFiltered = lowStockOnly
+    ? [...filtered].sort(
+        (a, b) => (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0)
+      )
+    : filtered;
 
   return (
     <div className="space-y-6">
@@ -102,6 +114,20 @@ export default async function AdminProductsPage({
           상품 등록 · 수정 · 판매 상태 관리
         </p>
       </header>
+
+      {lowStockOnly && (
+        <div className="flex items-center justify-between rounded-2xl border border-error/30 bg-error/5 px-4 py-3 text-sm">
+          <span className="font-semibold text-error">
+            저재고 상품 필터 적용 중 · {sortedFiltered.length}건 · 재고 적은 순 정렬
+          </span>
+          <Link
+            href="/admin/products"
+            className="text-xs font-bold text-primary hover:underline"
+          >
+            전체 상품 보기
+          </Link>
+        </div>
+      )}
 
       <form
         action="/admin/products"
@@ -118,6 +144,7 @@ export default async function AdminProductsPage({
         {activeFilter !== "ALL" && (
           <input type="hidden" name="active" value={activeFilter} />
         )}
+        {lowStockOnly && <input type="hidden" name="stock" value="low" />}
         {categoryFilter && (
           <input type="hidden" name="category" value={categoryFilter} />
         )}
@@ -182,7 +209,7 @@ export default async function AdminProductsPage({
       </div>
 
       <AdminProductsTable
-        products={filtered}
+        products={sortedFiltered}
         categories={categoriesData.items}
       />
     </div>
