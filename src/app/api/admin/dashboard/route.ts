@@ -43,6 +43,7 @@ export async function GET() {
       productId: p.id,
       name: p.name,
       remain: `잔여: ${p.stockQuantity ?? 0}${p.unit.includes("kg") ? "kg" : "개"}`,
+      stockQuantity: p.stockQuantity ?? 0,
       imageUrl: p.imageUrl
     }));
 

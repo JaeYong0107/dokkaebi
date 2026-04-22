@@ -216,8 +216,8 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 **`/admin` — 대시보드**
 - [x] ~~"전체보기" 링크~~ → `ba3db05` `/admin/orders` 링크 연결
-- [ ] "재고 추가" 버튼 (226줄)
-  - 저재고 상품 인라인 + / stock 수정 → PATCH `/api/admin/products/[id]`
+- [x] ~~"재고 추가" 버튼~~ → 모달에서 추가 수량 입력 → PATCH
+  `/api/admin/products/[id]` + router.refresh
 - [ ] "모두보기" 버튼 (240줄)
   - 고객 문의 현황 섹션 소속 — Inquiry 모델 필요
 - [ ] "문의 응대 시작" 버튼 (264줄) — Inquiry 모델 필요
