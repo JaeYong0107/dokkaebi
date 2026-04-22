@@ -4,6 +4,7 @@ import type { Product } from "@/features/product/types";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
 import { ORDER_STATUS_LABEL } from "@/features/order/types";
 import type { OrderStatus } from "@/features/order/types";
+import { CancelOrderButton } from "@/features/order/ui/CancelOrderButton";
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
@@ -215,6 +216,10 @@ export default async function OrderHistoryPage({
                   </span>
                 </div>
                 <div className="flex w-full gap-2 md:w-auto">
+                  <CancelOrderButton
+                    orderId={order.id}
+                    orderStatus={order.orderStatus}
+                  />
                   <Link
                     href={`/orders/${order.id}/tracking`}
                     className="flex-1 rounded-xl border border-outline-variant bg-white px-4 py-2 text-center text-sm font-bold text-on-surface hover:border-primary md:flex-none"
@@ -229,6 +234,17 @@ export default async function OrderHistoryPage({
                   </Link>
                 </div>
               </footer>
+              {order.orderStatus === "CANCELLED" && order.cancellationReason && (
+                <div className="mt-3 rounded-2xl bg-error-container/30 p-3 text-xs text-on-error-container">
+                  <span className="font-bold">취소 사유:</span>{" "}
+                  {order.cancellationReason}
+                  {order.cancelledAt && (
+                    <span className="ml-2 text-on-error-container/70">
+                      ({order.cancelledAt})
+                    </span>
+                  )}
+                </div>
+              )}
             </article>
           ))}
         </div>

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { cancelOrder } from "@/features/payment/payment-service";
+import { PaymentError } from "@/features/payment/types";
 import { ORDER_INCLUDE, toOrderRecord } from "@/server/mappers/order";
 
 const EDITABLE_SHIPPING_STATUSES = new Set(["PENDING", "PAID", "PREPARING"]);
@@ -21,7 +23,8 @@ const updateOrderSchema = z
     recipientPhone: z.string().max(40).optional().nullable(),
     shippingAddress: z.string().min(1).max(200).optional(),
     shippingMemo: z.string().max(200).optional().nullable(),
-    orderStatus: z.enum(ORDER_STATUSES).optional()
+    orderStatus: z.enum(ORDER_STATUSES).optional(),
+    cancellationReason: z.string().min(1).max(200).optional()
   })
   .refine(
     (data) =>
@@ -107,7 +110,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     );
   }
 
-  const { orderStatus, ...shippingFields } = parsed.data;
+  const { orderStatus, cancellationReason, ...shippingFields } = parsed.data;
 
   // 주문 상태 전환은 ADMIN 만
   if (orderStatus !== undefined && !isAdmin) {
@@ -115,6 +118,36 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       { message: "주문 상태 변경은 관리자만 가능합니다" },
       { status: 403 }
     );
+  }
+
+  // CANCELLED 로 변경할 때는 사유 필수 + 전용 서비스 경유 (재고 복구 + 결제 취소)
+  if (orderStatus === "CANCELLED") {
+    if (!cancellationReason?.trim()) {
+      return NextResponse.json(
+        { message: "취소 사유를 입력해주세요" },
+        { status: 400 }
+      );
+    }
+    try {
+      await cancelOrder({
+        orderId: id,
+        actor: "ADMIN",
+        reason: cancellationReason
+      });
+    } catch (err) {
+      if (err instanceof PaymentError) {
+        return NextResponse.json(
+          { message: err.message, code: err.code },
+          { status: err.code === "NOT_CANCELLABLE" ? 409 : 400 }
+        );
+      }
+      throw err;
+    }
+    const refreshed = await prisma.order.findUnique({
+      where: { id },
+      include: ORDER_INCLUDE
+    });
+    return NextResponse.json(refreshed ? toOrderRecord(refreshed) : null);
   }
 
   // 배송 정보 변경은 배송 전 상태만 (ADMIN 도 동일 정책)

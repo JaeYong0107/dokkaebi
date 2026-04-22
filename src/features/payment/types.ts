@@ -28,6 +28,12 @@ export type PaymentApproval = {
   approvedAt: Date;
 };
 
+export type PaymentCancelResult = {
+  provider: PaymentProviderName;
+  cancelTxId: string;
+  cancelledAt: Date;
+};
+
 export class PaymentError extends Error {
   code: string;
   constructor(message: string, code: string) {

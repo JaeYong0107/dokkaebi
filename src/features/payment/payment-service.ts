@@ -156,3 +156,100 @@ export async function checkoutAndPay(
     paymentTxId: approval.paymentTxId
   };
 }
+
+type CancelActor = "CUSTOMER" | "ADMIN";
+
+type CancelOrderInput = {
+  orderId: string;
+  actor: CancelActor;
+  /** 호출자가 본인 주문인지 확인할 때 사용. ADMIN 이면 undefined 가능. */
+  userId?: string;
+  reason: string;
+};
+
+// 소비자가 스스로 취소할 수 있는 상태. 이후 단계는 고객센터 문의로 안내.
+const CUSTOMER_CANCELLABLE_STATUSES = new Set(["PENDING", "PAID"]);
+// 관리자는 이미 취소됐거나 배송 완료된 것만 아니면 강제 취소 가능.
+const ADMIN_NON_CANCELLABLE_STATUSES = new Set(["CANCELLED", "DELIVERED"]);
+
+export async function cancelOrder(input: CancelOrderInput) {
+  const { orderId, actor, userId, reason } = input;
+  const trimmedReason = reason.trim();
+  if (!trimmedReason) {
+    throw new PaymentError("취소 사유를 입력해주세요", "REASON_REQUIRED");
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: true }
+  });
+  if (!order) {
+    throw new PaymentError("주문을 찾을 수 없습니다", "ORDER_NOT_FOUND");
+  }
+  if (actor === "CUSTOMER") {
+    if (order.userId !== userId) {
+      throw new PaymentError("본인 주문만 취소할 수 있습니다", "FORBIDDEN");
+    }
+    if (!CUSTOMER_CANCELLABLE_STATUSES.has(order.orderStatus)) {
+      throw new PaymentError(
+        "현재 상태에서는 직접 취소가 어렵습니다. 고객센터로 문의해 주세요.",
+        "NOT_CANCELLABLE"
+      );
+    }
+  } else {
+    if (ADMIN_NON_CANCELLABLE_STATUSES.has(order.orderStatus)) {
+      throw new PaymentError(
+        "이미 취소되었거나 배송 완료된 주문입니다",
+        "NOT_CANCELLABLE"
+      );
+    }
+  }
+
+  // 결제 완료 건이면 PG 환불 호출 (mock).
+  if (order.paymentStatus === "PAID" && order.paymentTxId) {
+    const provider = getPaymentProvider();
+    await provider.cancel({
+      orderNumber: order.orderNumber,
+      paymentTxId: order.paymentTxId,
+      amount: order.totalAmount,
+      reason: trimmedReason
+    });
+  }
+
+  const now = new Date();
+  const cancelledBy =
+    actor === "ADMIN" ? "ADMIN" : userId ? `USER:${userId}` : "USER";
+
+  await prisma.$transaction(async (tx) => {
+    // 재고 복구 — 결제/배송이 진행 중이라 이미 차감된 수량을 되돌림.
+    for (const line of order.items) {
+      await tx.product.update({
+        where: { id: line.productId },
+        data: { stockQuantity: { increment: line.quantity } }
+      });
+    }
+
+    await tx.order.update({
+      where: { id: order.id },
+      data: {
+        orderStatus: "CANCELLED",
+        paymentStatus:
+          order.paymentStatus === "PAID" ? "CANCELLED" : order.paymentStatus,
+        cancelledAt: now,
+        cancellationReason: trimmedReason,
+        cancelledBy
+      }
+    });
+
+    if (order.orderStatus !== "CANCELLED") {
+      await tx.delivery
+        .update({
+          where: { orderId: order.id },
+          data: { deliveryStatus: "CANCELLED" }
+        })
+        .catch(() => null);
+    }
+  });
+
+  return { orderId: order.id, orderStatus: "CANCELLED" as const };
+}

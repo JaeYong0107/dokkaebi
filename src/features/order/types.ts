@@ -36,6 +36,9 @@ export type OrderRecord = {
   recipient: string;
   trackingNumber?: string;
   courierName?: string;
+  cancelledAt?: string;
+  cancellationReason?: string;
+  cancelledBy?: string;
 };
 
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
