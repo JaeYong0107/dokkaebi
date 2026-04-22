@@ -5,6 +5,7 @@ import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { UserMenu } from "@/components/shell/UserMenu";
 import { Logo } from "@/shared/ui/Logo";
 import { Icon } from "@/shared/ui/Icon";
+import { AdminMobileNav } from "@/widgets/admin-mobile-nav/AdminMobileNav";
 import { NotificationBell } from "@/widgets/admin-notifications/NotificationBell";
 
 const NAV = [
@@ -77,7 +78,8 @@ export default async function AdminLayout({
       {/* Main */}
       <div className="flex-1">
         <header className="flex items-center justify-between border-b border-surface-container bg-surface-container-lowest px-6 py-4 md:px-10">
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-2 md:hidden">
+            <AdminMobileNav items={NAV} />
             <Logo className="text-lg" href="/admin" />
           </div>
           <div className="hidden md:flex md:items-center md:gap-4">

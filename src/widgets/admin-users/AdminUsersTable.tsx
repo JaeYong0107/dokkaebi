@@ -67,8 +67,8 @@ export function AdminUsersTable({ users }: Readonly<Props>) {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-surface-container bg-surface-container-lowest">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto rounded-2xl border border-surface-container bg-surface-container-lowest">
+      <table className="w-full min-w-[900px] text-sm">
         <thead className="bg-surface-container-low text-xs font-bold text-on-surface-variant">
           <tr>
             <th className="px-4 py-3 text-left">이메일</th>

@@ -116,8 +116,8 @@ export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-3xl bg-surface-container-lowest shadow-lift">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-3xl bg-surface-container-lowest shadow-lift">
+        <table className="w-full min-w-[960px] text-sm">
           <thead className="bg-surface-container-low text-xs text-on-surface-variant">
             <tr>
               <th className="px-4 py-3 text-left font-semibold">

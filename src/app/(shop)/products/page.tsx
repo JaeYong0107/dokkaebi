@@ -4,6 +4,7 @@ import { getUnitPrice } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { Icon } from "@/shared/ui/Icon";
+import { CollapsibleSidebar } from "@/widgets/products-filters/CollapsibleSidebar";
 import { FilterToggleCheckbox } from "@/widgets/product-list/FilterToggleCheckbox";
 import { ProductGridCard } from "@/widgets/product-list/ProductGridCard";
 
@@ -197,8 +198,9 @@ async function ProductsPageContent({
   const sidebarTitleLines = content.catalog.sidebarBanner.title.split("\n");
 
   return (
-    <main className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-12 md:flex-row">
-      <aside className="w-full shrink-0 space-y-10 md:w-64">
+    <main className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 md:flex-row md:gap-12">
+      <aside className="w-full shrink-0 space-y-4 md:w-64 md:space-y-10">
+        <CollapsibleSidebar>
         <div>
           <h3 className="mb-6 font-headline text-xl font-extrabold tracking-tight">
             {content.catalog.categorySectionTitle}
@@ -280,6 +282,7 @@ async function ProductsPageContent({
             </h4>
           </div>
         </div>
+        </CollapsibleSidebar>
       </aside>
 
       <section className="flex-1">
