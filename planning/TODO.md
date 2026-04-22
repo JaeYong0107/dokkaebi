@@ -337,6 +337,30 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
     - 입점문의 / 광고제휴 / 대량구매상담 → 각각 subject 가 다른 `mailto:sales@dokkaebi.kr`
   - 임시 법적 문서는 "정식 운영 전 법무 검토 예정" 문구로 초안임을 표시
 
+### 7-12. 반응형/모바일뷰 깨짐 — 정식 검사 후 기록
+
+상세 리포트: [docs/RESPONSIVE_AUDIT.md](../docs/RESPONSIVE_AUDIT.md) (2026-04-22)
+gstack browse 로 12개 페이지 × 3 뷰포트 스크린샷 기반 감사.
+
+**🔴🔴 CRITICAL**
+- [ ] A. **한글 텍스트가 한 글자씩 세로로 쪼개지는 현상** — flex 컨테이너에서 폭 부족
+  시 CJK word-break 로 글자 단위 개행. 6곳 확인 (홈 CTA, 상품 상세 Quick Reorder,
+  상품 상세 장바구니 CTA, admin orders/products/users 테이블 셀).
+  - 1줄 해결: `globals.css` `body { word-break: keep-all; }` + 필요 시 `whitespace-nowrap`
+- [ ] B. **관리자 콘솔 모바일 미대응**
+  - B-1. 사이드바 `hidden md:block` → 모바일에서 admin 메뉴 접근 불가. 햄버거 drawer 필요
+  - B-2. admin 테이블 (`/admin/orders`, `/admin/products`, `/admin/users`) 가로 스크롤
+    없어 셀 붕괴 → `overflow-x-auto` + `min-w-[...]` 래퍼
+
+**🔴 HIGH**
+- [ ] C. 홈 히어로 텍스트 모바일 강제 줄바꿈 — `text-5xl` 고정 → `text-3xl md:text-5xl`
+- [ ] D. 상품 상세 브레드크럼 overflow (긴 상품명 시)
+- [ ] E. `/products` 사이드바가 모바일에서 상단 차지 → 상품 그리드 밀림 → 접이식 필터
+
+**🟡 MEDIUM**
+- [ ] F. 푸터 사업자 정보 긴 줄 가독성
+- [ ] G. 관리자 모바일 헤더에 현재 페이지명 표기 없음
+
 ### 7-10. 재고 부족 알림 기준·표시 정책
 
 - [x] ~~임계값 하드코딩~~ → `Product.lowStockThreshold` 필드 신설 (default 10)

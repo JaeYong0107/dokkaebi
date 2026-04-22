@@ -23,7 +23,9 @@
       "Bash(rm -rf .next)",
       "Bash(curl -s -b /tmp/admin.txt http://localhost:3000/admin)",
       "Bash(curl -s -b /tmp/admin.txt \"http://localhost:3000/admin/products?sort=stock-asc\" -o /dev/null -w \"status=%{http_code}\\\\n\")",
-      "Read(//c/Users/123/AppData/Local/Temp/claude/c--Users-123----dokkaebi/2df45125-d76a-44a2-97c7-97c9e925cf11/tasks/**)"
+      "Read(//c/Users/123/AppData/Local/Temp/claude/c--Users-123----dokkaebi/2df45125-d76a-44a2-97c7-97c9e925cf11/tasks/**)",
+      "Skill(browse)",
+      "Skill(browse:*)"
     ]
   }
 }
