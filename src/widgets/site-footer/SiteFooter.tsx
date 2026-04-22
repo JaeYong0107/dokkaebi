@@ -19,18 +19,61 @@ export function SiteFooter() {
         <div>
           <h4 className="mb-4 font-bold">서비스</h4>
           <ul className="space-y-2 text-sm text-stone-500">
-            <li><Link href="/signup" className="hover:text-primary">이용약관</Link></li>
-            <li><Link href="/login" className="font-bold text-stone-700 hover:text-primary">개인정보처리방침</Link></li>
-            <li><Link href="/orders" className="hover:text-primary">배송안내</Link></li>
-            <li><Link href="/mypage" className="hover:text-primary">고객센터</Link></li>
+            <li>
+              <Link href="/legal/terms" className="hover:text-primary">
+                이용약관
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/legal/privacy"
+                className="font-bold text-stone-700 hover:text-primary"
+              >
+                개인정보처리방침
+              </Link>
+            </li>
+            <li>
+              <Link href="/legal/terms" className="hover:text-primary">
+                배송안내
+              </Link>
+            </li>
+            <li>
+              <a
+                href="mailto:support@dokkaebi.kr"
+                className="hover:text-primary"
+              >
+                고객센터
+              </a>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="mb-4 font-bold">비즈니스</h4>
           <ul className="space-y-2 text-sm text-stone-500">
-            <li><Link href="/admin" className="hover:text-primary">입점문의</Link></li>
-            <li><Link href="/products" className="hover:text-primary">광고제휴</Link></li>
-            <li><Link href="/reorder" className="hover:text-primary">대량구매상담</Link></li>
+            <li>
+              <a
+                href={`mailto:sales@dokkaebi.kr?subject=${encodeURIComponent("[입점문의]")}`}
+                className="hover:text-primary"
+              >
+                입점문의
+              </a>
+            </li>
+            <li>
+              <a
+                href={`mailto:sales@dokkaebi.kr?subject=${encodeURIComponent("[광고제휴]")}`}
+                className="hover:text-primary"
+              >
+                광고제휴
+              </a>
+            </li>
+            <li>
+              <a
+                href={`mailto:sales@dokkaebi.kr?subject=${encodeURIComponent("[대량구매상담]")}`}
+                className="hover:text-primary"
+              >
+                대량구매상담
+              </a>
+            </li>
           </ul>
         </div>
       </div>

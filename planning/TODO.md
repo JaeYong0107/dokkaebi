@@ -315,8 +315,16 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 7-9. BottomNav (모바일) / SiteFooter 링크 검증
 
-- [ ] 모바일 하단 네비와 푸터의 링크들이 실제 라우트와 일치하는지 전체 스캔 필요
-  - 특히 `/about`, `/help`, `/contact` 같은 가상 URL 이 있으면 404
+- [x] ~~링크 목적지 감사~~
+  - BottomNav 5개 링크는 모두 실제 라우트(`/`, `/products`, `/reorder`,
+    `/orders`, `/mypage`) — 이상 없음
+  - SiteFooter 7개 중 **6개가 잘못 연결** 되어 있어 교정:
+    - 이용약관 → `/legal/terms` 페이지 신설
+    - 개인정보처리방침 → `/legal/privacy` 페이지 신설
+    - 배송안내 → 임시로 `/legal/terms` 로 (별도 페이지 필요 시 분리)
+    - 고객센터 → `mailto:support@dokkaebi.kr`
+    - 입점문의 / 광고제휴 / 대량구매상담 → 각각 subject 가 다른 `mailto:sales@dokkaebi.kr`
+  - 임시 법적 문서는 "정식 운영 전 법무 검토 예정" 문구로 초안임을 표시
 
 ### 7-10. 재고 부족 알림 기준·표시 정책
 
