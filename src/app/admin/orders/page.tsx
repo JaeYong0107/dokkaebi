@@ -106,9 +106,6 @@ export default async function AdminOrdersPage({
         </div>
         <div className="flex items-center gap-2">
           <AdminOrdersCsvButton orders={filteredOrders} />
-          <button className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white">
-            새 주문 만들기
-          </button>
         </div>
       </header>
 

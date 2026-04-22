@@ -20,7 +20,8 @@
       "Bash(git commit:*)",
       "Bash(git branch)",
       "Bash(git show:*)",
-      "Bash(rm -rf .next)"
+      "Bash(rm -rf .next)",
+      "Bash(curl -s -b /tmp/admin.txt http://localhost:3000/admin)"
     ]
   }
 }
