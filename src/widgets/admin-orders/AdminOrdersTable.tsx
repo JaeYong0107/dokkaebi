@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   ORDER_STATUS_LABEL,
   type OrderRecord,
@@ -8,6 +9,15 @@ import {
 } from "@/features/order/types";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+
+const STATUS_OPTIONS: OrderStatus[] = [
+  "PENDING",
+  "PAID",
+  "PREPARING",
+  "SHIPPING",
+  "DELIVERED",
+  "CANCELLED"
+];
 
 const STATUS_TONE: Record<OrderStatus, string> = {
   PENDING: "bg-surface-container-high text-on-surface-variant",
@@ -23,7 +33,36 @@ type AdminOrdersTableProps = {
 };
 
 export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
+  const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [rowError, setRowError] = useState<{ id: string; message: string } | null>(
+    null
+  );
+  const [, startTransition] = useTransition();
+
+  const handleStatusChange = async (orderId: string, nextStatus: OrderStatus) => {
+    setPendingId(orderId);
+    setRowError(null);
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderStatus: nextStatus })
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setRowError({
+          id: orderId,
+          message: body?.message ?? "상태 변경에 실패했습니다"
+        });
+        return;
+      }
+      startTransition(() => router.refresh());
+    } finally {
+      setPendingId(null);
+    }
+  };
 
   const visibleIds = useMemo(() => orders.map((order) => order.id), [orders]);
 
@@ -156,11 +195,33 @@ export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
                       {order.orderedAt}
                     </td>
                     <td className="px-4 py-4">
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_TONE[order.orderStatus]}`}
+                      <select
+                        value={order.orderStatus}
+                        onChange={(event) =>
+                          handleStatusChange(
+                            order.id,
+                            event.target.value as OrderStatus
+                          )
+                        }
+                        disabled={pendingId === order.id}
+                        aria-label={`${order.orderNumber} 상태 변경`}
+                        className={`cursor-pointer rounded-full border-none px-2.5 py-1 text-xs font-bold outline-none focus:ring-2 focus:ring-primary ${STATUS_TONE[order.orderStatus]}`}
                       >
-                        {ORDER_STATUS_LABEL[order.orderStatus]}
-                      </span>
+                        {STATUS_OPTIONS.map((status) => (
+                          <option
+                            key={status}
+                            value={status}
+                            className="bg-white text-on-surface"
+                          >
+                            {ORDER_STATUS_LABEL[status]}
+                          </option>
+                        ))}
+                      </select>
+                      {rowError?.id === order.id && (
+                        <p className="mt-1 text-[10px] font-semibold text-error">
+                          {rowError.message}
+                        </p>
+                      )}
                     </td>
                     <td className="px-4 py-4 text-right font-headline font-bold text-primary">
                       {formatCurrency(order.total)}

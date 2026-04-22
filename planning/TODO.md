@@ -288,9 +288,13 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 7-6. 관리자 주문 상태 변경
 
-- [ ] `/admin/orders` 목록에서 주문 **상태 전환 UI 없음**
-  - 지금은 DB 에서 수동으로 PREPARING → SHIPPING → DELIVERED 바꿔야 함
-  - 필요: 행별 상태 드롭다운 or "다음 단계" 버튼 + PATCH `/api/admin/orders/[id]/status`
+- [x] ~~상태 전환 UI 없음~~ → `/admin/orders` 테이블 각 행 상태 칩을
+  `<select>` 로 교체, 변경 시 PATCH `/api/orders/[id]` + router.refresh.
+  `updateOrderSchema` 를 복합(배송지 또는 상태 변경) 으로 확장하고
+  `orderStatus` 는 ADMIN 전용 권한 체크.
+- [ ] 후속: Delivery 레코드의 `deliveryStatus`·`shippedAt`·`deliveredAt`
+  동기화 (현재 orderStatus 만 바뀌고 Delivery 는 그대로라 tracking 페이지
+  타임라인과 괴리 가능)
 
 ### 7-7. SKU 중복·빈문자열 허용 이슈
 
