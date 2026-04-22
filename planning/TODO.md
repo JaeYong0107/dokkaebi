@@ -192,9 +192,7 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 ### 고객 영역 (shop)
 
 **`/products` — 상품 목록**
-- [ ] "더보기" 버튼 ([src/app/(shop)/products/page.tsx:324](../src/app/(shop)/products/page.tsx))
-  - 현재 UI만 존재. 페이지네이션 / 무한 스크롤 미구현
-  - 서버 컴포넌트라 page query 또는 Server Action 필요
+- [x] ~~"더보기" 버튼~~ → `?page=N` 쿼리 기반 누적 페이지네이션 (기본 12개 단위)
 
 **`/products/[id]` — 상품 상세**
 - [x] ~~탭 버튼 3종 전환~~ → `76654f1` 클라이언트 컴포넌트 분리 + 활성 탭 state

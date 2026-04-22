@@ -97,6 +97,10 @@ async function ProductsPageContent({
       : "popular";
   const dealsOnly = query.dealsOnly === "1";
   const freeShippingOnly = query.freeShipping === "1";
+  const PAGE_SIZE = 12;
+  const rawPage =
+    typeof query.page === "string" ? Number.parseInt(query.page, 10) : 1;
+  const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const [productsResponse, categoriesResponse, ordersResponse, contentResponse] =
     await Promise.all([
@@ -158,7 +162,12 @@ async function ProductsPageContent({
     );
   });
 
-  const visibleProducts = sortedProducts.slice(0, 12);
+  const visibleCount = Math.min(
+    PAGE_SIZE * currentPage,
+    sortedProducts.length
+  );
+  const visibleProducts = sortedProducts.slice(0, visibleCount);
+  const hasMore = visibleCount < sortedProducts.length;
 
   const categoryItems = categoriesData.items.map((category) => {
     const baseList =
@@ -319,9 +328,15 @@ async function ProductsPageContent({
           </div>
         )}
 
-        {sortedProducts.length > 0 && (
+        {sortedProducts.length > 0 && hasMore && (
           <div className="mt-20 flex justify-center">
-            <button className="group flex items-center gap-4 rounded-full border border-stone-100 bg-white px-8 py-4 shadow-sm transition-all hover:border-primary">
+            <Link
+              href={buildHref("/products", query, {
+                page: String(currentPage + 1)
+              })}
+              scroll={false}
+              className="group flex items-center gap-4 rounded-full border border-stone-100 bg-white px-8 py-4 shadow-sm transition-all hover:border-primary"
+            >
               <span className="font-bold text-on-surface">
                 {content.catalog.loadMoreLabel} ({visibleProducts.length} / {sortedProducts.length})
               </span>
@@ -329,8 +344,13 @@ async function ProductsPageContent({
                 name="expand_more"
                 className="text-primary transition-transform group-hover:translate-y-1"
               />
-            </button>
+            </Link>
           </div>
+        )}
+        {sortedProducts.length > 0 && !hasMore && visibleProducts.length > PAGE_SIZE && (
+          <p className="mt-10 text-center text-xs font-semibold text-on-surface-variant/60">
+            모든 상품을 다 불러왔습니다
+          </p>
         )}
       </section>
     </main>
