@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { BusinessCtaButtons } from "@/widgets/home-business-cta/BusinessCtaButtons";
 import type { OrderRecord } from "@/features/order/types";
 import { getUnitPrice } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
@@ -322,14 +323,10 @@ export default async function HomePage() {
             {content.home.businessCta.description}
           </p>
         </div>
-        <div className="flex w-full flex-col gap-4 sm:flex-row md:w-auto">
-          <button className="rounded-full bg-primary px-8 py-4 font-bold text-on-primary transition-all active:scale-95">
-            {content.home.businessCta.primaryActionLabel}
-          </button>
-          <button className="rounded-full border border-stone-200 bg-surface-container-lowest px-8 py-4 font-bold text-on-surface transition-all active:scale-95">
-            {content.home.businessCta.secondaryActionLabel}
-          </button>
-        </div>
+        <BusinessCtaButtons
+          primaryLabel={content.home.businessCta.primaryActionLabel}
+          secondaryLabel={content.home.businessCta.secondaryActionLabel}
+        />
       </section>
     </main>
   );

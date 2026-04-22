@@ -243,15 +243,9 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 홈 페이지 (`/`)
 
-- [ ] **"상담 신청하기"** ([src/app/(shop)/page.tsx:326](../src/app/(shop)/page.tsx))
-  - `businessCta.primaryActionLabel`
-  - 예상 기능: 상담 신청 모달(이름/연락처/문의 내용) 또는 외부 폼 링크
-  - 저장 위치: 별도 `Inquiry` 모델 or 관리자 `/admin/inquiries` 연동
-- [ ] **"단가표 다운로드"** ([src/app/(shop)/page.tsx:329](../src/app/(shop)/page.tsx))
-  - `businessCta.secondaryActionLabel`
-  - 예상 기능: 사업자 회원 전용 정적 PDF 다운로드 or
-    동적 생성 (현재 상품 정가·사업자가 기반)
-  - 로그인·BUSINESS 승인 게이팅 필요
+- [x] ~~"상담 신청하기"~~ → mailto(sales@) + 세션 이메일/이름/양식 자동 채움
+- [x] ~~"단가표 다운로드"~~ → 로그인+BUSINESS 승인 게이팅, 전체 활성 상품의
+  정가·일반가·사업자가를 CSV 로 클라이언트 생성 (12열, UTF-8 BOM)
 
 ---
 
