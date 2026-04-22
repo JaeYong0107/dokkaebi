@@ -80,11 +80,27 @@ export default async function AdminLayout({
           <div className="flex items-center gap-3 md:hidden">
             <Logo className="text-lg" href="/admin" />
           </div>
-          <div className="hidden md:block">
-            <p className="text-xs text-on-surface-variant">2026.04.18 (금)</p>
-            <h1 className="font-headline text-xl font-bold">관리자 콘솔</h1>
+          <div className="hidden md:flex md:items-center md:gap-4">
+            <div>
+              <p className="text-xs text-on-surface-variant">2026.04.18 (금)</p>
+              <h1 className="font-headline text-xl font-bold">관리자 콘솔</h1>
+            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1.5 text-xs font-bold text-on-surface-variant hover:bg-surface-container hover:text-primary"
+            >
+              <Icon name="storefront" className="text-sm" />
+              쇼핑몰 보기
+            </Link>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              aria-label="쇼핑몰로 이동"
+              className="rounded-full p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-primary md:hidden"
+            >
+              <Icon name="storefront" />
+            </Link>
             <NotificationBell />
             <UserMenu variant="admin" />
           </div>

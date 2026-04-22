@@ -96,6 +96,16 @@ export function UserMenu({ variant = "shop" }: Readonly<Props>) {
           </div>
 
           <nav className="py-1 text-sm">
+            {variant === "admin" && (
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-2 text-on-surface hover:bg-surface-container-low"
+              >
+                <Icon name="storefront" className="text-base" />
+                쇼핑몰 보기
+              </Link>
+            )}
             <Link
               href="/mypage"
               onClick={() => setOpen(false)}
