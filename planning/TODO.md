@@ -282,9 +282,14 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 7-5. Cart 동기화 자동화
 
-- [ ] `PUT /api/cart` 는 만들어져 있지만 **자동 호출 없음**
-  - 현재: Zustand localStorage 만 source of truth, 다른 기기·재로그인 시 동기화 안 됨
-  - 개선: 로그인 직후 GET/api/cart 로 병합, 변경 시 debounce PUT
+- [x] ~~로컬 변경 시 서버 자동 반영 없음~~ → `CartServerSync` 클라이언트
+  컴포넌트 추가해 RootLayout 에서 상시 마운트. 로그인 상태에서
+  items/customerType 이 바뀌면 600ms debounce 후 `PUT /api/cart` 자동 호출.
+  로그아웃 전이(auth→unauth) 감지 시 로컬 `cart-store.clear()` 로 다음
+  사용자에게 잔여 장바구니가 노출되지 않도록 정리.
+- [ ] 후속: 로그인 직후 서버 cart 와 로컬 cart 병합 정책 결정
+  (현재는 `CartSeedBootstrap` 이 로컬 비어있을 때만 서버 값을 주입.
+  로컬·서버 모두 비어있지 않으면 로컬 우선)
 
 ### 7-6. 관리자 주문 상태 변경
 
