@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailActions } from "@/components/cart/ProductDetailActions";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
+import { getFavoriteProductIds } from "@/features/favorite/server";
+import { FavoriteHydrator } from "@/features/favorite/ui/FavoriteHydrator";
 import type { Product } from "@/features/product/types";
 import {
   getDiscountRate,
@@ -55,12 +57,22 @@ export default async function ProductDetailPage({
   params
 }: ProductDetailPageProps) {
   const { id } = await params;
-  const [productsResponse, contentResponse] = await Promise.all([
+  const [
+    productsResponse,
+    contentResponse,
+    recommendationsResponse,
+    favoriteIds
+  ] = await Promise.all([
     serverFetch("/api/products"),
-    serverFetch(`/api/products/${id}/content`)
+    serverFetch(`/api/products/${id}/content`),
+    serverFetch(`/api/products/${id}/recommendations?limit=3`),
+    getFavoriteProductIds()
   ]);
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const content = (await contentResponse.json()) as ProductDetailContentResponse;
+  const recommendationsData = recommendationsResponse.ok
+    ? ((await recommendationsResponse.json()) as { items: Product[] })
+    : { items: [] as Product[] };
   const sampleProducts = productsData.items;
   const product = sampleProducts.find((candidate) => candidate.id === id) ?? null;
 
@@ -68,10 +80,7 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const recommendations = sampleProducts
-    .filter((candidate) => candidate.isActive)
-    .filter((candidate) => candidate.id !== product.id)
-    .slice(0, 3);
+  const recommendations = recommendationsData.items;
   const originalPrice = getOriginalPrice(product);
   const normalPrice = getUnitPrice(product, "NORMAL");
   const businessPrice = getUnitPrice(product, "BUSINESS");
@@ -83,6 +92,7 @@ export default async function ProductDetailPage({
 
   return (
     <main className="mx-auto max-w-screen-2xl px-8 py-12">
+      <FavoriteHydrator productIds={favoriteIds} />
       <nav className="mb-8 flex items-center space-x-2 text-sm text-on-surface-variant">
         <Link href="/" className="hover:text-primary">
           홈
@@ -96,27 +106,8 @@ export default async function ProductDetailPage({
       </nav>
 
       <div className="mb-20 grid grid-cols-12 gap-12">
-        <div className="col-span-12 flex gap-4 lg:col-span-7">
-          <div className="flex flex-col gap-4">
-            {Array.from({ length: 3 }).map((_, idx) => (
-              <div
-                key={`${product.id}-${idx}`}
-                className={
-                  "h-20 w-20 overflow-hidden rounded-xl bg-surface-container-high p-2 transition-all ring-primary" +
-                  (idx === 0 ? " ring-2" : "")
-                }
-              >
-                <ProductImage
-                  imageUrl={product.imageUrl}
-                  alt={product.name}
-                  emoji={product.imageEmoji}
-                  bg={product.imageBg}
-                  size="md"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex-1 overflow-hidden rounded-[2rem] bg-surface-container-low p-6">
+        <div className="col-span-12 lg:col-span-7">
+          <div className="overflow-hidden rounded-[2rem] bg-surface-container-low p-6">
             <ProductImage
               imageUrl={product.imageUrl}
               alt={product.name}

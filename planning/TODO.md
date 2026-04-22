@@ -218,19 +218,23 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 - [x] ~~"전체보기" 링크~~ → `ba3db05` `/admin/orders` 링크 연결
 - [x] ~~"재고 추가" 버튼~~ → 모달에서 추가 수량 입력 → PATCH
   `/api/admin/products/[id]` + router.refresh
-- [ ] "모두보기" 버튼 (240줄)
-  - 고객 문의 현황 섹션 소속 — Inquiry 모델 필요
-- [ ] "문의 응대 시작" 버튼 (264줄) — Inquiry 모델 필요
-- [ ] "보조 액션" 버튼 (286줄)
-  - 대시보드 푸터 영역. 현재 라벨만 있음, 목적 재정의 필요
-- [ ] 플로팅 "+" 버튼 (295줄)
-  - adminDashboardContent.floatingActionLabel "새 주문 등록"
-  - 관리자가 전화 주문 등을 수동 입력하는 플로우 필요 시 구현
+- [x] ~~"모두보기" (고객 문의 현황)~~ →
+  `mailto:support@dokkaebi.kr?subject=[고객 문의 전체 조회]` 로 임시 연결.
+  Inquiry 모델 도입(7-1, 추후예정) 시 실제 목록 페이지로 교체 예정
+- [x] ~~"문의 응대 시작하기"~~ → `mailto:support@dokkaebi.kr?subject=[고객 문의 응대]`
+  링크로 임시 연결. 추후 7-11 알림 시스템에서 문의 상세 페이지로 교체 예정
+- [x] ~~"재고 관리 대장"~~ → `/admin/products?sort=stock-asc` 링크 연결
+  (products 페이지에 `sort` 쿼리 파라미터 해석 추가)
+- [x] ~~"리포트 다운로드"~~ → `DashboardReportButton` client 컴포넌트로
+  `/api/orders` 호출 → 주문 CSV 다운로드 (11열, UTF-8 BOM)
+- [x] ~~플로팅 "+" / `/admin/orders` "새 주문 만들기"~~
+  → 2026-04-22 삭제. 관리자 수동 주문 시나리오가 현 MVP 에 필요 없다는 판단.
+  `floatingActionLabel` content 필드, `AdminDashboardResponse.floatingActionLabel`
+  타입, 두 버튼 JSX 모두 제거. 복구 필요 시 7-2 후속으로 다시 추가.
 
 **`/admin/orders` — 주문 관리**
 - [x] ~~"CSV 다운로드"~~ → `eaa9049` 현재 필터 기준 15열 CSV + UTF-8 BOM
-- [ ] "새 주문 만들기" 버튼 (110줄)
-  - 관리자 수동 주문 생성. 위 "+" 와 연동 가능
+- [x] ~~"새 주문 만들기"~~ → 2026-04-22 삭제 (7-2 후속 참고)
 
 ### 공통 (shell)
 
@@ -252,7 +256,11 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 섹션 6 (기능 미적용 버튼) 진행하며 코드 전체를 훑다가 **원래 TODO 에 없던**
 미구현/약한 지점을 발견해 별도로 기록. 긴급도 낮지만 로드맵에 필요.
 
-### 7-1. Inquiry (문의) 도메인 전반
+### 7-1. Inquiry (문의) 도메인 전반 — **추후예정 (post-MVP)**
+
+사유: 신규 페이지 (`/admin/inquiries`, 고객 문의 폼) 와 신규 모델 추가 필요.
+현재는 mailto 링크(홈 상담·tracking·mypage 문의) 로 실용 커버 중.
+나중에 실제 문의 유입량이 쌓이면 전환.
 
 - [ ] **Inquiry 모델 신설**
   - 필드: id, userId(nullable), email, subject, body, category (GENERAL/ORDER/SALES),
@@ -264,7 +272,8 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 7-2. 관리자 "새 주문 만들기" (전화 주문 대응)
 
-- [ ] admin 플로팅 "+" / `/admin/orders` "새 주문 만들기"
+- [ ] **현재 MVP 에선 불필요로 판단되어 버튼 제거** (2026-04-22)
+  - 이 설계는 나중에 관리자 대리 주문 플로우가 필요해질 때 복구용으로 기록 유지
   - 필요 UI: 고객 검색 / 상품 검색+수량 / 배송지 / 결제수단 / 즉시 결제 완료 처리
   - POST `/api/orders` 확장: ADMIN 은 body 에 `onBehalfOfUserId` 허용 → userId 대리 저장
   - stockQuantity 차감·Cart 비우기는 현행 로직 그대로 재사용 가능
@@ -274,40 +283,83 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 - [ ] 목적 재정의 필요 (현재 라벨 "보조 액션" 모호)
   - 후보: 재고 일괄 업로드(CSV) / 매출 리포트 PDF / 정책값 바로가기
 
-### 7-4. 고객 측 알림·통지
+### 7-4. 고객 측 알림·통지 — **추후예정 (post-MVP, 7-11 로 통합 설계)**
 
 - [ ] 사업자 승인 완료 / 주문 상태 변경 / 배송 시작 등 **고객 대상 통지 수단 없음**
   - 현재 시스템: 세션 로그인 후 새로고침해야 확인
-  - 최소 단계: 이메일 발송 (SendGrid/Resend 등) 또는 앱 내 알림 드롭다운
+  - 7-11 활동 로그+알림 시스템에 통합되어 재설계 예정
 
 ### 7-5. Cart 동기화 자동화
 
-- [ ] `PUT /api/cart` 는 만들어져 있지만 **자동 호출 없음**
-  - 현재: Zustand localStorage 만 source of truth, 다른 기기·재로그인 시 동기화 안 됨
-  - 개선: 로그인 직후 GET/api/cart 로 병합, 변경 시 debounce PUT
+- [x] ~~로컬 변경 시 서버 자동 반영 없음~~ → `CartServerSync` 클라이언트
+  컴포넌트 추가해 RootLayout 에서 상시 마운트. 로그인 상태에서
+  items/customerType 이 바뀌면 600ms debounce 후 `PUT /api/cart` 자동 호출.
+  로그아웃 전이(auth→unauth) 감지 시 로컬 `cart-store.clear()` 로 다음
+  사용자에게 잔여 장바구니가 노출되지 않도록 정리.
+- [ ] 후속: 로그인 직후 서버 cart 와 로컬 cart 병합 정책 결정
+  (현재는 `CartSeedBootstrap` 이 로컬 비어있을 때만 서버 값을 주입.
+  로컬·서버 모두 비어있지 않으면 로컬 우선)
 
 ### 7-6. 관리자 주문 상태 변경
 
-- [ ] `/admin/orders` 목록에서 주문 **상태 전환 UI 없음**
-  - 지금은 DB 에서 수동으로 PREPARING → SHIPPING → DELIVERED 바꿔야 함
-  - 필요: 행별 상태 드롭다운 or "다음 단계" 버튼 + PATCH `/api/admin/orders/[id]/status`
+- [x] ~~상태 전환 UI 없음~~ → `/admin/orders` 테이블 각 행 상태 칩을
+  `<select>` 로 교체, 변경 시 PATCH `/api/orders/[id]` + router.refresh.
+  `updateOrderSchema` 를 복합(배송지 또는 상태 변경) 으로 확장하고
+  `orderStatus` 는 ADMIN 전용 권한 체크.
+- [ ] 후속: Delivery 레코드의 `deliveryStatus`·`shippedAt`·`deliveredAt`
+  동기화 (현재 orderStatus 만 바뀌고 Delivery 는 그대로라 tracking 페이지
+  타임라인과 괴리 가능)
 
 ### 7-7. SKU 중복·빈문자열 허용 이슈
 
-- [ ] Prisma `Product.sku @unique` 인데 빈 문자열 여러 개 저장 가능 (Postgres NULL != NULL 원리)
-  - `/api/admin/products` POST·PATCH 에서 sku="" 면 null 로 변환 필요
-  - 현재 정상 시드된 16건은 모두 sku 값 있어 문제 없지만 신규 등록 시 위험
+- [x] ~~빈 문자열 sku 허용~~ → `src/features/product/schemas.ts` 의 sku 필드에
+  zod `.transform()` 추가: 빈/공백 문자열은 자동으로 null 로 변환.
+  `@unique` 제약과 정합 (Postgres 는 NULL 은 복수 허용하므로 충돌 없음).
 
 ### 7-8. 추천 상품 알고리즘
 
-- [ ] 상품 상세 "함께 사면 좋은 상품" 은 **단순 필터** (같은 카테고리 상위 N)
-  - Order·OrderItem 기반 공동구매 카운트로 교체 권장
-  - 사업자 등급별 추천 등도 고려
+- [x] ~~단순 "앞에서 3개 slice"~~ → `GET /api/products/[id]/recommendations`
+  신규 엔드포인트에서 Order·OrderItem 공동구매 카운트로 랭킹.
+  주문 기록 없으면 같은 카테고리, 그것도 없으면 기타 활성 상품으로
+  2단계 fallback. product detail 페이지가 서버 사이드에서 이 API 호출.
+- [ ] 후속: 사업자 등급별 / 최근 조회 기반 / 관리자 큐레이션 추천 등
 
 ### 7-9. BottomNav (모바일) / SiteFooter 링크 검증
 
-- [ ] 모바일 하단 네비와 푸터의 링크들이 실제 라우트와 일치하는지 전체 스캔 필요
-  - 특히 `/about`, `/help`, `/contact` 같은 가상 URL 이 있으면 404
+- [x] ~~링크 목적지 감사~~
+  - BottomNav 5개 링크는 모두 실제 라우트(`/`, `/products`, `/reorder`,
+    `/orders`, `/mypage`) — 이상 없음
+  - SiteFooter 7개 중 **6개가 잘못 연결** 되어 있어 교정:
+    - 이용약관 → `/legal/terms` 페이지 신설
+    - 개인정보처리방침 → `/legal/privacy` 페이지 신설
+    - 배송안내 → 임시로 `/legal/terms` 로 (별도 페이지 필요 시 분리)
+    - 고객센터 → `mailto:support@dokkaebi.kr`
+    - 입점문의 / 광고제휴 / 대량구매상담 → 각각 subject 가 다른 `mailto:sales@dokkaebi.kr`
+  - 임시 법적 문서는 "정식 운영 전 법무 검토 예정" 문구로 초안임을 표시
+
+### 7-12. 반응형/모바일뷰 깨짐 — 정식 검사 후 기록
+
+상세 리포트: [docs/RESPONSIVE_AUDIT.md](../docs/RESPONSIVE_AUDIT.md) (2026-04-22)
+gstack browse 로 12개 페이지 × 3 뷰포트 스크린샷 기반 감사.
+
+**🔴🔴 CRITICAL**
+- [ ] A. **한글 텍스트가 한 글자씩 세로로 쪼개지는 현상** — flex 컨테이너에서 폭 부족
+  시 CJK word-break 로 글자 단위 개행. 6곳 확인 (홈 CTA, 상품 상세 Quick Reorder,
+  상품 상세 장바구니 CTA, admin orders/products/users 테이블 셀).
+  - 1줄 해결: `globals.css` `body { word-break: keep-all; }` + 필요 시 `whitespace-nowrap`
+- [ ] B. **관리자 콘솔 모바일 미대응**
+  - B-1. 사이드바 `hidden md:block` → 모바일에서 admin 메뉴 접근 불가. 햄버거 drawer 필요
+  - B-2. admin 테이블 (`/admin/orders`, `/admin/products`, `/admin/users`) 가로 스크롤
+    없어 셀 붕괴 → `overflow-x-auto` + `min-w-[...]` 래퍼
+
+**🔴 HIGH**
+- [ ] C. 홈 히어로 텍스트 모바일 강제 줄바꿈 — `text-5xl` 고정 → `text-3xl md:text-5xl`
+- [ ] D. 상품 상세 브레드크럼 overflow (긴 상품명 시)
+- [ ] E. `/products` 사이드바가 모바일에서 상단 차지 → 상품 그리드 밀림 → 접이식 필터
+
+**🟡 MEDIUM**
+- [ ] F. 푸터 사업자 정보 긴 줄 가독성
+- [ ] G. 관리자 모바일 헤더에 현재 페이지명 표기 없음
 
 ### 7-10. 재고 부족 알림 기준·표시 정책
 
@@ -315,14 +367,14 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 관리자 상품 폼에서 상품별로 기준 설정 가능 ("저재고 알림 기준" 필드)
   - 대시보드/알림 API 모두 `stockQuantity <= lowStockThreshold` 조건 적용
   - 대시보드 카드에 "(기준 N)" 함께 표시, 재고 적은 순 정렬
-- [ ] 대시보드 저재고 카드가 여전히 `slice(0, 3)` 상한
-  - 4건 이상 저재고 상태면 4번째부터 카드에서 숨겨짐
-  - 알림 벨은 전체 수를 보여주므로 인지 가능
-  - 개선안 A: "전체보기" 링크 → `/admin/products?sort=stock-asc&active=ACTIVE`
-    (상품 관리에 재고 오름차순 정렬 추가 필요)
-  - 개선안 B: 표시 수를 상수 6~10 으로 늘리기
+- [x] ~~저재고 카드 slice(0, 3) 상한으로 4건부터 숨겨지는 문제~~ →
+  - `/admin/products` 에 `?stock=low` 필터 + 재고 오름차순 자동 정렬 추가
+  - 대시보드 `lowInventoryCount` 가 전체 저재고 수(slice 전) 를 반환하게 수정
+  - 대시보드 카드 헤더에 "전체보기" 링크 (lowInventoryCount > inventory.length 일 때만)
+  - 알림 벨 저재고 링크도 `?active=ACTIVE&stock=low` 로 교체
+  - 필터 적용 중인 상품 목록 상단에 "저재고 N건" 안내 배너 + 해제 링크
 
-### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템
+### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템 — **추후예정 (post-MVP)**
 
 **원칙**: 남길만한 이벤트만 로그·알림에 담는다. 아무거나 남기면
 로그 팽창 + 알림 피로도 + 고객 메일 스팸 취급 위험.
@@ -385,6 +437,26 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 - 알림 피로도 방지: 같은 주문의 상태 변화가 짧은 시간에 여러 번 나면 병합
 - 읽음 상태 싱크: 여러 탭 열어두고 한 쪽에서 읽으면 다른 쪽도 즉시 반영 (SSE/WebSocket 은 과함 → polling 15초)
 - `ActivityLog.diff` 는 JSON 인데 기밀 필드(passwordHash 등) 담지 않도록 화이트리스트
+
+---
+
+### 7-13. 즐겨찾기(찜한 상품) 기능 — **추후예정 (post-MVP)**
+
+현재 상태: **DB 모델·API·프론트 핸들러 전부 미구현.**
+
+- **Prisma**: `Favorite` / `Wishlist` 모델 없음
+- **API**: `/api/favorites` 류 라우트 없음
+- **프론트**:
+  - `ProductGridCard` 의 하트 아이콘([src/widgets/product-list/ProductGridCard.tsx:61](../src/widgets/product-list/ProductGridCard.tsx#L61)) 은 `aria-hidden pointer-events-none` 장식용 (인기순 BEST 상품에만 노출, 클릭 불가)
+  - 마이페이지 사이드바 "찜한 상품" 링크([src/server/content/account-content.ts:18](../src/server/content/account-content.ts#L18)) 는 `/products` 로만 이동
+
+**TODO (도입 시)**
+- Prisma `Favorite` 모델 (userId + productId 복합 unique, createdAt)
+- `POST /api/favorites/:productId` / `DELETE /api/favorites/:productId` / `GET /api/favorites`
+- 상품 카드·상세에 토글 하트 버튼 (로그인 필요 상태 가드 + 낙관적 업데이트)
+- 마이페이지 "찜한 상품" 전용 페이지(`/mypage/favorites`) + 사이드바 링크 연결
+
+**영향 범위**: 로그인 필요한 액션이라 비로그인 사용자 UX(로그인 유도 모달) 동반 설계 필요.
 
 ---
 

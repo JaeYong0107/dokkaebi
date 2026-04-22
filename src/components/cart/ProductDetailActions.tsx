@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FavoriteButton } from "@/features/favorite/ui/FavoriteButton";
 import { Icon } from "@/shared/ui/Icon";
 import { useCartStore } from "@/store/cart-store";
 import { useCheckoutStore } from "@/store/checkout-store";
@@ -72,7 +73,10 @@ export function ProductDetailActions({
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex items-stretch gap-3">
+        <div className="flex items-center">
+          <FavoriteButton productId={productId} size="lg" />
+        </div>
         <button
           type="button"
           onClick={handleAddToCart}

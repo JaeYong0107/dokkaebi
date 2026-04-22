@@ -5,6 +5,7 @@ import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { UserMenu } from "@/components/shell/UserMenu";
 import { Logo } from "@/shared/ui/Logo";
 import { Icon } from "@/shared/ui/Icon";
+import { AdminMobileNav } from "@/widgets/admin-mobile-nav/AdminMobileNav";
 import { NotificationBell } from "@/widgets/admin-notifications/NotificationBell";
 
 const NAV = [
@@ -77,14 +78,31 @@ export default async function AdminLayout({
       {/* Main */}
       <div className="flex-1">
         <header className="flex items-center justify-between border-b border-surface-container bg-surface-container-lowest px-6 py-4 md:px-10">
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-2 md:hidden">
+            <AdminMobileNav items={NAV} />
             <Logo className="text-lg" href="/admin" />
           </div>
-          <div className="hidden md:block">
-            <p className="text-xs text-on-surface-variant">2026.04.18 (금)</p>
-            <h1 className="font-headline text-xl font-bold">관리자 콘솔</h1>
+          <div className="hidden md:flex md:items-center md:gap-4">
+            <div>
+              <p className="text-xs text-on-surface-variant">2026.04.18 (금)</p>
+              <h1 className="font-headline text-xl font-bold">관리자 콘솔</h1>
+            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1.5 text-xs font-bold text-on-surface-variant hover:bg-surface-container hover:text-primary"
+            >
+              <Icon name="storefront" className="text-sm" />
+              쇼핑몰 보기
+            </Link>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              aria-label="쇼핑몰로 이동"
+              className="rounded-full p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-primary md:hidden"
+            >
+              <Icon name="storefront" />
+            </Link>
             <NotificationBell />
             <UserMenu variant="admin" />
           </div>

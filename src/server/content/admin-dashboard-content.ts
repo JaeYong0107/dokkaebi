@@ -32,5 +32,4 @@ export const adminDashboardContent = {
     secondaryActionLabel: "리포트 다운로드",
     primaryActionLabel: "재고 관리 대장"
   },
-  floatingActionLabel: "새 주문 등록"
 } as const;

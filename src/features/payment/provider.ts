@@ -1,4 +1,8 @@
-import type { PaymentApproval, PaymentProviderName } from "./types";
+import type {
+  PaymentApproval,
+  PaymentCancelResult,
+  PaymentProviderName
+} from "./types";
 import { PaymentError } from "./types";
 
 type ApproveInput = {
@@ -7,9 +11,17 @@ type ApproveInput = {
   paymentMethod: string;
 };
 
+type CancelInput = {
+  orderNumber: string;
+  paymentTxId: string;
+  amount: number;
+  reason: string;
+};
+
 export interface PaymentProvider {
   name: PaymentProviderName;
   approve(input: ApproveInput): Promise<PaymentApproval>;
+  cancel(input: CancelInput): Promise<PaymentCancelResult>;
 }
 
 class MockPaymentProvider implements PaymentProvider {
@@ -27,6 +39,27 @@ class MockPaymentProvider implements PaymentProvider {
       provider: "mock",
       paymentTxId,
       approvedAt: new Date()
+    };
+  }
+
+  async cancel({ orderNumber, paymentTxId, amount }: CancelInput): Promise<PaymentCancelResult> {
+    if (!paymentTxId) {
+      throw new PaymentError(
+        "결제 트랜잭션 정보가 없습니다",
+        "MISSING_TX_ID"
+      );
+    }
+    if (amount <= 0) {
+      throw new PaymentError(
+        "환불 금액이 올바르지 않습니다",
+        "INVALID_AMOUNT"
+      );
+    }
+    const cancelTxId = `mock-cancel-${orderNumber}-${Date.now()}`;
+    return {
+      provider: "mock",
+      cancelTxId,
+      cancelledAt: new Date()
     };
   }
 }

@@ -83,7 +83,7 @@ export function NotificationBell() {
               onClick={() => setOpen(false)}
             />
             <NotificationItem
-              href="/admin/products?active=ACTIVE"
+              href="/admin/products?active=ACTIVE&stock=low"
               icon="warning"
               label="저재고 상품"
               count={data?.lowStock ?? 0}

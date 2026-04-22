@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Manrope, Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { CartServerSync } from "@/components/cart/CartServerSync";
+import { LoginPromptModal } from "@/shared/ui/LoginPromptModal";
 import "./globals.css";
 
 const inter = Inter({
@@ -41,7 +43,11 @@ export default function RootLayout({
     >
       <body className="bg-surface text-on-surface font-sans">
         <AuthProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <CartServerSync />
+            {children}
+            <LoginPromptModal />
+          </QueryProvider>
         </AuthProvider>
       </body>
     </html>

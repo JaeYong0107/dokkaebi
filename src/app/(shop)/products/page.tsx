@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { getFavoriteProductIds } from "@/features/favorite/server";
+import { FavoriteHydrator } from "@/features/favorite/ui/FavoriteHydrator";
 import type { OrderRecord } from "@/features/order/types";
 import { getUnitPrice } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { Icon } from "@/shared/ui/Icon";
+import { MobileProductsFilterBar } from "@/widgets/products-filters/MobileProductsFilterBar";
 import { FilterToggleCheckbox } from "@/widgets/product-list/FilterToggleCheckbox";
 import { ProductGridCard } from "@/widgets/product-list/ProductGridCard";
 
@@ -102,13 +105,19 @@ async function ProductsPageContent({
     typeof query.page === "string" ? Number.parseInt(query.page, 10) : 1;
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
-  const [productsResponse, categoriesResponse, ordersResponse, contentResponse] =
-    await Promise.all([
-      serverFetch("/api/products"),
-      serverFetch("/api/categories"),
-      serverFetch("/api/orders"),
-      serverFetch("/api/site-content")
-    ]);
+  const [
+    productsResponse,
+    categoriesResponse,
+    ordersResponse,
+    contentResponse,
+    favoriteIds
+  ] = await Promise.all([
+    serverFetch("/api/products"),
+    serverFetch("/api/categories"),
+    serverFetch("/api/orders"),
+    serverFetch("/api/site-content"),
+    getFavoriteProductIds()
+  ]);
 
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const categoriesData = (await categoriesResponse.json()) as {
@@ -196,9 +205,42 @@ async function ProductsPageContent({
 
   const sidebarTitleLines = content.catalog.sidebarBanner.title.split("\n");
 
+  const mobileCategories = categoryItems.map((c) => ({
+    id: c.id,
+    name: c.name,
+    count: c.count,
+    active: c.active,
+    href: buildHref("/products", query, {
+      category: c.id === "all" ? undefined : c.id
+    })
+  }));
+  const mobileSorts = sortItems.map((s) => ({
+    key: s.key,
+    label: s.label,
+    active: s.active,
+    href: buildHref("/products", query, {
+      sort: s.key === "popular" ? undefined : s.key
+    })
+  }));
+  const dealsHref = buildHref("/products", query, {
+    dealsOnly: dealsOnly ? undefined : "1"
+  });
+  const freeShippingHref = buildHref("/products", query, {
+    freeShipping: freeShippingOnly ? undefined : "1"
+  });
+
   return (
-    <main className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-12 md:flex-row">
-      <aside className="w-full shrink-0 space-y-10 md:w-64">
+    <main className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 md:flex-row md:gap-12">
+      <FavoriteHydrator productIds={favoriteIds} />
+      <MobileProductsFilterBar
+        categories={mobileCategories}
+        sorts={mobileSorts}
+        dealsOnly={dealsOnly}
+        freeShippingOnly={freeShippingOnly}
+        dealsHref={dealsHref}
+        freeShippingHref={freeShippingHref}
+      />
+      <aside className="hidden w-full shrink-0 space-y-4 md:block md:w-64 md:space-y-10">
         <div>
           <h3 className="mb-6 font-headline text-xl font-extrabold tracking-tight">
             {content.catalog.categorySectionTitle}
@@ -292,7 +334,7 @@ async function ProductsPageContent({
               {content.catalog.description}
             </p>
           </div>
-          <div className="flex items-center gap-6 text-sm font-bold text-on-surface-variant">
+          <div className="hidden items-center gap-6 text-sm font-bold text-on-surface-variant md:flex">
             {sortItems.map((option) => (
               <Link
                 key={option.key}

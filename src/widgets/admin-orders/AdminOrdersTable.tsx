@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   ORDER_STATUS_LABEL,
   type OrderRecord,
@@ -8,6 +9,15 @@ import {
 } from "@/features/order/types";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+
+const STATUS_OPTIONS: OrderStatus[] = [
+  "PENDING",
+  "PAID",
+  "PREPARING",
+  "SHIPPING",
+  "DELIVERED",
+  "CANCELLED"
+];
 
 const STATUS_TONE: Record<OrderStatus, string> = {
   PENDING: "bg-surface-container-high text-on-surface-variant",
@@ -23,7 +33,79 @@ type AdminOrdersTableProps = {
 };
 
 export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
+  const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [rowError, setRowError] = useState<{ id: string; message: string } | null>(
+    null
+  );
+  const [cancelTarget, setCancelTarget] = useState<OrderRecord | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelSubmitting, setCancelSubmitting] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+
+  const handleStatusChange = async (orderId: string, nextStatus: OrderStatus) => {
+    if (nextStatus === "CANCELLED") {
+      const target = orders.find((o) => o.id === orderId);
+      if (target) {
+        setCancelTarget(target);
+        setCancelReason("");
+        setCancelError(null);
+      }
+      return;
+    }
+    setPendingId(orderId);
+    setRowError(null);
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderStatus: nextStatus })
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setRowError({
+          id: orderId,
+          message: body?.message ?? "상태 변경에 실패했습니다"
+        });
+        return;
+      }
+      startTransition(() => router.refresh());
+    } finally {
+      setPendingId(null);
+    }
+  };
+
+  const confirmCancel = async () => {
+    if (!cancelTarget) return;
+    const reason = cancelReason.trim();
+    if (!reason) {
+      setCancelError("취소 사유를 입력해주세요");
+      return;
+    }
+    setCancelSubmitting(true);
+    setCancelError(null);
+    try {
+      const res = await fetch(`/api/orders/${cancelTarget.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderStatus: "CANCELLED",
+          cancellationReason: reason
+        })
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setCancelError(body?.message ?? "취소 처리에 실패했습니다");
+        return;
+      }
+      setCancelTarget(null);
+      startTransition(() => router.refresh());
+    } finally {
+      setCancelSubmitting(false);
+    }
+  };
 
   const visibleIds = useMemo(() => orders.map((order) => order.id), [orders]);
 
@@ -77,8 +159,8 @@ export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-3xl bg-surface-container-lowest shadow-lift">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-3xl bg-surface-container-lowest shadow-lift">
+        <table className="w-full min-w-[960px] text-sm">
           <thead className="bg-surface-container-low text-xs text-on-surface-variant">
             <tr>
               <th className="px-4 py-3 text-left font-semibold">
@@ -156,11 +238,33 @@ export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
                       {order.orderedAt}
                     </td>
                     <td className="px-4 py-4">
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_TONE[order.orderStatus]}`}
+                      <select
+                        value={order.orderStatus}
+                        onChange={(event) =>
+                          handleStatusChange(
+                            order.id,
+                            event.target.value as OrderStatus
+                          )
+                        }
+                        disabled={pendingId === order.id}
+                        aria-label={`${order.orderNumber} 상태 변경`}
+                        className={`cursor-pointer rounded-full border-none px-2.5 py-1 text-xs font-bold outline-none focus:ring-2 focus:ring-primary ${STATUS_TONE[order.orderStatus]}`}
                       >
-                        {ORDER_STATUS_LABEL[order.orderStatus]}
-                      </span>
+                        {STATUS_OPTIONS.map((status) => (
+                          <option
+                            key={status}
+                            value={status}
+                            className="bg-white text-on-surface"
+                          >
+                            {ORDER_STATUS_LABEL[status]}
+                          </option>
+                        ))}
+                      </select>
+                      {rowError?.id === order.id && (
+                        <p className="mt-1 text-[10px] font-semibold text-error">
+                          {rowError.message}
+                        </p>
+                      )}
                     </td>
                     <td className="px-4 py-4 text-right font-headline font-bold text-primary">
                       {formatCurrency(order.total)}
@@ -215,6 +319,78 @@ export function AdminOrdersTable({ orders }: Readonly<AdminOrdersTableProps>) {
           </button>
         </div>
       </div>
+
+      {cancelTarget && (
+        <div
+          role="presentation"
+          onClick={() => !cancelSubmitting && setCancelTarget(null)}
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50 p-4"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-3xl bg-surface-container-lowest p-6 shadow-2xl"
+          >
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-error/10">
+                <Icon name="cancel" className="text-xl text-error" />
+              </div>
+              <div>
+                <h2 className="font-headline text-lg font-black text-on-surface">
+                  주문을 취소합니다
+                </h2>
+                <p className="text-xs text-on-surface-variant">
+                  {cancelTarget.orderNumber} · {cancelTarget.customerName}
+                </p>
+              </div>
+            </div>
+            <p className="mb-4 rounded-xl bg-warning-container/30 px-3 py-2 text-xs text-on-surface">
+              취소 시 재고가 복구되고, 결제 완료 건은 환불 처리됩니다.
+            </p>
+            <label className="mb-4 block">
+              <span className="mb-1 block text-xs font-bold text-on-surface-variant">
+                취소 사유 (필수)
+              </span>
+              <textarea
+                value={cancelReason}
+                onChange={(e) => {
+                  setCancelReason(e.target.value);
+                  setCancelError(null);
+                }}
+                maxLength={200}
+                rows={3}
+                autoFocus
+                className="w-full rounded-xl border border-outline-variant px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                placeholder="예) 고객 요청으로 취소 / 재고 부족 / 결제 오류"
+              />
+            </label>
+            {cancelError && (
+              <p className="mb-3 rounded-xl bg-error/10 px-3 py-2 text-xs font-semibold text-error">
+                {cancelError}
+              </p>
+            )}
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setCancelTarget(null)}
+                disabled={cancelSubmitting}
+                className="rounded-full border border-outline-variant px-5 py-2.5 text-sm font-bold text-on-surface-variant hover:bg-surface-container-low disabled:opacity-40"
+              >
+                닫기
+              </button>
+              <button
+                type="button"
+                onClick={confirmCancel}
+                disabled={cancelSubmitting}
+                className="flex items-center justify-center rounded-full bg-error px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-60"
+              >
+                {cancelSubmitting ? "취소 중..." : "주문 취소"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

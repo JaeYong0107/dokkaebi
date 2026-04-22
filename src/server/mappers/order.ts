@@ -39,7 +39,12 @@ export function toOrderRecord(db: DbOrderWithIncludes): OrderRecord {
     shippingAddress: db.shippingAddress,
     recipient: db.recipient || db.user.name,
     trackingNumber: db.delivery?.trackingNumber ?? undefined,
-    courierName: db.delivery?.courierName ?? undefined
+    courierName: db.delivery?.courierName ?? undefined,
+    cancelledAt: db.cancelledAt
+      ? db.cancelledAt.toISOString().slice(0, 16).replace("T", " ")
+      : undefined,
+    cancellationReason: db.cancellationReason ?? undefined,
+    cancelledBy: db.cancelledBy ?? undefined
   };
 }
 

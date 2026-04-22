@@ -5,7 +5,16 @@ const BADGE_MAX = 5;
 const baseShape = {
   name: z.string().min(1, "상품명을 입력하세요").max(100),
   description: z.string().min(1, "설명을 입력하세요").max(1000),
-  sku: z.string().max(40).optional().nullable(),
+  sku: z
+    .string()
+    .max(40)
+    .optional()
+    .nullable()
+    .transform((value) => {
+      if (value == null) return null;
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : null;
+    }),
   unit: z.string().min(1, "단위를 입력하세요").max(40),
   basePrice: z
     .number()

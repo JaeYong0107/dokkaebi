@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { ProductCardActions } from "@/components/cart/ProductCardActions";
+import { FavoriteButton } from "@/features/favorite/ui/FavoriteButton";
 import {
   getOriginalPrice,
   getUnitPrice
 } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
 import { formatCurrency } from "@/shared/lib/format";
-import { Icon } from "@/shared/ui/Icon";
 
 type ProductGridCardProps = {
   product: Product;
@@ -47,20 +47,17 @@ export function ProductGridCard({
             </span>
           ))}
         </div>
-        {isFirstHighlight && (
-          <div className="absolute right-4 top-4 rounded-full bg-orange-500 px-3 py-1 text-[10px] font-black tracking-tighter text-white">
-            BEST
-          </div>
-        )}
+        <div className="absolute right-4 top-4 flex flex-col items-end gap-2">
+          {isFirstHighlight && (
+            <div className="rounded-full bg-orange-500 px-3 py-1 text-[10px] font-black tracking-tighter text-white">
+              BEST
+            </div>
+          )}
+        </div>
       </div>
-      {isFirstHighlight && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute bottom-[8.5rem] right-4 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl backdrop-blur"
-        >
-          <Icon name="favorite" />
-        </span>
-      )}
+      <div className="absolute right-4 top-4 z-20" style={{ marginTop: isFirstHighlight ? "1.75rem" : 0 }}>
+        <FavoriteButton productId={product.id} size="md" floating />
+      </div>
       <div className="space-y-1 px-2">
         <p className="text-xs font-bold text-stone-400">{product.origin}</p>
         <h3 className="truncate font-headline text-lg font-bold text-on-surface transition-colors group-hover:text-primary">

@@ -8,6 +8,7 @@ import {
 import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
+import { CancelOrderButton } from "@/features/order/ui/CancelOrderButton";
 import { PrintReceiptButton } from "@/widgets/tracking-actions/PrintReceiptButton";
 import { TrackingAddressButton } from "@/widgets/tracking-actions/TrackingAddressButton";
 
@@ -95,7 +96,12 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
             </span>
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <CancelOrderButton
+            orderId={order.id}
+            orderStatus={order.orderStatus}
+            variant="ghost"
+          />
           <PrintReceiptButton />
           <a
             href={`mailto:support@dokkaebi.kr?subject=${encodeURIComponent(
@@ -115,6 +121,21 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
           </a>
         </div>
       </div>
+
+      {order.orderStatus === "CANCELLED" && order.cancellationReason && (
+        <div className="mb-6 rounded-2xl border border-error/30 bg-error-container/30 p-4 text-sm text-on-error-container">
+          <p className="mb-1 font-bold">주문이 취소되었습니다</p>
+          <p>
+            <span className="font-semibold">사유:</span>{" "}
+            {order.cancellationReason}
+            {order.cancelledAt && (
+              <span className="ml-2 text-xs text-on-error-container/70">
+                {order.cancelledAt}
+              </span>
+            )}
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="space-y-8 lg:col-span-8">

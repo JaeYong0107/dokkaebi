@@ -142,7 +142,7 @@ export default async function HomePage() {
             <span className="mb-4 inline-block rounded-full bg-secondary-container px-4 py-1.5 text-xs font-bold text-on-secondary-container">
               {content.home.hero.eyebrow}
             </span>
-            <h1 className="mb-6 font-headline text-5xl font-extrabold leading-[1.1] tracking-tighter text-white">
+            <h1 className="mb-6 font-headline text-3xl font-extrabold leading-[1.1] tracking-tighter text-white sm:text-4xl md:text-5xl">
               {heroTitleLines.map((line) => (
                 <span key={line}>
                   {line}

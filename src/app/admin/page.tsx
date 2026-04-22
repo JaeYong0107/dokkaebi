@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icon } from "@/shared/ui/Icon";
 import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { DashboardReportButton } from "@/widgets/admin-dashboard/DashboardReportButton";
 import { StockAddButton } from "@/widgets/admin-dashboard/StockAddButton";
 
 type AdminDashboardResponse = {
@@ -42,7 +43,6 @@ type AdminDashboardResponse = {
   inquiryCount: number;
   lowInventoryCount: number;
   signupAvatarOverflow: number;
-  floatingActionLabel: string;
 };
 
 export default async function AdminDashboardPage() {
@@ -203,9 +203,19 @@ export default async function AdminDashboardPage() {
                 <Icon name="warning" className="text-xl text-error" />
                 재고 부족 알림
               </h3>
-              <span className="rounded bg-error px-2 py-0.5 text-[10px] font-black text-white">
-                {data.lowInventoryCount}건
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-error px-2 py-0.5 text-[10px] font-black text-white">
+                  {data.lowInventoryCount}건
+                </span>
+                {data.lowInventoryCount > data.inventory.length && (
+                  <Link
+                    href="/admin/products?active=ACTIVE&stock=low"
+                    className="text-xs font-bold text-primary hover:underline"
+                  >
+                    전체보기
+                  </Link>
+                )}
+              </div>
             </div>
             <div className="space-y-3">
               {data.inventory.map((item) => (
@@ -245,9 +255,12 @@ export default async function AdminDashboardPage() {
                 <Icon name="forum" className="text-xl text-primary" />
                 고객 문의 현황
               </h3>
-              <button className="text-[11px] font-bold text-on-surface-variant">
+              <a
+                href="mailto:support@dokkaebi.kr?subject=%5B%EA%B3%A0%EA%B0%9D%20%EB%AC%B8%EC%9D%98%20%EC%A0%84%EC%B2%B4%20%EC%A1%B0%ED%9A%8C%5D"
+                className="text-[11px] font-bold text-on-surface-variant hover:text-primary"
+              >
                 모두보기
-              </button>
+              </a>
             </div>
             <div className="space-y-4">
               {data.inquiries.map((inquiry) => (
@@ -269,9 +282,12 @@ export default async function AdminDashboardPage() {
                 </div>
               ))}
             </div>
-            <button className="w-full rounded-xl bg-on-surface py-3 text-xs font-bold text-surface transition-opacity hover:opacity-90">
+            <a
+              href="mailto:support@dokkaebi.kr?subject=%5B%EA%B3%A0%EA%B0%9D%20%EB%AC%B8%EC%9D%98%20%EC%9D%91%EB%8C%80%5D"
+              className="block w-full rounded-xl bg-on-surface py-3 text-center text-xs font-bold text-surface transition-opacity hover:opacity-90"
+            >
               문의 응대 시작하기
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -291,21 +307,16 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="rounded-xl border-2 border-outline-variant px-6 py-2.5 text-sm font-bold text-on-surface-variant transition-colors hover:bg-surface-container">
-            {data.footer.secondaryActionLabel}
-          </button>
-          <button className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg hover:shadow-primary/30">
+          <DashboardReportButton label={data.footer.secondaryActionLabel} />
+          <Link
+            href="/admin/products?sort=stock-asc"
+            className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg hover:shadow-primary/30"
+          >
             {data.footer.primaryActionLabel}
-          </button>
+          </Link>
         </div>
       </footer>
 
-      <button className="group fixed bottom-8 right-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary text-on-secondary-container shadow-2xl shadow-secondary/40 transition-transform hover:scale-110">
-        <Icon name="add" filled className="text-3xl" />
-        <span className="pointer-events-none absolute right-20 whitespace-nowrap rounded-xl bg-inverse-surface px-4 py-2 text-xs font-bold text-inverse-on-surface opacity-0 transition-opacity group-hover:opacity-100">
-          {data.floatingActionLabel}
-        </span>
-      </button>
     </div>
   );
 }
