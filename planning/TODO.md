@@ -294,9 +294,9 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 7-7. SKU 중복·빈문자열 허용 이슈
 
-- [ ] Prisma `Product.sku @unique` 인데 빈 문자열 여러 개 저장 가능 (Postgres NULL != NULL 원리)
-  - `/api/admin/products` POST·PATCH 에서 sku="" 면 null 로 변환 필요
-  - 현재 정상 시드된 16건은 모두 sku 값 있어 문제 없지만 신규 등록 시 위험
+- [x] ~~빈 문자열 sku 허용~~ → `src/features/product/schemas.ts` 의 sku 필드에
+  zod `.transform()` 추가: 빈/공백 문자열은 자동으로 null 로 변환.
+  `@unique` 제약과 정합 (Postgres 는 NULL 은 복수 허용하므로 충돌 없음).
 
 ### 7-8. 추천 상품 알고리즘
 
