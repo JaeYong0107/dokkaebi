@@ -11,14 +11,19 @@ export async function GET() {
     );
   }
 
-  const [pendingBusiness, lowStock] = await Promise.all([
+  const [pendingBusiness, lowStockRows] = await Promise.all([
     prisma.user.count({
       where: { customerType: "BUSINESS", businessApproved: false }
     }),
-    prisma.product.count({
-      where: { isActive: true, stockQuantity: { lte: 10 } }
-    })
+    prisma.$queryRaw<Array<{ count: bigint }>>`
+      SELECT COUNT(*)::bigint AS count
+      FROM "Product"
+      WHERE "isActive" = true
+      AND "stockQuantity" <= "lowStockThreshold"
+    `
   ]);
+
+  const lowStock = Number(lowStockRows[0]?.count ?? 0);
 
   return NextResponse.json({
     pendingBusiness,

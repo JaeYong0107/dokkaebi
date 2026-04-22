@@ -37,15 +37,20 @@ export async function GET() {
 
   const lowInventory = products
     .filter((p) => p.isActive)
-    .filter((p) => (p.stockQuantity ?? 0) <= 10)
+    .filter((p) => (p.stockQuantity ?? 0) <= (p.lowStockThreshold ?? 10))
+    .sort((a, b) => (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0))
     .slice(0, 3)
-    .map((p) => ({
-      productId: p.id,
-      name: p.name,
-      remain: `잔여: ${p.stockQuantity ?? 0}${p.unit.includes("kg") ? "kg" : "개"}`,
-      stockQuantity: p.stockQuantity ?? 0,
-      imageUrl: p.imageUrl
-    }));
+    .map((p) => {
+      const threshold = p.lowStockThreshold ?? 10;
+      const unitLabel = p.unit.includes("kg") ? "kg" : "개";
+      return {
+        productId: p.id,
+        name: p.name,
+        remain: `잔여: ${p.stockQuantity ?? 0}${unitLabel} (기준 ${threshold})`,
+        stockQuantity: p.stockQuantity ?? 0,
+        imageUrl: p.imageUrl
+      };
+    });
 
   const recentOrders = orders.slice(0, 4).map((order) => ({
     id: order.orderNumber,

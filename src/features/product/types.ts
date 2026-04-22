@@ -24,6 +24,7 @@ export type Product = {
   badges?: string[];
   isActive: boolean;
   stockQuantity?: number;
+  lowStockThreshold?: number;
 };
 
 export type Category = {
