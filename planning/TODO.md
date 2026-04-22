@@ -322,6 +322,70 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
     (상품 관리에 재고 오름차순 정렬 추가 필요)
   - 개선안 B: 표시 수를 상수 6~10 으로 늘리기
 
+### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템
+
+**원칙**: 남길만한 이벤트만 로그·알림에 담는다. 아무거나 남기면
+로그 팽창 + 알림 피로도 + 고객 메일 스팸 취급 위험.
+
+**남길 가치 판단 기준** (아래 중 하나 이상 만족)
+1. 보안적으로 중요 (인증·권한 변경)
+2. 되돌리기 어려움 (금전·재고·주문)
+3. 분쟁 가능 (고객-판매자 간 확인 필요)
+4. 본인이 꼭 알아야 함 (배송·승인 결과 등)
+
+**기록 대상 (고객 이벤트)**
+| Action | 로그 | 앱내 알림 | 이메일 (2단계) |
+|---|---|---|---|
+| 회원정보 변경 (name/phone) | ✅ | 본인 | — |
+| 비밀번호 변경 | ✅ | 본인 | 본인 (보안) |
+| 주문 생성 (결제 성공) | ✅ | 본인 + 모든 ADMIN | 본인 |
+| 주문 상태 변경 | ✅ | 본인 | 본인 (배송 시작·완료) |
+| 사업자 인증 신청 | ✅ | 모든 ADMIN | — |
+| 사업자 승인/반려 | ✅ | 당사자 | 당사자 |
+
+**기록 대상 (관리자 이벤트)** — 감사 목적, 앱내 알림은 기본 OFF
+| Action | 로그 | 앱내 알림 | 이메일 |
+|---|---|---|---|
+| 상품 등록/수정/비활성화 | ✅ | — | — |
+| 재고 수동 변경 | ✅ | — | — |
+| 정책값 변경 | ✅ | — | — |
+| 사용자 role 변경 (ADMIN 승격/회수) | ✅ | 당사자 | 당사자 (보안) |
+| 주문 상태 관리자 변경 | ✅ | 주문자 | — |
+| 관리자 로그인 실패 3회 이상 | ✅ | 모든 ADMIN | — |
+
+**기록하지 않는 것** (노이즈)
+- 페이지 뷰, 스크롤, 호버
+- 장바구니 담기/빼기 (내부 상태만)
+- 상품 조회·검색·필터·정렬
+- 로그인 성공 (실패만 기록)
+- UI 모달 열기/닫기
+
+**구현 플랜 (단계 분리)**
+
+**1단계 — ActivityLog + 앱 내 알림** (외부 의존 0)
+- [ ] Prisma 모델 2개 신규
+  - `ActivityLog { actorId, actorRole, action, entityType, entityId, summary, diff(Json), createdAt }`
+  - `Notification { userId, activityLogId, type, title, body, linkUrl, readAt, createdAt }`
+  - `NotificationType` enum (PROFILE_CHANGED/ORDER_PLACED/ORDER_STATUS/BUSINESS_APPROVED/...)
+- [ ] `src/server/events/record.ts` 디스패처 (`recordActivity({ actor, action, entity, diff, notifyUserIds[] })`)
+- [ ] `/api/notifications` GET (내 알림) + PATCH (읽음 처리)
+- [ ] 고객 상단 UserMenu 또는 별도 아이콘에 알림 벨 + unread 카운트 + 드롭다운
+- [ ] 관리자 기존 NotificationBell 에 문의 카운트와 함께 통합 표시
+- [ ] 위 표의 **기록 대상** 7~8 이벤트에 `recordActivity` 삽입
+- [ ] `/admin/activity-log` 페이지 (감사 로그 조회·필터)
+
+**2단계 — 이메일 발송**
+- [ ] 이메일 벤더 결정 (Resend / SendGrid / AWS SES)
+- [ ] 도메인 `no-reply@dokkaebi.kr` DNS SPF/DKIM 설정 (사용자 필요)
+- [ ] 큐 테이블 or 직접 전송 구조 (서버리스라 큐 필요)
+- [ ] 템플릿: 주문 접수 / 배송 시작 / 사업자 승인 / 비밀번호 변경
+- [ ] 고객이 설정에서 수신 거부 (unsubscribe) 가능하도록
+
+**후속 고려**
+- 알림 피로도 방지: 같은 주문의 상태 변화가 짧은 시간에 여러 번 나면 병합
+- 읽음 상태 싱크: 여러 탭 열어두고 한 쪽에서 읽으면 다른 쪽도 즉시 반영 (SSE/WebSocket 은 과함 → polling 15초)
+- `ActivityLog.diff` 는 JSON 인데 기밀 필드(passwordHash 등) 담지 않도록 화이트리스트
+
 ---
 
 ## 참고
