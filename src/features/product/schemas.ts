@@ -20,6 +20,11 @@ const baseShape = {
   badges: z.array(z.string().max(30)).max(BADGE_MAX).default([]),
   minOrderQty: z.number().int().positive().default(1),
   stockQuantity: z.number().int().min(0).default(0),
+  lowStockThreshold: z
+    .number()
+    .int("정수여야 합니다")
+    .min(0, "0 이상이어야 합니다")
+    .default(10),
   isActive: z.boolean().default(true),
   categoryId: z.string().min(1, "카테고리를 선택하세요")
 };
@@ -44,6 +49,7 @@ export const updateProductSchema = z.object({
   badges: baseShape.badges.optional(),
   minOrderQty: baseShape.minOrderQty.optional(),
   stockQuantity: baseShape.stockQuantity.optional(),
+  lowStockThreshold: baseShape.lowStockThreshold.optional(),
   isActive: baseShape.isActive.optional(),
   categoryId: baseShape.categoryId.optional()
 });

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icon } from "@/shared/ui/Icon";
 import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { StockAddButton } from "@/widgets/admin-dashboard/StockAddButton";
 
 type AdminDashboardResponse = {
   signupAvatars: string[];
@@ -35,6 +36,7 @@ type AdminDashboardResponse = {
     productId: string;
     name: string;
     remain: string;
+    stockQuantity: number;
     imageUrl?: string;
   }>;
   inquiryCount: number;
@@ -227,9 +229,11 @@ export default async function AdminDashboardPage() {
                       {item.remain}
                     </p>
                   </div>
-                  <button className="rounded-full p-1 text-primary hover:bg-primary/10">
-                    <Icon name="add_box" />
-                  </button>
+                  <StockAddButton
+                    productId={item.productId}
+                    productName={item.name}
+                    stockQuantity={item.stockQuantity}
+                  />
                 </div>
               ))}
             </div>

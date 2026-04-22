@@ -4,6 +4,7 @@ import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 import { BusinessApplyButton } from "@/widgets/mypage-profile/BusinessApplyButton";
 import { EditProfileButton } from "@/widgets/mypage-profile/EditProfileButton";
+import { InquiryMailLink } from "@/widgets/mypage-profile/InquiryMailLink";
 
 type MyPageResponse = {
   profile: {
@@ -116,9 +117,7 @@ export default async function MyPage() {
                 {data.stats.inquiries}
                 <span className="ml-1 text-lg font-bold">건</span>
               </p>
-              <button className="rounded-full bg-white/20 p-2 backdrop-blur-md hover:bg-white/30">
-                <Icon name="chat_bubble" className="text-lg" />
-              </button>
+              <InquiryMailLink variant="kpi" />
             </div>
           </div>
         </div>
@@ -364,13 +363,7 @@ export default async function MyPage() {
             ))}
           </div>
 
-          <button className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-on-surface p-5 font-bold text-white transition-all hover:bg-primary active:scale-95">
-            <Icon
-              name="support_agent"
-              className="transition-transform group-hover:rotate-12"
-            />
-            {data.labels.inquiryCta}
-          </button>
+          <InquiryMailLink variant="primary" label={data.labels.inquiryCta} />
         </div>
       </div>
     </main>

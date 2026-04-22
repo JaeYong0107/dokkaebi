@@ -9,6 +9,7 @@ import { serverFetch } from "@/shared/lib/api/server-fetch";
 import { formatCurrency } from "@/shared/lib/format";
 import { Icon } from "@/shared/ui/Icon";
 import { PrintReceiptButton } from "@/widgets/tracking-actions/PrintReceiptButton";
+import { TrackingAddressButton } from "@/widgets/tracking-actions/TrackingAddressButton";
 
 type TrackingPageProps = {
   params: Promise<{
@@ -206,12 +207,12 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
           <div className="space-y-6 rounded-[2rem] bg-surface-container p-8">
             <div className="flex items-start justify-between">
               <h3 className="text-xl font-extrabold tracking-tight">배송지 정보</h3>
-              <button
-                type="button"
-                className="text-sm font-bold text-primary hover:underline"
-              >
-                변경하기
-              </button>
+              <TrackingAddressButton
+                orderId={order.id}
+                orderStatus={order.orderStatus}
+                initialRecipient={order.recipient}
+                initialAddress={order.shippingAddress}
+              />
             </div>
             <div className="space-y-4">
               <div>

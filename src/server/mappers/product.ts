@@ -45,7 +45,8 @@ export function toProduct(db: DbProductWithCategory): Product {
     imageBg: db.imageBg ?? "from-slate-200 to-slate-400",
     badges: db.badges.length > 0 ? db.badges : undefined,
     isActive: db.isActive,
-    stockQuantity: db.stockQuantity
+    stockQuantity: db.stockQuantity,
+    lowStockThreshold: db.lowStockThreshold
   };
 }
 

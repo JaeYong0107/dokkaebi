@@ -28,6 +28,7 @@ type FormState = {
   badges: string;
   minOrderQty: string;
   stockQuantity: string;
+  lowStockThreshold: string;
   isActive: boolean;
   categoryId: string;
 };
@@ -52,6 +53,7 @@ function defaultsFrom(product: Product | undefined, categories: Category[]): For
       badges: "",
       minOrderQty: "1",
       stockQuantity: "0",
+      lowStockThreshold: "10",
       isActive: true,
       categoryId: firstCategoryId
     };
@@ -76,6 +78,7 @@ function defaultsFrom(product: Product | undefined, categories: Category[]): For
     badges: (product.badges ?? []).join(", "),
     minOrderQty: "1",
     stockQuantity: String(product.stockQuantity ?? 0),
+    lowStockThreshold: String(product.lowStockThreshold ?? 10),
     isActive: product.isActive,
     categoryId: matchingCategory?.id ?? firstCategoryId
   };
@@ -130,6 +133,11 @@ export function AdminProductForm({
         .filter((b) => b.length > 0),
       minOrderQty: Number(form.minOrderQty) || 1,
       stockQuantity: Number(form.stockQuantity) || 0,
+      lowStockThreshold:
+        Number.isFinite(Number(form.lowStockThreshold)) &&
+        Number(form.lowStockThreshold) >= 0
+          ? Number(form.lowStockThreshold)
+          : 10,
       isActive: form.isActive,
       categoryId: form.categoryId
     };
@@ -294,13 +302,22 @@ export function AdminProductForm({
               />
             </Field>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <Field label="재고">
               <input
                 type="number"
                 min="0"
                 value={form.stockQuantity}
                 onChange={(e) => update("stockQuantity", e.target.value)}
+                className={inputClass}
+              />
+            </Field>
+            <Field label="저재고 알림 기준">
+              <input
+                type="number"
+                min="0"
+                value={form.lowStockThreshold}
+                onChange={(e) => update("lowStockThreshold", e.target.value)}
                 className={inputClass}
               />
             </Field>

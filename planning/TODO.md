@@ -192,51 +192,35 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 ### 고객 영역 (shop)
 
 **`/products` — 상품 목록**
-- [ ] "더보기" 버튼 ([src/app/(shop)/products/page.tsx:324](../src/app/(shop)/products/page.tsx))
-  - 현재 UI만 존재. 페이지네이션 / 무한 스크롤 미구현
-  - 서버 컴포넌트라 page query 또는 Server Action 필요
+- [x] ~~"더보기" 버튼~~ → `?page=N` 쿼리 기반 누적 페이지네이션 (기본 12개 단위)
 
 **`/products/[id]` — 상품 상세**
-- [ ] 탭 버튼 "배송/교환/환불 정보, 상품 문의, 구매 리뷰"
-      ([src/app/(shop)/products/[id]/page.tsx:290](../src/app/(shop)/products/[id]/page.tsx))
-  - 3개 탭이 모두 항상 표시된 상태. 활성 탭 state + 내용 전환 필요
-  - 클라이언트 컴포넌트 분리 필요 (현재 서버 컴포넌트)
+- [x] ~~탭 버튼 3종 전환~~ → `76654f1` 클라이언트 컴포넌트 분리 + 활성 탭 state
 
 **`/checkout` — 결제**
-- [ ] "배송지 변경" 버튼 ([src/app/(shop)/checkout/page.tsx:284](../src/app/(shop)/checkout/page.tsx))
-  - User 테이블에 다중 배송지 저장 구조 아직 없음
-  - 1차: 간단한 모달에서 바로 입력 → Order.shippingAddress 로 전달
-  - 2차: Address 모델 신설 → 기본 배송지 / 추가 배송지 관리
+- [x] ~~"배송지 변경" 버튼~~ → `6e56a06` 모달 + checkout-store 배송지 상태 연결
 
 **`/orders/[id]/tracking` — 배송 조회**
-- [ ] "영수증 출력" 버튼 ([src/app/(shop)/orders/[id]/tracking/page.tsx:97](../src/app/(shop)/orders/[id]/tracking/page.tsx))
-  - PDF 생성 or `window.print()` + 전용 인쇄 스타일
-- [ ] "고객센터 문의" 버튼 (같은 파일 104줄)
-  - 주문 컨텍스트 포함 Inquiry 생성 or mailto 링크
-- [ ] "배송지 변경" 버튼 (같은 파일 205줄)
-  - 배송중 상태에서 변경 가능한지 정책 확인 먼저
+- [x] ~~"영수증 출력"~~ → `1c314e9` `window.print()` 연결
+- [x] ~~"고객센터 문의"~~ → `7d133fa` mailto + 주문 컨텍스트 자동 채움
+- [x] ~~"배송지 변경" 버튼~~ → 배송 전(PENDING/PAID/PREPARING) 만 편집 허용,
+  PATCH `/api/orders/[id]` 신규 + ShippingAddressModal 재사용. SHIPPING 이후 409
 
 **`/mypage` — 마이페이지**
-- [ ] "회원정보 수정" 버튼 ([src/app/(shop)/mypage/page.tsx:90](../src/app/(shop)/mypage/page.tsx))
-  - 이름 / 전화 / 비밀번호 변경 폼 필요
-  - PATCH `/api/auth/me` 추가 필요
-- [ ] "1:1 문의" 버튼 (120줄)
-- [ ] "사업자 인증하기" 버튼 (185줄, 일반→사업자 전환 CTA)
-  - PATCH `/api/auth/me { customerType: "BUSINESS", businessName, businessNumber }`
-  - 제출 시 businessApproved=false → 관리자 대기열로
-- [ ] "고객센터 문의" 버튼 (370줄)
+- [x] ~~"회원정보 수정"~~ → `4e231b8` 모달 + PATCH `/api/auth/me`
+- [x] ~~"1:1 문의" (KPI 아이콘)~~ → mailto + 세션 이메일/이름 자동 채움
+- [x] ~~"사업자 인증하기"~~ → `60ec697` applyBusiness 모달
+- [x] ~~"고객센터 문의" (하단 큰 버튼)~~ → 위와 동일 mailto 컴포넌트 재사용
 
 ### 관리자 영역 (admin)
 
 **`/admin` — 대시보드**
-- [ ] "전체보기" 링크 ([src/app/admin/page.tsx:136](../src/app/admin/page.tsx))
-  - 주문 목록 → `/admin/orders` 로 연결만 하면 해결
-- [ ] "재고 추가" 버튼 (226줄)
-  - 저재고 상품 인라인 + / stock 수정 → PATCH `/api/admin/products/[id]`
+- [x] ~~"전체보기" 링크~~ → `ba3db05` `/admin/orders` 링크 연결
+- [x] ~~"재고 추가" 버튼~~ → 모달에서 추가 수량 입력 → PATCH
+  `/api/admin/products/[id]` + router.refresh
 - [ ] "모두보기" 버튼 (240줄)
-  - 재고 전체 목록 → `/admin/products?active=ACTIVE` 필터로 연결
-- [ ] "문의 응대 시작" 버튼 (264줄)
-  - Inquiry 모델 + `/admin/inquiries` 생성 후 연결
+  - 고객 문의 현황 섹션 소속 — Inquiry 모델 필요
+- [ ] "문의 응대 시작" 버튼 (264줄) — Inquiry 모델 필요
 - [ ] "보조 액션" 버튼 (286줄)
   - 대시보드 푸터 영역. 현재 라벨만 있음, 목적 재정의 필요
 - [ ] 플로팅 "+" 버튼 (295줄)
@@ -244,34 +228,163 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 관리자가 전화 주문 등을 수동 입력하는 플로우 필요 시 구현
 
 **`/admin/orders` — 주문 관리**
-- [ ] "CSV 다운로드" 버튼 ([src/app/admin/orders/page.tsx:107](../src/app/admin/orders/page.tsx))
-  - 현재 필터 적용된 주문 리스트를 CSV 로 내보내기
-  - papaparse or 수제 CSV 직렬화 + Blob download
+- [x] ~~"CSV 다운로드"~~ → `eaa9049` 현재 필터 기준 15열 CSV + UTF-8 BOM
 - [ ] "새 주문 만들기" 버튼 (110줄)
   - 관리자 수동 주문 생성. 위 "+" 와 연동 가능
 
 ### 공통 (shell)
 
-- [ ] 관리자 헤더 **알림 아이콘** ([src/app/admin/layout.tsx:87](../src/app/admin/layout.tsx))
-  - 승인 대기 사업자 / 신규 문의 / 저재고 등 이벤트 카운트 뱃지
-  - 클릭 시 드롭다운 목록 + 해당 페이지 이동
-- [ ] TopAppBar **"사업자 전용" 탭** ([src/widgets/top-app-bar/TopAppBar.tsx](../src/widgets/top-app-bar/TopAppBar.tsx))
-  - 현재 단순히 `/products` 로 이동
-  - 개선: `/products?audience=business` 같은 필터 쿼리 + BUSINESS 할인율 적용
-    상품만 노출 (businessDiscountRate > 0 필터)
-  - 비로그인 / NORMAL 접근 시 혜택 안내 오버레이 고려
+- [x] ~~관리자 헤더 **알림 아이콘**~~ → 드롭다운 카드 2개
+  (사업자 승인 대기 · 저재고 상품). 각 항목 클릭 시 해당 필터로 이동.
+  Inquiry 도입 후 신규 문의 카운트 추가 예정.
+- [x] ~~TopAppBar "사업자 전용" 탭~~ → `6a5785e` `/products?dealsOnly=1`
 
 ### 홈 페이지 (`/`)
 
-- [ ] **"상담 신청하기"** ([src/app/(shop)/page.tsx:326](../src/app/(shop)/page.tsx))
-  - `businessCta.primaryActionLabel`
-  - 예상 기능: 상담 신청 모달(이름/연락처/문의 내용) 또는 외부 폼 링크
-  - 저장 위치: 별도 `Inquiry` 모델 or 관리자 `/admin/inquiries` 연동
-- [ ] **"단가표 다운로드"** ([src/app/(shop)/page.tsx:329](../src/app/(shop)/page.tsx))
-  - `businessCta.secondaryActionLabel`
-  - 예상 기능: 사업자 회원 전용 정적 PDF 다운로드 or
-    동적 생성 (현재 상품 정가·사업자가 기반)
-  - 로그인·BUSINESS 승인 게이팅 필요
+- [x] ~~"상담 신청하기"~~ → mailto(sales@) + 세션 이메일/이름/양식 자동 채움
+- [x] ~~"단가표 다운로드"~~ → 로그인+BUSINESS 승인 게이팅, 전체 활성 상품의
+  정가·일반가·사업자가를 CSV 로 클라이언트 생성 (12열, UTF-8 BOM)
+
+---
+
+## 7. 작업 중 발견한 추가 누락/개선 사항
+
+섹션 6 (기능 미적용 버튼) 진행하며 코드 전체를 훑다가 **원래 TODO 에 없던**
+미구현/약한 지점을 발견해 별도로 기록. 긴급도 낮지만 로드맵에 필요.
+
+### 7-1. Inquiry (문의) 도메인 전반
+
+- [ ] **Inquiry 모델 신설**
+  - 필드: id, userId(nullable), email, subject, body, category (GENERAL/ORDER/SALES),
+    status (PENDING/IN_PROGRESS/RESOLVED), relatedOrderId, adminNote
+  - POST `/api/inquiries` (고객용) — 현재 mailto 링크 대신 DB 저장
+  - GET `/api/admin/inquiries` + PATCH `/api/admin/inquiries/[id]` (status 전환)
+  - `/admin/inquiries` 페이지
+  - admin 대시보드 "문의 응대 시작" / "모두보기" / 알림 벨 문의 카운트 이 모델 기반으로 연결
+
+### 7-2. 관리자 "새 주문 만들기" (전화 주문 대응)
+
+- [ ] admin 플로팅 "+" / `/admin/orders` "새 주문 만들기"
+  - 필요 UI: 고객 검색 / 상품 검색+수량 / 배송지 / 결제수단 / 즉시 결제 완료 처리
+  - POST `/api/orders` 확장: ADMIN 은 body 에 `onBehalfOfUserId` 허용 → userId 대리 저장
+  - stockQuantity 차감·Cart 비우기는 현행 로직 그대로 재사용 가능
+
+### 7-3. admin 대시보드 "보조 액션" 버튼 (target=286)
+
+- [ ] 목적 재정의 필요 (현재 라벨 "보조 액션" 모호)
+  - 후보: 재고 일괄 업로드(CSV) / 매출 리포트 PDF / 정책값 바로가기
+
+### 7-4. 고객 측 알림·통지
+
+- [ ] 사업자 승인 완료 / 주문 상태 변경 / 배송 시작 등 **고객 대상 통지 수단 없음**
+  - 현재 시스템: 세션 로그인 후 새로고침해야 확인
+  - 최소 단계: 이메일 발송 (SendGrid/Resend 등) 또는 앱 내 알림 드롭다운
+
+### 7-5. Cart 동기화 자동화
+
+- [ ] `PUT /api/cart` 는 만들어져 있지만 **자동 호출 없음**
+  - 현재: Zustand localStorage 만 source of truth, 다른 기기·재로그인 시 동기화 안 됨
+  - 개선: 로그인 직후 GET/api/cart 로 병합, 변경 시 debounce PUT
+
+### 7-6. 관리자 주문 상태 변경
+
+- [ ] `/admin/orders` 목록에서 주문 **상태 전환 UI 없음**
+  - 지금은 DB 에서 수동으로 PREPARING → SHIPPING → DELIVERED 바꿔야 함
+  - 필요: 행별 상태 드롭다운 or "다음 단계" 버튼 + PATCH `/api/admin/orders/[id]/status`
+
+### 7-7. SKU 중복·빈문자열 허용 이슈
+
+- [ ] Prisma `Product.sku @unique` 인데 빈 문자열 여러 개 저장 가능 (Postgres NULL != NULL 원리)
+  - `/api/admin/products` POST·PATCH 에서 sku="" 면 null 로 변환 필요
+  - 현재 정상 시드된 16건은 모두 sku 값 있어 문제 없지만 신규 등록 시 위험
+
+### 7-8. 추천 상품 알고리즘
+
+- [ ] 상품 상세 "함께 사면 좋은 상품" 은 **단순 필터** (같은 카테고리 상위 N)
+  - Order·OrderItem 기반 공동구매 카운트로 교체 권장
+  - 사업자 등급별 추천 등도 고려
+
+### 7-9. BottomNav (모바일) / SiteFooter 링크 검증
+
+- [ ] 모바일 하단 네비와 푸터의 링크들이 실제 라우트와 일치하는지 전체 스캔 필요
+  - 특히 `/about`, `/help`, `/contact` 같은 가상 URL 이 있으면 404
+
+### 7-10. 재고 부족 알림 기준·표시 정책
+
+- [x] ~~임계값 하드코딩~~ → `Product.lowStockThreshold` 필드 신설 (default 10)
+  - 관리자 상품 폼에서 상품별로 기준 설정 가능 ("저재고 알림 기준" 필드)
+  - 대시보드/알림 API 모두 `stockQuantity <= lowStockThreshold` 조건 적용
+  - 대시보드 카드에 "(기준 N)" 함께 표시, 재고 적은 순 정렬
+- [ ] 대시보드 저재고 카드가 여전히 `slice(0, 3)` 상한
+  - 4건 이상 저재고 상태면 4번째부터 카드에서 숨겨짐
+  - 알림 벨은 전체 수를 보여주므로 인지 가능
+  - 개선안 A: "전체보기" 링크 → `/admin/products?sort=stock-asc&active=ACTIVE`
+    (상품 관리에 재고 오름차순 정렬 추가 필요)
+  - 개선안 B: 표시 수를 상수 6~10 으로 늘리기
+
+### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템
+
+**원칙**: 남길만한 이벤트만 로그·알림에 담는다. 아무거나 남기면
+로그 팽창 + 알림 피로도 + 고객 메일 스팸 취급 위험.
+
+**남길 가치 판단 기준** (아래 중 하나 이상 만족)
+1. 보안적으로 중요 (인증·권한 변경)
+2. 되돌리기 어려움 (금전·재고·주문)
+3. 분쟁 가능 (고객-판매자 간 확인 필요)
+4. 본인이 꼭 알아야 함 (배송·승인 결과 등)
+
+**기록 대상 (고객 이벤트)**
+| Action | 로그 | 앱내 알림 | 이메일 (2단계) |
+|---|---|---|---|
+| 회원정보 변경 (name/phone) | ✅ | 본인 | — |
+| 비밀번호 변경 | ✅ | 본인 | 본인 (보안) |
+| 주문 생성 (결제 성공) | ✅ | 본인 + 모든 ADMIN | 본인 |
+| 주문 상태 변경 | ✅ | 본인 | 본인 (배송 시작·완료) |
+| 사업자 인증 신청 | ✅ | 모든 ADMIN | — |
+| 사업자 승인/반려 | ✅ | 당사자 | 당사자 |
+
+**기록 대상 (관리자 이벤트)** — 감사 목적, 앱내 알림은 기본 OFF
+| Action | 로그 | 앱내 알림 | 이메일 |
+|---|---|---|---|
+| 상품 등록/수정/비활성화 | ✅ | — | — |
+| 재고 수동 변경 | ✅ | — | — |
+| 정책값 변경 | ✅ | — | — |
+| 사용자 role 변경 (ADMIN 승격/회수) | ✅ | 당사자 | 당사자 (보안) |
+| 주문 상태 관리자 변경 | ✅ | 주문자 | — |
+| 관리자 로그인 실패 3회 이상 | ✅ | 모든 ADMIN | — |
+
+**기록하지 않는 것** (노이즈)
+- 페이지 뷰, 스크롤, 호버
+- 장바구니 담기/빼기 (내부 상태만)
+- 상품 조회·검색·필터·정렬
+- 로그인 성공 (실패만 기록)
+- UI 모달 열기/닫기
+
+**구현 플랜 (단계 분리)**
+
+**1단계 — ActivityLog + 앱 내 알림** (외부 의존 0)
+- [ ] Prisma 모델 2개 신규
+  - `ActivityLog { actorId, actorRole, action, entityType, entityId, summary, diff(Json), createdAt }`
+  - `Notification { userId, activityLogId, type, title, body, linkUrl, readAt, createdAt }`
+  - `NotificationType` enum (PROFILE_CHANGED/ORDER_PLACED/ORDER_STATUS/BUSINESS_APPROVED/...)
+- [ ] `src/server/events/record.ts` 디스패처 (`recordActivity({ actor, action, entity, diff, notifyUserIds[] })`)
+- [ ] `/api/notifications` GET (내 알림) + PATCH (읽음 처리)
+- [ ] 고객 상단 UserMenu 또는 별도 아이콘에 알림 벨 + unread 카운트 + 드롭다운
+- [ ] 관리자 기존 NotificationBell 에 문의 카운트와 함께 통합 표시
+- [ ] 위 표의 **기록 대상** 7~8 이벤트에 `recordActivity` 삽입
+- [ ] `/admin/activity-log` 페이지 (감사 로그 조회·필터)
+
+**2단계 — 이메일 발송**
+- [ ] 이메일 벤더 결정 (Resend / SendGrid / AWS SES)
+- [ ] 도메인 `no-reply@dokkaebi.kr` DNS SPF/DKIM 설정 (사용자 필요)
+- [ ] 큐 테이블 or 직접 전송 구조 (서버리스라 큐 필요)
+- [ ] 템플릿: 주문 접수 / 배송 시작 / 사업자 승인 / 비밀번호 변경
+- [ ] 고객이 설정에서 수신 거부 (unsubscribe) 가능하도록
+
+**후속 고려**
+- 알림 피로도 방지: 같은 주문의 상태 변화가 짧은 시간에 여러 번 나면 병합
+- 읽음 상태 싱크: 여러 탭 열어두고 한 쪽에서 읽으면 다른 쪽도 즉시 반영 (SSE/WebSocket 은 과함 → polling 15초)
+- `ActivityLog.diff` 는 JSON 인데 기밀 필드(passwordHash 등) 담지 않도록 화이트리스트
 
 ---
 

@@ -5,6 +5,7 @@ import { getServerOrigin } from "@/shared/lib/api/server-origin";
 import { UserMenu } from "@/components/shell/UserMenu";
 import { Logo } from "@/shared/ui/Logo";
 import { Icon } from "@/shared/ui/Icon";
+import { NotificationBell } from "@/widgets/admin-notifications/NotificationBell";
 
 const NAV = [
   { href: "/admin", icon: "dashboard", label: "대시보드" },
@@ -84,9 +85,7 @@ export default async function AdminLayout({
             <h1 className="font-headline text-xl font-bold">관리자 콘솔</h1>
           </div>
           <div className="flex items-center gap-3">
-            <button className="rounded-full p-2 hover:bg-surface-container-low">
-              <Icon name="notifications" className="text-on-surface" />
-            </button>
+            <NotificationBell />
             <UserMenu variant="admin" />
           </div>
         </header>
