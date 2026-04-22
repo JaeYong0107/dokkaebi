@@ -255,9 +255,12 @@ export default async function AdminDashboardPage() {
                 <Icon name="forum" className="text-xl text-primary" />
                 고객 문의 현황
               </h3>
-              <button className="text-[11px] font-bold text-on-surface-variant">
+              <a
+                href="mailto:support@dokkaebi.kr?subject=%5B%EA%B3%A0%EA%B0%9D%20%EB%AC%B8%EC%9D%98%20%EC%A0%84%EC%B2%B4%20%EC%A1%B0%ED%9A%8C%5D"
+                className="text-[11px] font-bold text-on-surface-variant hover:text-primary"
+              >
                 모두보기
-              </button>
+              </a>
             </div>
             <div className="space-y-4">
               {data.inquiries.map((inquiry) => (

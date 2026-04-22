@@ -218,8 +218,9 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 - [x] ~~"전체보기" 링크~~ → `ba3db05` `/admin/orders` 링크 연결
 - [x] ~~"재고 추가" 버튼~~ → 모달에서 추가 수량 입력 → PATCH
   `/api/admin/products/[id]` + router.refresh
-- [ ] "모두보기" 버튼 (240줄)
-  - 고객 문의 현황 섹션 소속 — Inquiry 모델 필요
+- [x] ~~"모두보기" (고객 문의 현황)~~ →
+  `mailto:support@dokkaebi.kr?subject=[고객 문의 전체 조회]` 로 임시 연결.
+  Inquiry 모델 도입(7-1, 추후예정) 시 실제 목록 페이지로 교체 예정
 - [x] ~~"문의 응대 시작하기"~~ → `mailto:support@dokkaebi.kr?subject=[고객 문의 응대]`
   링크로 임시 연결. 추후 7-11 알림 시스템에서 문의 상세 페이지로 교체 예정
 - [x] ~~"재고 관리 대장"~~ → `/admin/products?sort=stock-asc` 링크 연결
