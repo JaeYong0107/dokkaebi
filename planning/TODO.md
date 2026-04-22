@@ -203,8 +203,8 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 **`/orders/[id]/tracking` — 배송 조회**
 - [x] ~~"영수증 출력"~~ → `1c314e9` `window.print()` 연결
 - [x] ~~"고객센터 문의"~~ → `7d133fa` mailto + 주문 컨텍스트 자동 채움
-- [ ] "배송지 변경" 버튼 (205줄)
-  - 배송중 상태에서 변경 가능한지 정책 확인 먼저
+- [x] ~~"배송지 변경" 버튼~~ → 배송 전(PENDING/PAID/PREPARING) 만 편집 허용,
+  PATCH `/api/orders/[id]` 신규 + ShippingAddressModal 재사용. SHIPPING 이후 409
 
 **`/mypage` — 마이페이지**
 - [x] ~~"회원정보 수정"~~ → `4e231b8` 모달 + PATCH `/api/auth/me`
