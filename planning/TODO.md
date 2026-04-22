@@ -309,9 +309,11 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 
 ### 7-8. 추천 상품 알고리즘
 
-- [ ] 상품 상세 "함께 사면 좋은 상품" 은 **단순 필터** (같은 카테고리 상위 N)
-  - Order·OrderItem 기반 공동구매 카운트로 교체 권장
-  - 사업자 등급별 추천 등도 고려
+- [x] ~~단순 "앞에서 3개 slice"~~ → `GET /api/products/[id]/recommendations`
+  신규 엔드포인트에서 Order·OrderItem 공동구매 카운트로 랭킹.
+  주문 기록 없으면 같은 카테고리, 그것도 없으면 기타 활성 상품으로
+  2단계 fallback. product detail 페이지가 서버 사이드에서 이 API 호출.
+- [ ] 후속: 사업자 등급별 / 최근 조회 기반 / 관리자 큐레이션 추천 등
 
 ### 7-9. BottomNav (모바일) / SiteFooter 링크 검증
 

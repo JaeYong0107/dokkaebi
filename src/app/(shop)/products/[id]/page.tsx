@@ -55,12 +55,17 @@ export default async function ProductDetailPage({
   params
 }: ProductDetailPageProps) {
   const { id } = await params;
-  const [productsResponse, contentResponse] = await Promise.all([
-    serverFetch("/api/products"),
-    serverFetch(`/api/products/${id}/content`)
-  ]);
+  const [productsResponse, contentResponse, recommendationsResponse] =
+    await Promise.all([
+      serverFetch("/api/products"),
+      serverFetch(`/api/products/${id}/content`),
+      serverFetch(`/api/products/${id}/recommendations?limit=3`)
+    ]);
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const content = (await contentResponse.json()) as ProductDetailContentResponse;
+  const recommendationsData = recommendationsResponse.ok
+    ? ((await recommendationsResponse.json()) as { items: Product[] })
+    : { items: [] as Product[] };
   const sampleProducts = productsData.items;
   const product = sampleProducts.find((candidate) => candidate.id === id) ?? null;
 
@@ -68,10 +73,7 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const recommendations = sampleProducts
-    .filter((candidate) => candidate.isActive)
-    .filter((candidate) => candidate.id !== product.id)
-    .slice(0, 3);
+  const recommendations = recommendationsData.items;
   const originalPrice = getOriginalPrice(product);
   const normalPrice = getUnitPrice(product, "NORMAL");
   const businessPrice = getUnitPrice(product, "BUSINESS");
