@@ -20,6 +20,9 @@ body {
   font-family: var(--font-inter), "Pretendard", "Apple SD Gothic Neo", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 한국어 글자 단위 개행 방지 (좁은 flex 컨테이너에서 CTA 가 세로로 쪼개지던 문제) */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 a {
