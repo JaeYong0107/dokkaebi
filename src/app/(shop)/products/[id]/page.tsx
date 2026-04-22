@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailActions } from "@/components/cart/ProductDetailActions";
 import { ProductImage } from "@/entities/product/ui/ProductImage";
+import { getFavoriteProductIds } from "@/features/favorite/server";
+import { FavoriteHydrator } from "@/features/favorite/ui/FavoriteHydrator";
 import type { Product } from "@/features/product/types";
 import {
   getDiscountRate,
@@ -55,12 +57,17 @@ export default async function ProductDetailPage({
   params
 }: ProductDetailPageProps) {
   const { id } = await params;
-  const [productsResponse, contentResponse, recommendationsResponse] =
-    await Promise.all([
-      serverFetch("/api/products"),
-      serverFetch(`/api/products/${id}/content`),
-      serverFetch(`/api/products/${id}/recommendations?limit=3`)
-    ]);
+  const [
+    productsResponse,
+    contentResponse,
+    recommendationsResponse,
+    favoriteIds
+  ] = await Promise.all([
+    serverFetch("/api/products"),
+    serverFetch(`/api/products/${id}/content`),
+    serverFetch(`/api/products/${id}/recommendations?limit=3`),
+    getFavoriteProductIds()
+  ]);
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const content = (await contentResponse.json()) as ProductDetailContentResponse;
   const recommendationsData = recommendationsResponse.ok
@@ -85,6 +92,7 @@ export default async function ProductDetailPage({
 
   return (
     <main className="mx-auto max-w-screen-2xl px-8 py-12">
+      <FavoriteHydrator productIds={favoriteIds} />
       <nav className="mb-8 flex items-center space-x-2 text-sm text-on-surface-variant">
         <Link href="/" className="hover:text-primary">
           홈

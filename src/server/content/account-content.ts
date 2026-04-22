@@ -15,7 +15,7 @@ export const accountContent = {
     ctaLabel: "사업자 인증하기"
   },
   sidebarLinks: [
-    { icon: "favorite", label: "찜한 상품", href: "/products" },
+    { icon: "favorite", label: "찜한 상품", href: "/mypage/favorites" },
     { icon: "reviews", label: "상품 후기", href: "/orders" },
     { icon: "location_on", label: "배송지 관리", href: "/checkout" },
     { icon: "credit_card", label: "결제 수단", href: "/checkout" }

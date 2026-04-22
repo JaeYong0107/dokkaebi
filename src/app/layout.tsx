@@ -3,6 +3,7 @@ import { Inter, Manrope, Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { CartServerSync } from "@/components/cart/CartServerSync";
+import { LoginPromptModal } from "@/shared/ui/LoginPromptModal";
 import "./globals.css";
 
 const inter = Inter({
@@ -45,6 +46,7 @@ export default function RootLayout({
           <QueryProvider>
             <CartServerSync />
             {children}
+            <LoginPromptModal />
           </QueryProvider>
         </AuthProvider>
       </body>

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getFavoriteProductIds } from "@/features/favorite/server";
+import { FavoriteHydrator } from "@/features/favorite/ui/FavoriteHydrator";
 import type { OrderRecord } from "@/features/order/types";
 import { getUnitPrice } from "@/features/pricing/pricing-service";
 import type { Product } from "@/features/product/types";
@@ -103,13 +105,19 @@ async function ProductsPageContent({
     typeof query.page === "string" ? Number.parseInt(query.page, 10) : 1;
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
-  const [productsResponse, categoriesResponse, ordersResponse, contentResponse] =
-    await Promise.all([
-      serverFetch("/api/products"),
-      serverFetch("/api/categories"),
-      serverFetch("/api/orders"),
-      serverFetch("/api/site-content")
-    ]);
+  const [
+    productsResponse,
+    categoriesResponse,
+    ordersResponse,
+    contentResponse,
+    favoriteIds
+  ] = await Promise.all([
+    serverFetch("/api/products"),
+    serverFetch("/api/categories"),
+    serverFetch("/api/orders"),
+    serverFetch("/api/site-content"),
+    getFavoriteProductIds()
+  ]);
 
   const productsData = (await productsResponse.json()) as { items: Product[] };
   const categoriesData = (await categoriesResponse.json()) as {
@@ -223,6 +231,7 @@ async function ProductsPageContent({
 
   return (
     <main className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 md:flex-row md:gap-12">
+      <FavoriteHydrator productIds={favoriteIds} />
       <MobileProductsFilterBar
         categories={mobileCategories}
         sorts={mobileSorts}
