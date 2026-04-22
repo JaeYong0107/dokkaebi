@@ -440,6 +440,26 @@ gstack browse 로 12개 페이지 × 3 뷰포트 스크린샷 기반 감사.
 
 ---
 
+### 7-13. 즐겨찾기(찜한 상품) 기능 — **추후예정 (post-MVP)**
+
+현재 상태: **DB 모델·API·프론트 핸들러 전부 미구현.**
+
+- **Prisma**: `Favorite` / `Wishlist` 모델 없음
+- **API**: `/api/favorites` 류 라우트 없음
+- **프론트**:
+  - `ProductGridCard` 의 하트 아이콘([src/widgets/product-list/ProductGridCard.tsx:61](../src/widgets/product-list/ProductGridCard.tsx#L61)) 은 `aria-hidden pointer-events-none` 장식용 (인기순 BEST 상품에만 노출, 클릭 불가)
+  - 마이페이지 사이드바 "찜한 상품" 링크([src/server/content/account-content.ts:18](../src/server/content/account-content.ts#L18)) 는 `/products` 로만 이동
+
+**TODO (도입 시)**
+- Prisma `Favorite` 모델 (userId + productId 복합 unique, createdAt)
+- `POST /api/favorites/:productId` / `DELETE /api/favorites/:productId` / `GET /api/favorites`
+- 상품 카드·상세에 토글 하트 버튼 (로그인 필요 상태 가드 + 낙관적 업데이트)
+- 마이페이지 "찜한 상품" 전용 페이지(`/mypage/favorites`) + 사이드바 링크 연결
+
+**영향 범위**: 로그인 필요한 액션이라 비로그인 사용자 UX(로그인 유도 모달) 동반 설계 필요.
+
+---
+
 ## 참고
 
 - 완료된 상태 관리 갭 리포트: [docs/agent-reports/state-management-gap-report.md](../docs/agent-reports/state-management-gap-report.md)

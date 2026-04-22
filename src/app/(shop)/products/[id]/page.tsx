@@ -98,27 +98,8 @@ export default async function ProductDetailPage({
       </nav>
 
       <div className="mb-20 grid grid-cols-12 gap-12">
-        <div className="col-span-12 flex gap-4 lg:col-span-7">
-          <div className="flex flex-col gap-4">
-            {Array.from({ length: 3 }).map((_, idx) => (
-              <div
-                key={`${product.id}-${idx}`}
-                className={
-                  "h-20 w-20 overflow-hidden rounded-xl bg-surface-container-high p-2 transition-all ring-primary" +
-                  (idx === 0 ? " ring-2" : "")
-                }
-              >
-                <ProductImage
-                  imageUrl={product.imageUrl}
-                  alt={product.name}
-                  emoji={product.imageEmoji}
-                  bg={product.imageBg}
-                  size="md"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex-1 overflow-hidden rounded-[2rem] bg-surface-container-low p-6">
+        <div className="col-span-12 lg:col-span-7">
+          <div className="overflow-hidden rounded-[2rem] bg-surface-container-low p-6">
             <ProductImage
               imageUrl={product.imageUrl}
               alt={product.name}
