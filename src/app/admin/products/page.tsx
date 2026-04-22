@@ -51,6 +51,7 @@ export default async function AdminProductsPage({
   const keyword =
     typeof query.q === "string" ? query.q.trim().toLowerCase() : "";
   const lowStockOnly = query.stock === "low";
+  const sortKey = typeof query.sort === "string" ? query.sort : "";
 
   const [productsResponse, categoriesResponse] = await Promise.all([
     fetch(`${origin}/api/admin/products`, {
@@ -100,7 +101,8 @@ export default async function AdminProductsPage({
       return (p.stockQuantity ?? 0) <= threshold;
     });
 
-  const sortedFiltered = lowStockOnly
+  const shouldSortByStockAsc = lowStockOnly || sortKey === "stock-asc";
+  const sortedFiltered = shouldSortByStockAsc
     ? [...filtered].sort(
         (a, b) => (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0)
       )

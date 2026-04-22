@@ -220,9 +220,12 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   `/api/admin/products/[id]` + router.refresh
 - [ ] "모두보기" 버튼 (240줄)
   - 고객 문의 현황 섹션 소속 — Inquiry 모델 필요
-- [ ] "문의 응대 시작" 버튼 (264줄) — Inquiry 모델 필요
-- [ ] "재고 관리 대장" / "리포트 다운로드" 버튼 (푸터 섹션)
-  - 다음 질문 대상 (사용자 결정 대기)
+- [x] ~~"문의 응대 시작하기"~~ → `mailto:support@dokkaebi.kr?subject=[고객 문의 응대]`
+  링크로 임시 연결. 추후 7-11 알림 시스템에서 문의 상세 페이지로 교체 예정
+- [x] ~~"재고 관리 대장"~~ → `/admin/products?sort=stock-asc` 링크 연결
+  (products 페이지에 `sort` 쿼리 파라미터 해석 추가)
+- [x] ~~"리포트 다운로드"~~ → `DashboardReportButton` client 컴포넌트로
+  `/api/orders` 호출 → 주문 CSV 다운로드 (11열, UTF-8 BOM)
 - [x] ~~플로팅 "+" / `/admin/orders` "새 주문 만들기"~~
   → 2026-04-22 삭제. 관리자 수동 주문 시나리오가 현 MVP 에 필요 없다는 판단.
   `floatingActionLabel` content 필드, `AdminDashboardResponse.floatingActionLabel`
@@ -252,7 +255,11 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 섹션 6 (기능 미적용 버튼) 진행하며 코드 전체를 훑다가 **원래 TODO 에 없던**
 미구현/약한 지점을 발견해 별도로 기록. 긴급도 낮지만 로드맵에 필요.
 
-### 7-1. Inquiry (문의) 도메인 전반
+### 7-1. Inquiry (문의) 도메인 전반 — **추후예정 (post-MVP)**
+
+사유: 신규 페이지 (`/admin/inquiries`, 고객 문의 폼) 와 신규 모델 추가 필요.
+현재는 mailto 링크(홈 상담·tracking·mypage 문의) 로 실용 커버 중.
+나중에 실제 문의 유입량이 쌓이면 전환.
 
 - [ ] **Inquiry 모델 신설**
   - 필드: id, userId(nullable), email, subject, body, category (GENERAL/ORDER/SALES),
@@ -275,11 +282,11 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 - [ ] 목적 재정의 필요 (현재 라벨 "보조 액션" 모호)
   - 후보: 재고 일괄 업로드(CSV) / 매출 리포트 PDF / 정책값 바로가기
 
-### 7-4. 고객 측 알림·통지
+### 7-4. 고객 측 알림·통지 — **추후예정 (post-MVP, 7-11 로 통합 설계)**
 
 - [ ] 사업자 승인 완료 / 주문 상태 변경 / 배송 시작 등 **고객 대상 통지 수단 없음**
   - 현재 시스템: 세션 로그인 후 새로고침해야 확인
-  - 최소 단계: 이메일 발송 (SendGrid/Resend 등) 또는 앱 내 알림 드롭다운
+  - 7-11 활동 로그+알림 시스템에 통합되어 재설계 예정
 
 ### 7-5. Cart 동기화 자동화
 
@@ -342,7 +349,7 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 알림 벨 저재고 링크도 `?active=ACTIVE&stock=low` 로 교체
   - 필터 적용 중인 상품 목록 상단에 "저재고 N건" 안내 배너 + 해제 링크
 
-### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템
+### 7-11. 활동 로그 + 알림(앱내·이메일) 시스템 — **추후예정 (post-MVP)**
 
 **원칙**: 남길만한 이벤트만 로그·알림에 담는다. 아무거나 남기면
 로그 팽창 + 알림 피로도 + 고객 메일 스팸 취급 위험.

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icon } from "@/shared/ui/Icon";
 import { headers } from "next/headers";
 import { getServerOrigin } from "@/shared/lib/api/server-origin";
+import { DashboardReportButton } from "@/widgets/admin-dashboard/DashboardReportButton";
 import { StockAddButton } from "@/widgets/admin-dashboard/StockAddButton";
 
 type AdminDashboardResponse = {
@@ -278,9 +279,12 @@ export default async function AdminDashboardPage() {
                 </div>
               ))}
             </div>
-            <button className="w-full rounded-xl bg-on-surface py-3 text-xs font-bold text-surface transition-opacity hover:opacity-90">
+            <a
+              href="mailto:support@dokkaebi.kr?subject=%5B%EA%B3%A0%EA%B0%9D%20%EB%AC%B8%EC%9D%98%20%EC%9D%91%EB%8C%80%5D"
+              className="block w-full rounded-xl bg-on-surface py-3 text-center text-xs font-bold text-surface transition-opacity hover:opacity-90"
+            >
               문의 응대 시작하기
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -300,12 +304,13 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="rounded-xl border-2 border-outline-variant px-6 py-2.5 text-sm font-bold text-on-surface-variant transition-colors hover:bg-surface-container">
-            {data.footer.secondaryActionLabel}
-          </button>
-          <button className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg hover:shadow-primary/30">
+          <DashboardReportButton label={data.footer.secondaryActionLabel} />
+          <Link
+            href="/admin/products?sort=stock-asc"
+            className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg hover:shadow-primary/30"
+          >
             {data.footer.primaryActionLabel}
-          </button>
+          </Link>
         </div>
       </footer>
 
