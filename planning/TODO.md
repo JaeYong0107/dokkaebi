@@ -197,46 +197,32 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 서버 컴포넌트라 page query 또는 Server Action 필요
 
 **`/products/[id]` — 상품 상세**
-- [ ] 탭 버튼 "배송/교환/환불 정보, 상품 문의, 구매 리뷰"
-      ([src/app/(shop)/products/[id]/page.tsx:290](../src/app/(shop)/products/[id]/page.tsx))
-  - 3개 탭이 모두 항상 표시된 상태. 활성 탭 state + 내용 전환 필요
-  - 클라이언트 컴포넌트 분리 필요 (현재 서버 컴포넌트)
+- [x] ~~탭 버튼 3종 전환~~ → `76654f1` 클라이언트 컴포넌트 분리 + 활성 탭 state
 
 **`/checkout` — 결제**
-- [ ] "배송지 변경" 버튼 ([src/app/(shop)/checkout/page.tsx:284](../src/app/(shop)/checkout/page.tsx))
-  - User 테이블에 다중 배송지 저장 구조 아직 없음
-  - 1차: 간단한 모달에서 바로 입력 → Order.shippingAddress 로 전달
-  - 2차: Address 모델 신설 → 기본 배송지 / 추가 배송지 관리
+- [x] ~~"배송지 변경" 버튼~~ → `6e56a06` 모달 + checkout-store 배송지 상태 연결
 
 **`/orders/[id]/tracking` — 배송 조회**
-- [ ] "영수증 출력" 버튼 ([src/app/(shop)/orders/[id]/tracking/page.tsx:97](../src/app/(shop)/orders/[id]/tracking/page.tsx))
-  - PDF 생성 or `window.print()` + 전용 인쇄 스타일
-- [ ] "고객센터 문의" 버튼 (같은 파일 104줄)
-  - 주문 컨텍스트 포함 Inquiry 생성 or mailto 링크
-- [ ] "배송지 변경" 버튼 (같은 파일 205줄)
+- [x] ~~"영수증 출력"~~ → `1c314e9` `window.print()` 연결
+- [x] ~~"고객센터 문의"~~ → `7d133fa` mailto + 주문 컨텍스트 자동 채움
+- [ ] "배송지 변경" 버튼 (205줄)
   - 배송중 상태에서 변경 가능한지 정책 확인 먼저
 
 **`/mypage` — 마이페이지**
-- [ ] "회원정보 수정" 버튼 ([src/app/(shop)/mypage/page.tsx:90](../src/app/(shop)/mypage/page.tsx))
-  - 이름 / 전화 / 비밀번호 변경 폼 필요
-  - PATCH `/api/auth/me` 추가 필요
-- [ ] "1:1 문의" 버튼 (120줄)
-- [ ] "사업자 인증하기" 버튼 (185줄, 일반→사업자 전환 CTA)
-  - PATCH `/api/auth/me { customerType: "BUSINESS", businessName, businessNumber }`
-  - 제출 시 businessApproved=false → 관리자 대기열로
-- [ ] "고객센터 문의" 버튼 (370줄)
+- [x] ~~"회원정보 수정"~~ → `4e231b8` 모달 + PATCH `/api/auth/me`
+- [x] ~~"1:1 문의" (KPI 아이콘)~~ → mailto + 세션 이메일/이름 자동 채움
+- [x] ~~"사업자 인증하기"~~ → `60ec697` applyBusiness 모달
+- [x] ~~"고객센터 문의" (하단 큰 버튼)~~ → 위와 동일 mailto 컴포넌트 재사용
 
 ### 관리자 영역 (admin)
 
 **`/admin` — 대시보드**
-- [ ] "전체보기" 링크 ([src/app/admin/page.tsx:136](../src/app/admin/page.tsx))
-  - 주문 목록 → `/admin/orders` 로 연결만 하면 해결
+- [x] ~~"전체보기" 링크~~ → `ba3db05` `/admin/orders` 링크 연결
 - [ ] "재고 추가" 버튼 (226줄)
   - 저재고 상품 인라인 + / stock 수정 → PATCH `/api/admin/products/[id]`
 - [ ] "모두보기" 버튼 (240줄)
-  - 재고 전체 목록 → `/admin/products?active=ACTIVE` 필터로 연결
-- [ ] "문의 응대 시작" 버튼 (264줄)
-  - Inquiry 모델 + `/admin/inquiries` 생성 후 연결
+  - 고객 문의 현황 섹션 소속 — Inquiry 모델 필요
+- [ ] "문의 응대 시작" 버튼 (264줄) — Inquiry 모델 필요
 - [ ] "보조 액션" 버튼 (286줄)
   - 대시보드 푸터 영역. 현재 라벨만 있음, 목적 재정의 필요
 - [ ] 플로팅 "+" 버튼 (295줄)
@@ -244,9 +230,7 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
   - 관리자가 전화 주문 등을 수동 입력하는 플로우 필요 시 구현
 
 **`/admin/orders` — 주문 관리**
-- [ ] "CSV 다운로드" 버튼 ([src/app/admin/orders/page.tsx:107](../src/app/admin/orders/page.tsx))
-  - 현재 필터 적용된 주문 리스트를 CSV 로 내보내기
-  - papaparse or 수제 CSV 직렬화 + Blob download
+- [x] ~~"CSV 다운로드"~~ → `eaa9049` 현재 필터 기준 15열 CSV + UTF-8 BOM
 - [ ] "새 주문 만들기" 버튼 (110줄)
   - 관리자 수동 주문 생성. 위 "+" 와 연동 가능
 
@@ -255,11 +239,7 @@ MVP 단계에서는 mock provider 로 결제 흐름 전체(승인 → 주문 생
 - [ ] 관리자 헤더 **알림 아이콘** ([src/app/admin/layout.tsx:87](../src/app/admin/layout.tsx))
   - 승인 대기 사업자 / 신규 문의 / 저재고 등 이벤트 카운트 뱃지
   - 클릭 시 드롭다운 목록 + 해당 페이지 이동
-- [ ] TopAppBar **"사업자 전용" 탭** ([src/widgets/top-app-bar/TopAppBar.tsx](../src/widgets/top-app-bar/TopAppBar.tsx))
-  - 현재 단순히 `/products` 로 이동
-  - 개선: `/products?audience=business` 같은 필터 쿼리 + BUSINESS 할인율 적용
-    상품만 노출 (businessDiscountRate > 0 필터)
-  - 비로그인 / NORMAL 접근 시 혜택 안내 오버레이 고려
+- [x] ~~TopAppBar "사업자 전용" 탭~~ → `6a5785e` `/products?dealsOnly=1`
 
 ### 홈 페이지 (`/`)
 
